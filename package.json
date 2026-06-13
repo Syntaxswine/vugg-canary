@@ -7,6 +7,8 @@
   "scripts": {
     "sweep": "node src/sweep.mjs --now",
     "diff": "node src/diff.mjs",
+    "regenerate": "node src/regenerate.mjs",
+    "schedule": "node src/schedule.mjs",
     "test": "node test/diff.test.mjs && node test/promote.test.mjs",
     "help": "node src/sweep.mjs --help"
   },

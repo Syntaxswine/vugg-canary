@@ -28,10 +28,23 @@ to raise an alarm when a new build silently moves what the rocks produce.
   (pointing `identical_to` the last real day) and skips the 3–4h sweep. A dirty
   tree never short-circuits (re-core a disturbed layer). `--force` overrides;
   manual `--scenario`/`--seeds` runs bypass it.
+- **The alarm wired into the sweep** ✅ a full `--now` run now auto-diffs against
+  the last data-bearing day and writes `diff-vs-<ver>_<date>.json` — one run
+  both cores AND alarms (the real nightly behavior).
+- **Phase 4 — `regenerate`** ✅ `src/regenerate.mjs <date> <scenario> <seed>`
+  rebuilds any single run on demand from `(SHA, seed)` — the heavy tier is a
+  cache, not lost data. Reproduces & verifies against the stored digest when the
+  code matches.
+- **Phase 5 — the scheduler** ✅ built, **not armed**. `src/schedule.mjs` prints
+  the exact daily-04:00 `schtasks` command by default and arms nothing;
+  `--install` (a deliberate human step) registers it, `--status`/`--uninstall`
+  manage it.
 
-Remaining: **3b** the actual `today/`/`tomorrow/` copy mechanics (machine-
-specific), **4** sampled-strip archival + `regenerate`, **5** the 04:00
-Windows Task Scheduler registration.
+Deferred by choice: **3b** the two-folder `today/`/`tomorrow/` promote. The
+canary sweeps the configured `vuggPath` (the live checkout) directly; the
+no-change short-circuit already prevents redundant runs. The promote is a
+*gate* (don't record half-finished work) worth adding only if that need
+appears — its copy mechanics are machine-specific.
 
 ## Run it
 
@@ -40,8 +53,11 @@ node src/sweep.mjs --now                      # full sweep (config.seeds = 200)
 node src/sweep.mjs --now --seeds 5 --scenario mvt,supergene_oxidation   # smoke
 node src/sweep.mjs --help
 
-node src/diff.mjs <olderVersionDir> <newerVersionDir>   # the regression alarm
-npm test                                                # alarm-logic tests
+node src/diff.mjs <olderVersionDir> <newerVersionDir>   # standalone regression diff
+node src/regenerate.mjs <date> <scenario> <seed>        # rebuild one run on demand
+node src/schedule.mjs                                   # print the 04:00 task cmd (arms nothing)
+node src/schedule.mjs --install                         # arm it (deliberate, human-only step)
+npm test                                                # alarm + short-circuit logic (17 asserts)
 ```
 
 ### The alarm (Phase 2)

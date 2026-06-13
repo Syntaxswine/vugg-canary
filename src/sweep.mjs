@@ -27,36 +27,13 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { repoMeta } from './repo-meta.mjs';
 import { fingerprintScenario } from './fingerprint.mjs';
-import { shouldShortCircuit, writeNoChangeNote } from './promote.mjs';
+import { shouldShortCircuit, writeNoChangeNote, findLastDataBearingDay } from './promote.mjs';
+import { loadVersionFingerprint, diffFingerprints, summarizeAlarms } from './diff.mjs';
+import { makeRunner } from './run.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PKG = JSON.parse(fs.readFileSync(path.join(CANARY_ROOT, 'package.json'), 'utf8'));
 const CANARY_VERSION = PKG.version;
-
-// ---------------------------------------------------------------------------
-// summarize() — VERBATIM from vugg's tools/gen-js-baseline.mjs. The seed-42
-// equivalence (guard 2) depends on this being byte-identical, so do NOT
-// "improve" it: if gen-baseline changes, mirror the change here and the
-// self-test will catch any drift in the meantime.
-// ---------------------------------------------------------------------------
-function summarize(sim) {
-  const out = {};
-  if (!sim || !sim.crystals) return out;
-  for (const c of sim.crystals) {
-    if (!out[c.mineral]) {
-      out[c.mineral] = { active: 0, dissolved: 0, total: 0, max_um: 0 };
-    }
-    out[c.mineral].total++;
-    if (c.dissolved) out[c.mineral].dissolved++;
-    else out[c.mineral].active++;
-    if (c.total_growth_um > out[c.mineral].max_um) {
-      out[c.mineral].max_um = Math.round(c.total_growth_um * 10) / 10;
-    }
-  }
-  const sorted = {};
-  for (const k of Object.keys(out).sort()) sorted[k] = out[k];
-  return sorted;
-}
 
 function parseArgs(argv) {
   const a = { now: false, help: false, build: false, force: false, seeds: null, scenario: null, date: null, out: null };
@@ -178,14 +155,7 @@ async function main() {
   console.log(`[canary] SIM_VERSION=${SIM_VERSION}  sha=${meta0.sha}${meta0.dirty ? ' (DIRTY — will never short-circuit)' : ''}`);
   console.log(`[canary] sweeping ${names.length}/${allNames.length} scenarios × ${seeds} chem-seeds (shape: scenario-authored), steps=defaultSteps??100\n`);
 
-  function runOne(name, seed) {
-    setSeed(seed);
-    const s = SCENARIOS[name]();
-    const sim = new VugSimulator(s.conditions, s.events);
-    const steps = s.defaultSteps ?? 100;
-    for (let i = 0; i < steps; i++) sim.run_step();
-    return summarize(sim);
-  }
+  const runOne = makeRunner({ SCENARIOS, VugSimulator, setSeed });
 
   const outDir = path.join(outRoot, date, `v${SIM_VERSION}`);
   fs.mkdirSync(outDir, { recursive: true });
@@ -245,6 +215,32 @@ async function main() {
     console.log(`[canary] ⚑ self-test divergence — ${selftest.mismatches.length} scenario(s) differ from seed42_v${SIM_VERSION}.json (recorded in meta.json):`);
     for (const m of selftest.mismatches) console.log(`         - ${m.scenario}: ${m.reason}`);
     console.log(`         (passive note: the scanned layer doesn't reproduce the committed baseline — entrypoint drift or a stale baseline. The sweep is kept regardless.)`);
+  }
+
+  // --- the alarm: auto-diff against the last data-bearing day (completes the
+  // nightly loop — one run both cores AND alarms). Passive: records, never throws. ---
+  const prev = findLastDataBearingDay(outRoot, { excludeDate: date });
+  if (prev) {
+    const thresholds = cfg.diffThreshold || {};
+    const fpPrev = loadVersionFingerprint(path.join(outRoot, prev.date, prev.version));
+    const fpNow = loadVersionFingerprint(outDir);
+    const alarms = diffFingerprints(fpPrev, fpNow, thresholds);
+    const summary = summarizeAlarms(alarms);
+    const record = { from: `${prev.version}@${prev.date}`, to: `v${SIM_VERSION}@${date}`, thresholds, summary, alarms };
+    const diffPath = path.join(outDir, `diff-vs-${prev.version}_${prev.date}.json`);
+    fs.writeFileSync(diffPath, JSON.stringify(record, null, 2) + '\n');
+    if (summary.total === 0) {
+      console.log(`[canary] diff vs ${prev.version}@${prev.date}: no moves past thresholds — the strata match.`);
+    } else {
+      console.log(`[canary] ⚑ diff vs ${prev.version}@${prev.date}: ${summary.total} alarm(s) ${JSON.stringify(summary.by_kind)} — see ${path.basename(diffPath)}`);
+      for (const al of alarms.slice(0, 12)) {
+        if (al.species) console.log(`         ${al.scenario} / ${al.species}: ${al.kind} ${al.pct_from}% → ${al.pct_to}%`);
+        else console.log(`         ${al.scenario}: ${al.kind}`);
+      }
+      if (alarms.length > 12) console.log(`         … and ${alarms.length - 12} more (full list in the diff file)`);
+    }
+  } else {
+    console.log(`[canary] first data-bearing day for this logs dir — no prior to diff against (the alarm arms on the next version).`);
   }
 }
 
