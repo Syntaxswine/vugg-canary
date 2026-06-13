@@ -1,0 +1,14 @@
+node_modules/
+
+# --- Log data tiers (boss decision 4: commit the SPINE, keep heavy tiers local) ---
+# The spine (frequency.json, meta.json, diff-*.json, NO-CHANGE.json) is the
+# product — kept and committable for shareable longitudinal history (~20 MB/yr).
+# Everything below is REGENERABLE from (SHA, chem, shape) — determinism makes the
+# raw runs a cache, not an archive. So they stay out of git.
+logs/**/seeds.json
+logs/**/seed-*/
+logs/**/strips/
+
+# OS noise
+Thumbs.db
+.DS_Store

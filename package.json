@@ -1,0 +1,13 @@
+{
+  "name": "vugg-canary",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Nightly deterministic regression sweep for vugg-simulator — turns 'I happened to check' into 'nothing regresses unseen'.",
+  "scripts": {
+    "sweep": "node src/sweep.mjs --now",
+    "help": "node src/sweep.mjs --help"
+  },
+  "comment": "No dependencies by design: the sweep dynamically imports the TARGET repo's tools/_harness.mjs, which resolves jsdom + dist/ from the target's own node_modules. The canary is pure Node built-ins + git.",
+  "engines": { "node": ">=18" }
+}

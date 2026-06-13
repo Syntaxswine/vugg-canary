@@ -1,0 +1,13 @@
+{
+  "_comment": "vugg-canary config. vuggPath is resolved relative to this repo root. For Phase 1 it points at the live vugg checkout; the two-folder promote (Phase 3) will repoint it at today/.",
+  "vuggPath": "../vugg/vugg-simulator",
+  "seeds": 200,
+  "shapeSeedMode": "scenario-authored",
+  "logsDir": "logs",
+  "diffThreshold": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2.0,
+    "minPctForRel": 2.0
+  }
+}
