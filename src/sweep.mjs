@@ -27,6 +27,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { repoMeta } from './repo-meta.mjs';
 import { fingerprintScenario } from './fingerprint.mjs';
+import { shouldShortCircuit, writeNoChangeNote } from './promote.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PKG = JSON.parse(fs.readFileSync(path.join(CANARY_ROOT, 'package.json'), 'utf8'));
@@ -58,12 +59,13 @@ function summarize(sim) {
 }
 
 function parseArgs(argv) {
-  const a = { now: false, help: false, build: false, seeds: null, scenario: null, date: null, out: null };
+  const a = { now: false, help: false, build: false, force: false, seeds: null, scenario: null, date: null, out: null };
   for (let i = 2; i < argv.length; i++) {
     const t = argv[i];
     if (t === '--now') a.now = true;
     else if (t === '--help' || t === '-h') a.help = true;
     else if (t === '--build') a.build = true;
+    else if (t === '--force') a.force = true;
     else if (t === '--seeds') a.seeds = parseInt(argv[++i], 10);
     else if (t === '--scenario') a.scenario = argv[++i];
     else if (t === '--date') a.date = argv[++i];
@@ -100,6 +102,7 @@ const HELP = `vugg-canary sweep (Phase 1)
 
   --now                 run a sweep immediately (the only mode in Phase 1)
   --build               run \`npm run build\` in the target first, so dist/ matches source
+  --force               sweep even if the SHA is unchanged (skip the no-change short-circuit)
   --seeds N             chemistry seeds 1..N to sweep (default: config.seeds=200)
   --scenario a,b        restrict to a comma-separated subset (default: all)
   --date YYYY-MM-DD     override the log date folder (default: today)
@@ -125,8 +128,26 @@ async function main() {
     process.exit(1);
   }
 
-  // --- optionally build the target so dist/ is guaranteed consistent with source ---
   console.log(`[canary] target: ${vuggPath}`);
+
+  // --- Phase 3a: no-change short-circuit (cheap git check, BEFORE any build/load) ---
+  // A full scheduled run with an unchanged, clean tree is deterministically
+  // identical to the last sweep — skip it and write a NO-CHANGE note. Manual
+  // runs (--scenario / explicit --seeds) and --force always proceed.
+  const meta0 = repoMeta(vuggPath);
+  const fullRun = !args.scenario && args.seeds == null;
+  if (fullRun && !args.force) {
+    const sc = shouldShortCircuit(outRoot, { date, sha: meta0.sha, dirty: meta0.dirty, canaryVersion: CANARY_VERSION });
+    if (sc.skip) {
+      const note = writeNoChangeNote(outRoot, date, sc.last, meta0.sha);
+      console.log(`[canary] no change — ${sc.reason} — deterministic, sweep skipped.`);
+      console.log(`[canary] wrote ${path.relative(CANARY_ROOT, path.join(outRoot, date, 'NO-CHANGE.json'))} → identical_to ${note.identical_to}`);
+      return;
+    }
+    if (sc.last) console.log(`[canary] proceeding (${sc.reason})`);
+  }
+
+  // --- optionally build the target so dist/ is guaranteed consistent with source ---
   if (args.build) buildTarget(vuggPath);
 
   // --- load the target repo's bundle through ITS OWN harness ---
@@ -144,7 +165,6 @@ async function main() {
     console.warn(`         dist_matches_source:false so this sample is labeled honestly. (--build for a source-fresh scan.)`);
   }
 
-  const meta0 = repoMeta(vuggPath);
   const allNames = Object.keys(SCENARIOS).sort();
   let names = allNames;
   if (args.scenario) {

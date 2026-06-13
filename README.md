@@ -22,10 +22,16 @@ to raise an alarm when a new build silently moves what the rocks produce.
   versions and flags spawn-% moves past threshold (the mottramite-detector).
   `npm test` covers the alarm logic; a two-identical-sweeps diff confirms zero
   false positives on real engine output.
+- **Phase 3a — the no-change short-circuit** ✅ `src/promote.mjs`. A full run
+  whose SHA + canary version match the last data-bearing day, on a clean tree,
+  is deterministically identical — so it writes a one-file `NO-CHANGE.json`
+  (pointing `identical_to` the last real day) and skips the 3–4h sweep. A dirty
+  tree never short-circuits (re-core a disturbed layer). `--force` overrides;
+  manual `--scenario`/`--seeds` runs bypass it.
 
-Phases 3–5 (two-folder promote + no-change short-circuit, sampled-strip
-archival + `regenerate`, 04:00 scheduler) are designed in the proposal and not
-yet built.
+Remaining: **3b** the actual `today/`/`tomorrow/` copy mechanics (machine-
+specific), **4** sampled-strip archival + `regenerate`, **5** the 04:00
+Windows Task Scheduler registration.
 
 ## Run it
 
