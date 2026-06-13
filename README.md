@@ -15,11 +15,17 @@ to raise an alarm when a new build silently moves what the rocks produce.
 
 ## Status
 
-**Phase 1 — the sweep engine.** Runs N chem-seeds × all scenarios, emits
-per-scenario frequency tables + per-seed digests, and self-tests its seed-42
-row against the committed baseline. Phases 2–5 (version-diff alarm, two-folder
-promote + no-change short-circuit, sampled-strip archival + regenerate,
-04:00 scheduler) are designed in the proposal and not yet built.
+- **Phase 1 — the sweep engine** ✅ Runs N chem-seeds × all scenarios, emits
+  per-scenario frequency tables + per-seed digests, self-tests its seed-42 row
+  against the committed baseline.
+- **Phase 2 — the version-diff alarm** ✅ `src/diff.mjs` compares two swept
+  versions and flags spawn-% moves past threshold (the mottramite-detector).
+  `npm test` covers the alarm logic; a two-identical-sweeps diff confirms zero
+  false positives on real engine output.
+
+Phases 3–5 (two-folder promote + no-change short-circuit, sampled-strip
+archival + `regenerate`, 04:00 scheduler) are designed in the proposal and not
+yet built.
 
 ## Run it
 
@@ -27,7 +33,27 @@ promote + no-change short-circuit, sampled-strip archival + regenerate,
 node src/sweep.mjs --now                      # full sweep (config.seeds = 200)
 node src/sweep.mjs --now --seeds 5 --scenario mvt,supergene_oxidation   # smoke
 node src/sweep.mjs --help
+
+node src/diff.mjs <olderVersionDir> <newerVersionDir>   # the regression alarm
+npm test                                                # alarm-logic tests
 ```
+
+### The alarm (Phase 2)
+
+`diff.mjs` compares two swept versions' frequency tables and flags, per
+`(scenario, species)`:
+
+- **abs_move** — both versions present it, `|Δ spawn-%| ≥ 15 pts` (the blunt,
+  reliable signal; supergene mottramite 96→47 is this).
+- **rel_move** — a rare-but-present species (≥2%) whose spawn-% swung ≥2×, which
+  the absolute gate would miss on low-frequency phases.
+- **appeared / disappeared** — a phase crossed the present/absent line and the
+  nonzero side clears the 2% floor (below it is sampling noise).
+
+It writes `diff-vs-<olderVer>.json` and prints a summary. Like the sweep, it's
+passive: it *records* alarms and never exits nonzero — surfacing the move is the
+job; a human adjudicates expected-churn (e.g. an RNG-derivation rebake lights up
+many alarms by design) vs a real regression.
 
 No `npm install` needed — the canary has **zero dependencies**. It dynamically
 imports the target repo's `tools/_harness.mjs`, which resolves jsdom and the
