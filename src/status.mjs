@@ -17,10 +17,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { findLastDataBearingDay } from './promote.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const VER_RE = /^v\d+$/;
+
+// Never let a half-written or missing file crash the glance — a partial read
+// just means "not ready", not "explode". Returns null on any read/parse failure.
+function readJsonSafe(p) {
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')); }
+  catch { return null; }
+}
 
 function newestDay(logsRoot) {
   if (!fs.existsSync(logsRoot)) return null;
@@ -31,7 +39,8 @@ function newestDay(logsRoot) {
 }
 
 function printAlarmFromDiff(diffPath) {
-  const d = JSON.parse(fs.readFileSync(diffPath, 'utf8'));
+  const d = readJsonSafe(diffPath);
+  if (!d || !d.summary) { console.log(`  alarm:     (diff file unreadable — ${path.basename(diffPath)})`); return; }
   if (d.summary.total === 0) {
     console.log(`  alarm:     none — strata match ${d.from}.`);
   } else {
@@ -70,16 +79,42 @@ function main() {
   }
 
   const ver = vers[0];
-  const meta = JSON.parse(fs.readFileSync(path.join(dayDir, ver, 'meta.json'), 'utf8'));
+  const meta = readJsonSafe(path.join(dayDir, ver, 'meta.json'));
+
+  // A v<N>/ dir with no readable meta.json = a sweep IN PROGRESS (meta is
+  // written last) or a crashed partial run. Don't crash the glance: say so,
+  // then fall back to the last COMPLETED day so the morning still surfaces the
+  // most recent real status + alarm.
+  if (!meta) {
+    const cored = fs.readdirSync(path.join(dayDir, ver), { withFileTypes: true })
+      .filter((d) => d.isDirectory()).length;
+    console.log(`  ${day} ${ver}:  sweep IN PROGRESS or partial — ${cored} scenario(s) cored, no meta.json yet.`);
+    const last = findLastDataBearingDay(logsRoot, { excludeDate: day });
+    if (!last) { console.log('  no completed sweep yet to report.'); return; }
+    console.log(`  ── last completed ──`);
+    reportVersion(logsRoot, last.date, last.version);
+    return;
+  }
+
+  reportVersion(logsRoot, day, ver, meta);
+}
+
+/** Print the last-sweep / self-test / alarm lines for one day's version dir. */
+function reportVersion(logsRoot, day, ver, meta = null) {
+  const verDir = path.join(logsRoot, day, ver);
+  meta = meta || readJsonSafe(path.join(verDir, 'meta.json'));
+  if (!meta) { console.log(`  ${day} ${ver}: meta.json unreadable.`); return; }
   const st = meta.selftest || {};
   const stStr = st.ok === true ? 'PASS'
     : st.ok === null ? `SKIPPED (${st.note})`
     : `⚑ DIVERGENCE (${(st.mismatches || []).length})`;
-  console.log(`  last sweep: ${day} ${ver} (sha ${meta.sha}${meta.dirty ? ', dirty' : ''}) — ${meta.scenarios.length} scenarios × ${meta.n_seeds} seeds`);
+  const dirtNote = meta.engine_dirty ? ', ENGINE-dirty' : meta.dirty ? ', dirty (cosmetic)' : '';
+  const nScenarios = (meta.scenarios || []).length;
+  console.log(`  last sweep: ${day} ${ver} (sha ${meta.sha}${dirtNote}) — ${nScenarios} scenarios × ${meta.n_seeds} seeds`);
   console.log(`  self-test:  ${stStr}`);
 
-  const diffFile = fs.readdirSync(path.join(dayDir, ver)).find((f) => f.startsWith('diff-vs-') && f.endsWith('.json'));
-  if (diffFile) printAlarmFromDiff(path.join(dayDir, ver, diffFile));
+  const diffFile = fs.readdirSync(verDir).find((f) => f.startsWith('diff-vs-') && f.endsWith('.json'));
+  if (diffFile) printAlarmFromDiff(path.join(verDir, diffFile));
   else console.log(`  alarm:     none yet (first day for this logs dir; arms on the next version).`);
 }
 
