@@ -9,6 +9,7 @@
     "diff": "node src/diff.mjs",
     "regenerate": "node src/regenerate.mjs",
     "schedule": "node src/schedule.mjs",
+    "status": "node src/status.mjs",
     "test": "node test/diff.test.mjs && node test/promote.test.mjs",
     "help": "node src/sweep.mjs --help"
   },

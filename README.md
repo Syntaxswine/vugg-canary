@@ -55,6 +55,7 @@ node src/sweep.mjs --help
 
 node src/diff.mjs <olderVersionDir> <newerVersionDir>   # standalone regression diff
 node src/regenerate.mjs <date> <scenario> <seed>        # rebuild one run on demand
+node src/status.mjs                                     # glance: last sweep + latest alarm (session-start)
 node src/schedule.mjs                                   # print the 04:00 task cmd (arms nothing)
 node src/schedule.mjs --install                         # arm it (deliberate, human-only step)
 npm test                                                # alarm + short-circuit logic (17 asserts)
