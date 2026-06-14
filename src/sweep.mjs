@@ -114,7 +114,10 @@ async function main() {
   const meta0 = repoMeta(vuggPath);
   const fullRun = !args.scenario && args.seeds == null;
   if (fullRun && !args.force) {
-    const sc = shouldShortCircuit(outRoot, { date, sha: meta0.sha, dirty: meta0.dirty, canaryVersion: CANARY_VERSION });
+    // Gate on ENGINE dirt, not whole-tree dirt: a stray untracked tool or a doc
+    // edit can't change the fingerprint, so it must not force a 2.5h re-sweep.
+    // (Whole-tree dirt is still recorded in meta for the honest sample label.)
+    const sc = shouldShortCircuit(outRoot, { date, sha: meta0.sha, dirty: meta0.engineDirty, canaryVersion: CANARY_VERSION });
     if (sc.skip) {
       const note = writeNoChangeNote(outRoot, date, sc.last, meta0.sha);
       console.log(`[canary] no change — ${sc.reason} — deterministic, sweep skipped.`);
@@ -152,7 +155,14 @@ async function main() {
     if (!names.length) { console.error('[canary] no valid scenarios selected'); process.exit(1); }
   }
 
-  console.log(`[canary] SIM_VERSION=${SIM_VERSION}  sha=${meta0.sha}${meta0.dirty ? ' (DIRTY — will never short-circuit)' : ''}`);
+  // Two flavors of dirt in the banner: engine dirt defeats the short-circuit;
+  // cosmetic dirt (stray tools/docs/WIP) is noted but harmless to the fingerprint.
+  const dirtNote = meta0.engineDirty
+    ? ' (ENGINE-DIRTY — will never short-circuit)'
+    : meta0.dirty
+      ? ` (tree dirty in ${meta0.dirtyFiles.length} non-engine path(s) — short-circuit still allowed)`
+      : '';
+  console.log(`[canary] SIM_VERSION=${SIM_VERSION}  sha=${meta0.sha}${dirtNote}`);
   console.log(`[canary] sweeping ${names.length}/${allNames.length} scenarios × ${seeds} chem-seeds (shape: scenario-authored), steps=defaultSteps??100\n`);
 
   const runOne = makeRunner({ SCENARIOS, VugSimulator, setSeed });
@@ -193,6 +203,8 @@ async function main() {
     branch: meta0.branch,
     dirty: meta0.dirty,
     dirty_files: meta0.dirtyFiles,
+    engine_dirty: meta0.engineDirty,           // the short-circuit gate (js/data/_harness)
+    engine_dirty_files: meta0.engineDirtyFiles, // empty ⇒ cosmetic dirt only
     sim_version: SIM_VERSION,
     source_sim_version: srcVer,
     dist_matches_source: distMatchesSource,

@@ -10,7 +10,7 @@
     "regenerate": "node src/regenerate.mjs",
     "schedule": "node src/schedule.mjs",
     "status": "node src/status.mjs",
-    "test": "node test/diff.test.mjs && node test/promote.test.mjs",
+    "test": "node test/diff.test.mjs && node test/promote.test.mjs && node test/repo-meta.test.mjs",
     "help": "node src/sweep.mjs --help"
   },
   "comment": "No dependencies by design: the sweep dynamically imports the TARGET repo's tools/_harness.mjs, which resolves jsdom + dist/ from the target's own node_modules. The canary is pure Node built-ins + git.",

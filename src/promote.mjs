@@ -64,7 +64,7 @@ export function shouldShortCircuit(logsRoot, { date, sha, dirty, canaryVersion }
   if (!last) return { skip: false, reason: 'no prior data-bearing day', last: null };
   if (last.sha !== sha) return { skip: false, reason: `sha changed (${last.sha} → ${sha})`, last };
   if (last.canary_version !== canaryVersion) return { skip: false, reason: `canary tool version changed (${last.canary_version} → ${canaryVersion})`, last };
-  if (dirty) return { skip: false, reason: 'tree is dirty — re-core a disturbed layer', last };
+  if (dirty) return { skip: false, reason: 'engine paths dirty (uncommitted js/data/harness) — re-core a disturbed layer', last };
   return { skip: true, reason: `unchanged since ${last.date} (sha ${sha})`, last };
 }
 
