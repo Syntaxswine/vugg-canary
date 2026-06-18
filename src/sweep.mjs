@@ -265,7 +265,10 @@ async function main() {
   if (cfg.autoPush !== false) {
     const stOk = selftest.ok === true ? 'PASS' : selftest.ok === false ? 'FAIL' : 'n/a';
     const note = `${names.length} scenarios${alarmTotal != null ? `, ${alarmTotal} alarm(s)` : ''}, self-test ${stOk}`;
-    publishSpine(CANARY_ROOT, date, SIM_VERSION, note);
+    // Stage the actual date dir under outRoot (honors --out / config.logsDir),
+    // expressed relative to the repo root so `git add` resolves correctly.
+    const dateDirRel = path.relative(CANARY_ROOT, path.join(outRoot, date));
+    publishSpine(CANARY_ROOT, dateDirRel, SIM_VERSION, date, note);
   }
 }
 
@@ -276,10 +279,10 @@ async function main() {
  * never throwing, so the sweep (the actual product) always completes. Unattended:
  * relies on the cached credential helper, same as every other origin push here.
  */
-function publishSpine(canaryRoot, date, simV, note) {
+function publishSpine(canaryRoot, dateDirRel, simV, date, note) {
   const run = (args) => execFileSync('git', args, { cwd: canaryRoot, stdio: ['ignore', 'pipe', 'pipe'] });
   try {
-    run(['add', path.join('logs', date)]);
+    run(['add', dateDirRel]);
     // Nothing staged (e.g. a NO-CHANGE short-circuit re-run) → skip cleanly.
     try {
       run(['diff', '--cached', '--quiet']);
