@@ -1,0 +1,49 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "carnotite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.97,
+      "mean_count_when_present": 3.97,
+      "size_um": {
+        "min": 397.7,
+        "median": 736.2,
+        "max": 805.6
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.81,
+      "mean_count_when_present": 2.81,
+      "size_um": {
+        "min": 2075,
+        "median": 2480.6,
+        "max": 3090.4
+      }
+    },
+    "tyuyamunite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 3449.8,
+        "median": 3846.9,
+        "max": 3967.6
+      }
+    },
+    "uranophane": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 457.1,
+        "median": 731.8,
+        "max": 1139.3
+      }
+    }
+  }
+}

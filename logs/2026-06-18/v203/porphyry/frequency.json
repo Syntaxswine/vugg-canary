@@ -1,0 +1,258 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "albite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 1829.3,
+        "median": 2432.5,
+        "max": 2999.4
+      }
+    },
+    "anhydrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.58,
+      "mean_count_when_present": 5.58,
+      "size_um": {
+        "min": 181.1,
+        "median": 465.7,
+        "max": 540.4
+      }
+    },
+    "argentite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 3207.9,
+        "median": 5262.4,
+        "max": 5566.1
+      }
+    },
+    "arsenopyrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.99,
+      "mean_count_when_present": 3.99,
+      "size_um": {
+        "min": 1146.3,
+        "median": 4193.7,
+        "max": 4714.2
+      }
+    },
+    "bismuthinite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 1214.6,
+        "median": 1278.6,
+        "max": 1318.8
+      }
+    },
+    "bornite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.74,
+      "mean_count_when_present": 2.74,
+      "size_um": {
+        "min": 113.1,
+        "median": 303.4,
+        "max": 382.4
+      }
+    },
+    "calaverite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 535.4,
+        "median": 1499,
+        "max": 1751
+      }
+    },
+    "chalcopyrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1012.9,
+        "median": 1820.5,
+        "max": 2168.2
+      }
+    },
+    "epidote": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.71,
+      "mean_count_when_present": 4.71,
+      "size_um": {
+        "min": 275.9,
+        "median": 426.7,
+        "max": 541.9
+      }
+    },
+    "feldspar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.29,
+      "mean_count_when_present": 2.29,
+      "size_um": {
+        "min": 2656.8,
+        "median": 3383.1,
+        "max": 3907.3
+      }
+    },
+    "ferrimolybdite": {
+      "seeds_present": 13,
+      "pct_present": 6.5,
+      "mean_count": 0.1,
+      "mean_count_when_present": 1.46,
+      "size_um": {
+        "min": 3.9,
+        "median": 27.4,
+        "max": 184.3
+      }
+    },
+    "galena": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.99,
+      "mean_count_when_present": 3.99,
+      "size_um": {
+        "min": 6954.2,
+        "median": 8845.8,
+        "max": 9549.1
+      }
+    },
+    "malachite": {
+      "seeds_present": 44,
+      "pct_present": 22,
+      "mean_count": 0.23,
+      "mean_count_when_present": 1.02,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 15.4
+      }
+    },
+    "mimetite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 25.4,
+        "median": 538,
+        "max": 2199.1
+      }
+    },
+    "molybdenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 16879.7,
+        "median": 23376.6,
+        "max": 25587.9
+      }
+    },
+    "native_gold": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.14,
+      "mean_count_when_present": 2.14,
+      "size_um": {
+        "min": 31.3,
+        "median": 52.1,
+        "max": 195.5
+      }
+    },
+    "powellite": {
+      "seeds_present": 71,
+      "pct_present": 35.5,
+      "mean_count": 0.76,
+      "mean_count_when_present": 2.14,
+      "size_um": {
+        "min": 18.9,
+        "median": 229.6,
+        "max": 881.6
+      }
+    },
+    "pyrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.38,
+      "mean_count_when_present": 1.38,
+      "size_um": {
+        "min": 453.2,
+        "median": 808.2,
+        "max": 1191.6
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.11,
+      "mean_count_when_present": 1.11,
+      "size_um": {
+        "min": 5.9,
+        "median": 159.5,
+        "max": 537.7
+      }
+    },
+    "stibnite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.78,
+      "mean_count_when_present": 1.78,
+      "size_um": {
+        "min": 1.4,
+        "median": 4.6,
+        "max": 13.9
+      }
+    },
+    "sylvanite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 235.2,
+        "median": 847.7,
+        "max": 948.1
+      }
+    },
+    "tennantite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "tetrahedrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    }
+  }
+}

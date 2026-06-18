@@ -1,0 +1,93 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "HMC": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 9,
+      "mean_count_when_present": 9,
+      "size_um": {
+        "min": 0.3,
+        "median": 0.3,
+        "max": 0.3
+      }
+    },
+    "chrysoprase": {
+      "seeds_present": 70,
+      "pct_present": 35,
+      "mean_count": 0.39,
+      "mean_count_when_present": 1.11,
+      "size_um": {
+        "min": 0,
+        "median": 9.8,
+        "max": 22.5
+      }
+    },
+    "dolomite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 29.63,
+      "mean_count_when_present": 29.63,
+      "size_um": {
+        "min": 0,
+        "median": 4.5,
+        "max": 5.8
+      }
+    },
+    "goethite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.93,
+      "mean_count_when_present": 1.93,
+      "size_um": {
+        "min": 74.8,
+        "median": 106.2,
+        "max": 119.7
+      }
+    },
+    "opal": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 4.7,
+        "median": 5.8,
+        "max": 7
+      }
+    },
+    "pyrolusite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 266.8,
+        "median": 283,
+        "max": 294.1
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.96,
+      "mean_count_when_present": 2.96,
+      "size_um": {
+        "min": 2665.5,
+        "median": 3245.6,
+        "max": 4184.8
+      }
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "albite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 408.3,
+        "median": 558.7,
+        "max": 618.4
+      }
+    },
+    "apophyllite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 7.97,
+      "mean_count_when_present": 7.97,
+      "size_um": {
+        "min": 1475.7,
+        "median": 1565.4,
+        "max": 1663.7
+      }
+    },
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 24467.9,
+        "median": 26054.2,
+        "max": 27294.6
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 18946.9,
+        "median": 19934.5,
+        "max": 20841.3
+      }
+    },
+    "epidote": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.24,
+      "mean_count_when_present": 4.24,
+      "size_um": {
+        "min": 530.9,
+        "median": 663.3,
+        "max": 715.1
+      }
+    },
+    "goethite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 9731.2,
+        "median": 10132.4,
+        "max": 10454.4
+      }
+    },
+    "hematite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 3306.3,
+        "median": 3920.1,
+        "max": 4034
+      }
+    },
+    "opal": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 2629.8,
+        "median": 2734.3,
+        "max": 2874.7
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 34453.7,
+        "median": 36294.8,
+        "max": 37672.2
+      }
+    },
+    "tigers_eye": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.72,
+      "mean_count_when_present": 3.72,
+      "size_um": {
+        "min": 2671.3,
+        "median": 2785.5,
+        "max": 2905.3
+      }
+    }
+  }
+}

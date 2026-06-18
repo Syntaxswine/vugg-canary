@@ -1,0 +1,16 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 462.2,
+        "median": 477.1,
+        "max": 491.6
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "from": "v197@2026-06-16",
+  "to": "v198@2026-06-17",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 1,
+    "by_kind": {
+      "rel_move": 1
+    },
+    "by_scenario": {
+      "bisbee": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "bisbee",
+      "species": "conichalcite",
+      "kind": "rel_move",
+      "pct_from": 5.5,
+      "pct_to": 11,
+      "delta_pts": 5.5,
+      "mean_from": 0.24,
+      "mean_to": 0.48
+    }
+  ]
+}

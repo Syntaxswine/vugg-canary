@@ -1,0 +1,124 @@
+{
+  "from": "v198@2026-06-17",
+  "to": "v203@2026-06-18",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 10,
+    "by_kind": {
+      "appeared": 8,
+      "abs_move": 1,
+      "disappeared": 1
+    },
+    "by_scenario": {
+      "deccan_zeolite": 7,
+      "supergene_oxidation": 3
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "deccan_zeolite",
+      "species": "chabazite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 5.4
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "heulandite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 5.07
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "mesolite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 5.67
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "pectolite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "scolecite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 6.25
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "stilbite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 5.51
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "thomsonite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 7.56
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "bornite",
+      "kind": "abs_move",
+      "pct_from": 100,
+      "pct_to": 79,
+      "delta_pts": -21,
+      "mean_from": 1,
+      "mean_to": 0.86
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "pararealgar",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "rosasite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 57,
+      "delta_pts": 57,
+      "mean_from": 0,
+      "mean_to": 1.04
+    }
+  ]
+}

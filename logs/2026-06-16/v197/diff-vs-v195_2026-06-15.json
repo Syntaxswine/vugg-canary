@@ -1,0 +1,48 @@
+{
+  "from": "v195@2026-06-15",
+  "to": "v197@2026-06-16",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 3,
+    "by_kind": {
+      "appeared": 2,
+      "scenario_added": 1
+    },
+    "by_scenario": {
+      "deccan_zeolite": 1,
+      "porphyry": 1,
+      "tormiq_alpine_cleft": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "deccan_zeolite",
+      "species": "epidote",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4.03
+    },
+    {
+      "scenario": "porphyry",
+      "species": "epidote",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4.74
+    },
+    {
+      "scenario": "tormiq_alpine_cleft",
+      "kind": "scenario_added"
+    }
+  ]
+}

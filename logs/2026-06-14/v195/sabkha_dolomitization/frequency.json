@@ -1,0 +1,115 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "HMC": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.42,
+      "mean_count_when_present": 4.42,
+      "size_um": {
+        "min": 0.1,
+        "median": 0.4,
+        "max": 0.7
+      }
+    },
+    "anhydrite": {
+      "seeds_present": 80,
+      "pct_present": 40,
+      "mean_count": 0.47,
+      "mean_count_when_present": 1.16,
+      "size_um": {
+        "min": 0,
+        "median": 171.5,
+        "max": 398.2
+      }
+    },
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.01,
+      "mean_count_when_present": 1.01,
+      "size_um": {
+        "min": 1.7,
+        "median": 7.4,
+        "max": 11.2
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.78,
+      "mean_count_when_present": 1.78,
+      "size_um": {
+        "min": 0.1,
+        "median": 0.5,
+        "max": 0.6
+      }
+    },
+    "celestine": {
+      "seeds_present": 78,
+      "pct_present": 39,
+      "mean_count": 0.47,
+      "mean_count_when_present": 1.19,
+      "size_um": {
+        "min": 0,
+        "median": 72.5,
+        "max": 258
+      }
+    },
+    "dolomite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.13,
+      "mean_count_when_present": 1.13,
+      "size_um": {
+        "min": 0.3,
+        "median": 1.4,
+        "max": 2.4
+      }
+    },
+    "halite": {
+      "seeds_present": 84,
+      "pct_present": 42,
+      "mean_count": 0.43,
+      "mean_count_when_present": 1.02,
+      "size_um": {
+        "min": 0,
+        "median": 77516.2,
+        "max": 95244.1
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.91,
+      "mean_count_when_present": 1.91,
+      "size_um": {
+        "min": 0,
+        "median": 64.4,
+        "max": 84
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.47,
+      "mean_count_when_present": 1.47,
+      "size_um": {
+        "min": 0,
+        "median": 91386.4,
+        "max": 95244.1
+      }
+    },
+    "sylvite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 2191.4
+      }
+    }
+  }
+}
