@@ -231,6 +231,7 @@ async function main() {
 
   // --- the alarm: auto-diff against the last data-bearing day (completes the
   // nightly loop — one run both cores AND alarms). Passive: records, never throws. ---
+  let alarmTotal = null;
   const prev = findLastDataBearingDay(outRoot, { excludeDate: date });
   if (prev) {
     const thresholds = cfg.diffThreshold || {};
@@ -238,6 +239,7 @@ async function main() {
     const fpNow = loadVersionFingerprint(outDir);
     const alarms = diffFingerprints(fpPrev, fpNow, thresholds);
     const summary = summarizeAlarms(alarms);
+    alarmTotal = summary.total;
     const record = { from: `${prev.version}@${prev.date}`, to: `v${SIM_VERSION}@${date}`, thresholds, summary, alarms };
     const diffPath = path.join(outDir, `diff-vs-${prev.version}_${prev.date}.json`);
     fs.writeFileSync(diffPath, JSON.stringify(record, null, 2) + '\n');
@@ -253,6 +255,43 @@ async function main() {
     }
   } else {
     console.log(`[canary] first data-bearing day for this logs dir — no prior to diff against (the alarm arms on the next version).`);
+  }
+
+  // Publish the spine to origin (Syntaxswine) in its dated folder. The .gitignore
+  // keeps the heavy tiers (seeds.json / seed-*/ / strips/) local, so this commits
+  // only the shareable spine (frequency.json, meta.json, diff-*.json, NO-CHANGE).
+  // Off by setting "autoPush": false in canary.config.json. PASSIVE-INSTRUMENT
+  // RULE: a publish failure must NEVER fail the sweep — the gathering is the point.
+  if (cfg.autoPush !== false) {
+    const stOk = selftest.ok === true ? 'PASS' : selftest.ok === false ? 'FAIL' : 'n/a';
+    const note = `${names.length} scenarios${alarmTotal != null ? `, ${alarmTotal} alarm(s)` : ''}, self-test ${stOk}`;
+    publishSpine(CANARY_ROOT, date, SIM_VERSION, note);
+  }
+}
+
+/**
+ * Commit + push today's spine folder to origin. Stages `logs/<date>` only —
+ * .gitignore filters the heavy regenerable tiers, so just the spine lands. Every
+ * git step is wrapped: a failed add/commit/push logs a non-fatal note and returns,
+ * never throwing, so the sweep (the actual product) always completes. Unattended:
+ * relies on the cached credential helper, same as every other origin push here.
+ */
+function publishSpine(canaryRoot, date, simV, note) {
+  const run = (args) => execFileSync('git', args, { cwd: canaryRoot, stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    run(['add', path.join('logs', date)]);
+    // Nothing staged (e.g. a NO-CHANGE short-circuit re-run) → skip cleanly.
+    try {
+      run(['diff', '--cached', '--quiet']);
+      console.log('[canary] publish: nothing new to commit.');
+      return;
+    } catch { /* non-zero = staged changes exist → proceed to commit */ }
+    run(['commit', '-m', `canary: ${date} v${simV} spine — ${note}`]);
+    run(['push', 'origin', 'HEAD']);
+    console.log(`[canary] published ${date} spine → origin (Syntaxswine).`);
+  } catch (e) {
+    const msg = (e && (e.stderr?.toString() || e.message)) || String(e);
+    console.error(`[canary] publish FAILED (non-fatal, sweep already saved locally): ${msg.trim()}`);
   }
 }
 

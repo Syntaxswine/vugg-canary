@@ -4,6 +4,8 @@
   "seeds": 200,
   "shapeSeedMode": "scenario-authored",
   "logsDir": "logs",
+  "autoPush": true,
+  "_autoPush_comment": "After each sweep, commit logs/<date> (the spine only — .gitignore filters the heavy regenerable tiers) and push to origin (Syntaxswine) for the off-machine longitudinal record. Set false to keep the spine local-only. A push failure is non-fatal: the sweep always saves locally first.",
   "diffThreshold": {
     "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
     "absPts": 15,
