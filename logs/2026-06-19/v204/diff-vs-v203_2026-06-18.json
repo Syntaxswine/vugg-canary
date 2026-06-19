@@ -1,0 +1,31 @@
+{
+  "from": "v203@2026-06-18",
+  "to": "v204@2026-06-19",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 1,
+    "by_kind": {
+      "appeared": 1
+    },
+    "by_scenario": {
+      "bisbee": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "bisbee",
+      "species": "azurite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 3.9
+    }
+  ]
+}
