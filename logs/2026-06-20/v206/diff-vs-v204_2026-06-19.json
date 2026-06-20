@@ -1,0 +1,70 @@
+{
+  "from": "v204@2026-06-19",
+  "to": "v206@2026-06-20",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 5,
+    "by_kind": {
+      "scenario_added": 1,
+      "appeared": 4
+    },
+    "by_scenario": {
+      "grimsel_alpine_cleft": 1,
+      "jeffrey_mine": 1,
+      "porphyry": 1,
+      "sunnyside_american_tunnel": 1,
+      "tormiq_alpine_cleft": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "grimsel_alpine_cleft",
+      "kind": "scenario_added"
+    },
+    {
+      "scenario": "jeffrey_mine",
+      "species": "titanite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 97.5,
+      "delta_pts": 97.5,
+      "mean_from": 0,
+      "mean_to": 0.98
+    },
+    {
+      "scenario": "porphyry",
+      "species": "titanite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 3
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "titanite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 85,
+      "delta_pts": 85,
+      "mean_from": 0,
+      "mean_to": 0.85
+    },
+    {
+      "scenario": "tormiq_alpine_cleft",
+      "species": "titanite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 3
+    }
+  ]
+}
