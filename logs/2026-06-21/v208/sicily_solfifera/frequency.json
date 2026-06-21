@@ -1,0 +1,71 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "celestine": {
+      "seeds_present": 191,
+      "pct_present": 95.5,
+      "mean_count": 2.52,
+      "mean_count_when_present": 2.64,
+      "size_um": {
+        "min": 24.7,
+        "median": 758.1,
+        "max": 1093
+      }
+    },
+    "fluorite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "halite": {
+      "seeds_present": 186,
+      "pct_present": 93,
+      "mean_count": 2.55,
+      "mean_count_when_present": 2.74,
+      "size_um": {
+        "min": 0,
+        "median": 1802.3,
+        "max": 2582.5
+      }
+    },
+    "native_sulfur": {
+      "seeds_present": 170,
+      "pct_present": 85,
+      "mean_count": 1.61,
+      "mean_count_when_present": 1.89,
+      "size_um": {
+        "min": 0,
+        "median": 88.9,
+        "max": 170.4
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.26,
+      "mean_count_when_present": 3.26,
+      "size_um": {
+        "min": 176.3,
+        "median": 221.6,
+        "max": 273.5
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 37833,
+        "median": 41189.1,
+        "max": 47621.5
+      }
+    }
+  }
+}

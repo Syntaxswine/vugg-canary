@@ -1,0 +1,115 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "albite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 18833.3,
+        "median": 27347.1,
+        "max": 36236.3
+      }
+    },
+    "feldspar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 9315.9,
+        "median": 13709.3,
+        "max": 17383.7
+      }
+    },
+    "goethite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.08,
+      "mean_count_when_present": 1.08,
+      "size_um": {
+        "min": 1.9,
+        "median": 359.1,
+        "max": 1032.8
+      }
+    },
+    "hematite": {
+      "seeds_present": 28,
+      "pct_present": 14,
+      "mean_count": 0.14,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 3.8,
+        "median": 76.5,
+        "max": 169.1
+      }
+    },
+    "lepidocrocite": {
+      "seeds_present": 174,
+      "pct_present": 87,
+      "mean_count": 1.26,
+      "mean_count_when_present": 1.45,
+      "size_um": {
+        "min": 3.2,
+        "median": 56.6,
+        "max": 380.8
+      }
+    },
+    "opal": {
+      "seeds_present": 193,
+      "pct_present": 96.5,
+      "mean_count": 5.62,
+      "mean_count_when_present": 5.82,
+      "size_um": {
+        "min": 0,
+        "median": 27.5,
+        "max": 147.6
+      }
+    },
+    "pyrolusite": {
+      "seeds_present": 56,
+      "pct_present": 28,
+      "mean_count": 0.28,
+      "mean_count_when_present": 1.02,
+      "size_um": {
+        "min": 1.8,
+        "median": 16.3,
+        "max": 33.6
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.33,
+      "mean_count_when_present": 4.33,
+      "size_um": {
+        "min": 4003.7,
+        "median": 8535.1,
+        "max": 12336.9
+      }
+    },
+    "tigers_eye": {
+      "seeds_present": 194,
+      "pct_present": 97,
+      "mean_count": 1.42,
+      "mean_count_when_present": 1.46,
+      "size_um": {
+        "min": 6.4,
+        "median": 88.4,
+        "max": 259.6
+      }
+    },
+    "topaz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 2506.1,
+        "median": 4420,
+        "max": 6554
+      }
+    }
+  }
+}

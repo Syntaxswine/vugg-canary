@@ -1,0 +1,38 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.82,
+      "mean_count_when_present": 3.82,
+      "size_um": {
+        "min": 296.9,
+        "median": 3007.3,
+        "max": 3530.4
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6.15,
+      "mean_count_when_present": 6.15,
+      "size_um": {
+        "min": 385.2,
+        "median": 1088.7,
+        "max": 1229
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 481,
+        "median": 493,
+        "max": 506.2
+      }
+    }
+  }
+}
