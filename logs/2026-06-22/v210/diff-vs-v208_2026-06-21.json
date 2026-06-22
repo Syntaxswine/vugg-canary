@@ -1,0 +1,25 @@
+{
+  "from": "v208@2026-06-21",
+  "to": "v210@2026-06-22",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 1,
+    "by_kind": {
+      "scenario_added": 1
+    },
+    "by_scenario": {
+      "chiastolite_hornfels": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "chiastolite_hornfels",
+      "kind": "scenario_added"
+    }
+  ]
+}
