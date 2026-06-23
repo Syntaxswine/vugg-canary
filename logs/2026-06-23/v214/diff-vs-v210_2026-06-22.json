@@ -1,0 +1,25 @@
+{
+  "from": "v210@2026-06-22",
+  "to": "v214@2026-06-23",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 1,
+    "by_kind": {
+      "scenario_added": 1
+    },
+    "by_scenario": {
+      "great_salt_plains": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "great_salt_plains",
+      "kind": "scenario_added"
+    }
+  ]
+}
