@@ -1,0 +1,71 @@
+{
+  "date": "2026-06-29",
+  "sha": "770ec7a",
+  "branch": "main",
+  "dirty": true,
+  "dirty_files": [
+    "?? tools/strip-story-diff.mjs"
+  ],
+  "engine_dirty": false,
+  "engine_dirty_files": [],
+  "sim_version": 214,
+  "source_sim_version": 214,
+  "dist_matches_source": true,
+  "canary_version": "0.1.0",
+  "seed_axis": {
+    "vary": "chem",
+    "range": [
+      1,
+      200
+    ],
+    "shape": "scenario-authored"
+  },
+  "n_seeds": 200,
+  "steps_mode": "defaultSteps??100 (matches gen-baseline)",
+  "scenarios": [
+    "bisbee",
+    "chiastolite_hornfels",
+    "colorado_plateau",
+    "cooling",
+    "deccan_zeolite",
+    "elmwood",
+    "epithermal_telluride",
+    "gem_pegmatite",
+    "great_salt_plains",
+    "grimsel_alpine_cleft",
+    "jeffrey_mine",
+    "marble_contact_metamorphism",
+    "mvt",
+    "naica_geothermal",
+    "ouro_preto",
+    "porphyry",
+    "pulse",
+    "radioactive_pegmatite",
+    "reactivated_fluorite_vein",
+    "reactive_wall",
+    "roughten_gill",
+    "sabkha_dolomitization",
+    "schneeberg",
+    "searles_lake",
+    "sicily_solfifera",
+    "stalactite_demo",
+    "sulphur_bank",
+    "sunnyside_american_tunnel",
+    "supergene_oxidation",
+    "tn457_barite_pulses",
+    "tormiq_alpine_cleft",
+    "tutorial_first_crystal",
+    "tutorial_mn_calcite",
+    "tutorial_travertine",
+    "ultramafic_supergene",
+    "wittichen",
+    "zoned_dripstone_cave"
+  ],
+  "selftest": {
+    "ok": true,
+    "checked": 37,
+    "baseline": "seed42_v214.json",
+    "mismatches": []
+  },
+  "generated_at": "2026-06-29T10:20:40.152Z"
+}
