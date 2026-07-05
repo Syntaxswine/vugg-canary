@@ -1,0 +1,93 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "actinolite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.53,
+      "mean_count_when_present": 1.53,
+      "size_um": {
+        "min": 19.3,
+        "median": 444.7,
+        "max": 781.1
+      }
+    },
+    "albite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 9328.8,
+        "median": 27719.3,
+        "max": 36449.1
+      }
+    },
+    "epidote": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 6115.1,
+        "median": 17594.7,
+        "max": 18682.1
+      }
+    },
+    "feldspar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.03,
+      "mean_count_when_present": 2.03,
+      "size_um": {
+        "min": 6744.4,
+        "median": 18853.6,
+        "max": 24741
+      }
+    },
+    "fluorite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.35,
+      "mean_count_when_present": 1.35,
+      "size_um": {
+        "min": 1531.4,
+        "median": 2194.7,
+        "max": 3313.3
+      }
+    },
+    "goethite": {
+      "seeds_present": 8,
+      "pct_present": 4,
+      "mean_count": 0.05,
+      "mean_count_when_present": 1.13,
+      "size_um": {
+        "min": 2,
+        "median": 37.4,
+        "max": 327.8
+      }
+    },
+    "quartz": {
+      "seeds_present": 185,
+      "pct_present": 92.5,
+      "mean_count": 1.73,
+      "mean_count_when_present": 1.86,
+      "size_um": {
+        "min": 1.3,
+        "median": 315.9,
+        "max": 2398.6
+      }
+    },
+    "titanite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 2236.9,
+        "median": 4006.7,
+        "max": 4122.6
+      }
+    }
+  }
+}
