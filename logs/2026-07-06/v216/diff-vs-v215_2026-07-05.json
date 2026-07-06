@@ -1,0 +1,25 @@
+{
+  "from": "v215@2026-07-05",
+  "to": "v216@2026-07-06",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 1,
+    "by_kind": {
+      "scenario_added": 1
+    },
+    "by_scenario": {
+      "shigar_pegmatite": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "shigar_pegmatite",
+      "kind": "scenario_added"
+    }
+  ]
+}
