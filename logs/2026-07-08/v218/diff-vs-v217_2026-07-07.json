@@ -1,0 +1,96 @@
+{
+  "from": "v217@2026-07-07",
+  "to": "v218@2026-07-08",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 7,
+    "by_kind": {
+      "rel_move": 3,
+      "abs_move": 1,
+      "appeared": 3
+    },
+    "by_scenario": {
+      "bisbee": 2,
+      "porphyry": 3,
+      "roughten_gill": 1,
+      "schneeberg": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "bisbee",
+      "species": "mirabilite",
+      "kind": "rel_move",
+      "pct_from": 2.5,
+      "pct_to": 0.5,
+      "delta_pts": -2,
+      "mean_from": 0.08,
+      "mean_to": 0.02
+    },
+    {
+      "scenario": "bisbee",
+      "species": "thenardite",
+      "kind": "rel_move",
+      "pct_from": 2.5,
+      "pct_to": 0.5,
+      "delta_pts": -2,
+      "mean_from": 0.09,
+      "mean_to": 0.01
+    },
+    {
+      "scenario": "porphyry",
+      "species": "bornite",
+      "kind": "abs_move",
+      "pct_from": 100,
+      "pct_to": 82.5,
+      "delta_pts": -17.5,
+      "mean_from": 2.77,
+      "mean_to": 2.17
+    },
+    {
+      "scenario": "porphyry",
+      "species": "ferrimolybdite",
+      "kind": "rel_move",
+      "pct_from": 6,
+      "pct_to": 13,
+      "delta_pts": 7,
+      "mean_from": 0.09,
+      "mean_to": 0.27
+    },
+    {
+      "scenario": "porphyry",
+      "species": "magnetite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 9,
+      "delta_pts": 9,
+      "mean_from": 0,
+      "mean_to": 0.14
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "descloizite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 3,
+      "delta_pts": 3,
+      "mean_from": 0,
+      "mean_to": 0.07
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "dioptase",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 19,
+      "delta_pts": 19,
+      "mean_from": 0,
+      "mean_to": 0.22
+    }
+  ]
+}
