@@ -1,0 +1,192 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "albite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.03,
+      "mean_count_when_present": 2.03,
+      "size_um": {
+        "min": 1258.2,
+        "median": 2433.2,
+        "max": 2913.4
+      }
+    },
+    "apophyllite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.9,
+      "mean_count_when_present": 2.9,
+      "size_um": {
+        "min": 301.8,
+        "median": 1544.2,
+        "max": 1661.3
+      }
+    },
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 24394.2,
+        "median": 25901.4,
+        "max": 27190.8
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 17583.8,
+        "median": 18450.7,
+        "max": 19153.4
+      }
+    },
+    "chabazite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.15,
+      "mean_count_when_present": 5.15,
+      "size_um": {
+        "min": 120.6,
+        "median": 1082.7,
+        "max": 1547.9
+      }
+    },
+    "epidote": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.24,
+      "mean_count_when_present": 4.24,
+      "size_um": {
+        "min": 246.2,
+        "median": 656.2,
+        "max": 718.9
+      }
+    },
+    "goethite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1235.6,
+        "median": 10102.9,
+        "max": 10437.7
+      }
+    },
+    "hematite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1223.4,
+        "median": 3904.2,
+        "max": 4012
+      }
+    },
+    "heulandite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.1,
+      "mean_count_when_present": 5.1,
+      "size_um": {
+        "min": 1073.6,
+        "median": 1811.3,
+        "max": 2294.6
+      }
+    },
+    "mesolite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.45,
+      "mean_count_when_present": 5.45,
+      "size_um": {
+        "min": 32.6,
+        "median": 276.2,
+        "max": 469
+      }
+    },
+    "opal": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 2614.9,
+        "median": 2730.4,
+        "max": 2856.3
+      }
+    },
+    "pectolite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 64.2,
+        "median": 296.6,
+        "max": 309.8
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 34544.2,
+        "median": 36289.2,
+        "max": 40938.3
+      }
+    },
+    "scolecite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.53,
+      "mean_count_when_present": 5.53,
+      "size_um": {
+        "min": 80.8,
+        "median": 850.2,
+        "max": 1396.4
+      }
+    },
+    "stilbite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.52,
+      "mean_count_when_present": 5.52,
+      "size_um": {
+        "min": 111.6,
+        "median": 875,
+        "max": 1308.2
+      }
+    },
+    "thomsonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.85,
+      "mean_count_when_present": 5.85,
+      "size_um": {
+        "min": 38.1,
+        "median": 251.2,
+        "max": 294
+      }
+    },
+    "tigers_eye": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.32,
+      "mean_count_when_present": 3.32,
+      "size_um": {
+        "min": 536,
+        "median": 2785.8,
+        "max": 2963.4
+      }
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "from": "v218@2026-07-08",
+  "to": "v224@2026-07-09",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 8,
+    "by_kind": {
+      "scenario_added": 1,
+      "rel_move": 2,
+      "abs_move": 3,
+      "appeared": 2
+    },
+    "by_scenario": {
+      "amethyst_geode": 1,
+      "bisbee": 2,
+      "naica_geothermal": 1,
+      "reactivated_fluorite_vein": 2,
+      "roughten_gill": 1,
+      "schneeberg": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "amethyst_geode",
+      "kind": "scenario_added"
+    },
+    {
+      "scenario": "bisbee",
+      "species": "hematite",
+      "kind": "rel_move",
+      "pct_from": 18.5,
+      "pct_to": 8,
+      "delta_pts": -10.5,
+      "mean_from": 0.21,
+      "mean_to": 0.09
+    },
+    {
+      "scenario": "bisbee",
+      "species": "lepidocrocite",
+      "kind": "abs_move",
+      "pct_from": 29,
+      "pct_to": 44,
+      "delta_pts": 15,
+      "mean_from": 1.63,
+      "mean_to": 1.07
+    },
+    {
+      "scenario": "naica_geothermal",
+      "species": "opal",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 9,
+      "delta_pts": 9,
+      "mean_from": 0,
+      "mean_to": 0.45
+    },
+    {
+      "scenario": "reactivated_fluorite_vein",
+      "species": "cerussite",
+      "kind": "rel_move",
+      "pct_from": 4.5,
+      "pct_to": 9,
+      "delta_pts": 4.5,
+      "mean_from": 0.05,
+      "mean_to": 0.09
+    },
+    {
+      "scenario": "reactivated_fluorite_vein",
+      "species": "selenite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 2,
+      "delta_pts": 2,
+      "mean_from": 0,
+      "mean_to": 0.03
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "olivenite",
+      "kind": "abs_move",
+      "pct_from": 85,
+      "pct_to": 68,
+      "delta_pts": -17,
+      "mean_from": 2.59,
+      "mean_to": 2.08
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "pharmacolite",
+      "kind": "abs_move",
+      "pct_from": 97.5,
+      "pct_to": 76,
+      "delta_pts": -21.5,
+      "mean_from": 3.1,
+      "mean_to": 2.26
+    }
+  ]
+}
