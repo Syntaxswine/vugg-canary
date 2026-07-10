@@ -1,0 +1,60 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 457.1,
+        "median": 1170,
+        "max": 1341.3
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1934.7,
+        "median": 2072,
+        "max": 2433
+      }
+    },
+    "halite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 8.69,
+      "mean_count_when_present": 8.69,
+      "size_um": {
+        "min": 70.9,
+        "median": 330.8,
+        "max": 358.2
+      }
+    },
+    "opal": {
+      "seeds_present": 37,
+      "pct_present": 18.5,
+      "mean_count": 0.45,
+      "mean_count_when_present": 2.43,
+      "size_um": {
+        "min": 0,
+        "median": 2.2,
+        "max": 17.8
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.36,
+      "mean_count_when_present": 1.36,
+      "size_um": {
+        "min": 120,
+        "median": 367.9,
+        "max": 2098.2
+      }
+    }
+  }
+}
