@@ -1,0 +1,60 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "HMC": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.07,
+      "mean_count_when_present": 4.07,
+      "size_um": {
+        "min": 132.2,
+        "median": 799.5,
+        "max": 826.9
+      }
+    },
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.98,
+      "mean_count_when_present": 3.98,
+      "size_um": {
+        "min": 939.3,
+        "median": 2190.4,
+        "max": 2469.5
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 8.35,
+      "mean_count_when_present": 8.35,
+      "size_um": {
+        "min": 437.5,
+        "median": 756.2,
+        "max": 850.1
+      }
+    },
+    "dolomite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 0,
+        "median": 447.2,
+        "max": 465.2
+      }
+    },
+    "fluorite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 625,
+        "median": 633.9,
+        "max": 660.1
+      }
+    }
+  }
+}
