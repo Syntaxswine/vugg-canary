@@ -27,7 +27,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { repoMeta } from './repo-meta.mjs';
 import { fingerprintScenario } from './fingerprint.mjs';
-import { shouldShortCircuit, writeNoChangeNote, findLastDataBearingDay } from './promote.mjs';
+import { shouldShortCircuit, writeNoChangeNote, findLastDataBearingDay, listPublishableDayDirs } from './promote.mjs';
 import { loadVersionFingerprint, diffFingerprints, summarizeAlarms } from './diff.mjs';
 import { makeRunner } from './run.mjs';
 
@@ -122,6 +122,13 @@ async function main() {
       const note = writeNoChangeNote(outRoot, date, sc.last, meta0.sha);
       console.log(`[canary] no change — ${sc.reason} — deterministic, sweep skipped.`);
       console.log(`[canary] wrote ${path.relative(CANARY_ROOT, path.join(outRoot, date, 'NO-CHANGE.json'))} → identical_to ${note.identical_to}`);
+      // Publish the quiet stratum too. Pre-fix, this branch returned before
+      // publishSpine ever ran, so NO quiet day was ever committed — the public
+      // record had silent holes where honest "nothing changed" markers sat
+      // locally (hostile review 2026-07-14, Part A finding #1).
+      if (cfg.autoPush !== false) {
+        publishSpine(CANARY_ROOT, outRoot, date, `canary: ${date} NO-CHANGE — identical to ${note.identical_to} (${note.version}, sha ${meta0.sha})`);
+      }
       return;
     }
     if (sc.last) console.log(`[canary] proceeding (${sc.reason})`);
@@ -265,33 +272,42 @@ async function main() {
   if (cfg.autoPush !== false) {
     const stOk = selftest.ok === true ? 'PASS' : selftest.ok === false ? 'FAIL' : 'n/a';
     const note = `${names.length} scenarios${alarmTotal != null ? `, ${alarmTotal} alarm(s)` : ''}, self-test ${stOk}`;
-    // Stage the actual date dir under outRoot (honors --out / config.logsDir),
-    // expressed relative to the repo root so `git add` resolves correctly.
-    const dateDirRel = path.relative(CANARY_ROOT, path.join(outRoot, date));
-    publishSpine(CANARY_ROOT, dateDirRel, SIM_VERSION, date, note);
+    publishSpine(CANARY_ROOT, outRoot, date, `canary: ${date} v${SIM_VERSION} spine — ${note}`);
   }
 }
 
 /**
- * Commit + push today's spine folder to origin. Stages `logs/<date>` only —
- * .gitignore filters the heavy regenerable tiers, so just the spine lands. Every
- * git step is wrapped: a failed add/commit/push logs a non-fatal note and returns,
- * never throwing, so the sweep (the actual product) always completes. Unattended:
- * relies on the cached credential helper, same as every other origin push here.
+ * Commit + push the spine to origin. Stages every PUBLISHABLE day dir under
+ * outRoot (today's plus any prior day whose publish failed — offline night,
+ * killed process, or the pre-fix NO-CHANGE early-return), so orphans heal on
+ * the next successful publish instead of vanishing from the public record.
+ * Already-committed days no-op under `git add`; partial v-dirs (no meta.json)
+ * are never staged — an aborted run is not a stratum. .gitignore filters the
+ * heavy regenerable tiers, so just the spine lands. Every git step is wrapped:
+ * a failed add/commit/push logs a non-fatal note and returns, never throwing,
+ * so the sweep (the actual product) always completes. Unattended: relies on
+ * the cached credential helper, same as every other origin push here.
  */
-function publishSpine(canaryRoot, dateDirRel, simV, date, note) {
+function publishSpine(canaryRoot, outRoot, date, title) {
   const run = (args) => execFileSync('git', args, { cwd: canaryRoot, stdio: ['ignore', 'pipe', 'pipe'] });
   try {
-    run(['add', dateDirRel]);
+    const days = listPublishableDayDirs(outRoot);
+    if (!days.length) { console.log('[canary] publish: no publishable day dirs.'); return; }
+    for (const d of days) run(['add', path.relative(canaryRoot, path.join(outRoot, d))]);
     // Nothing staged (e.g. a NO-CHANGE short-circuit re-run) → skip cleanly.
     try {
       run(['diff', '--cached', '--quiet']);
       console.log('[canary] publish: nothing new to commit.');
       return;
     } catch { /* non-zero = staged changes exist → proceed to commit */ }
-    run(['commit', '-m', `canary: ${date} v${simV} spine — ${note}`]);
+    // Name any prior days riding along, so the commit is honest about backfill.
+    const staged = run(['diff', '--cached', '--name-only']).toString();
+    const stagedDays = [...new Set([...staged.matchAll(/(\d{4}-\d{2}-\d{2})\//g)].map((m) => m[1]))];
+    const backfilled = stagedDays.filter((d) => d !== date);
+    const msg = backfilled.length ? `${title} (+ backfilled ${backfilled.join(', ')})` : title;
+    run(['commit', '-m', msg]);
     run(['push', 'origin', 'HEAD']);
-    console.log(`[canary] published ${date} spine → origin (Syntaxswine).`);
+    console.log(`[canary] published ${date} spine → origin (Syntaxswine)${backfilled.length ? ` + backfill: ${backfilled.join(', ')}` : ''}.`);
   } catch (e) {
     const msg = (e && (e.stderr?.toString() || e.message)) || String(e);
     console.error(`[canary] publish FAILED (non-fatal, sweep already saved locally): ${msg.trim()}`);

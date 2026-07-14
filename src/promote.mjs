@@ -68,6 +68,37 @@ export function shouldShortCircuit(logsRoot, { date, sha, dirty, canaryVersion }
   return { skip: true, reason: `unchanged since ${last.date} (sha ${sha})`, last };
 }
 
+/**
+ * List every dated day dir that is PUBLISHABLE — i.e. represents a COMPLETED
+ * canary observation: either a NO-CHANGE marker, or at least one v<N> dir whose
+ * sweep finished (meta.json present). Partial v-dirs (killed mid-sweep, no
+ * meta.json) and empty day dirs are NOT publishable — an aborted run is not a
+ * stratum. Used by the publish step for catch-up staging, so a day whose
+ * publish failed (offline night, or the pre-fix NO-CHANGE early-return) is
+ * swept into the next successful publish instead of being orphaned forever
+ * (hostile review 2026-07-14, Part A: 3 NO-CHANGE days existed locally,
+ * 0 ever committed).
+ *
+ * @returns {string[]} day-dir names (YYYY-MM-DD), sorted ascending
+ */
+export function listPublishableDayDirs(logsRoot) {
+  if (!fs.existsSync(logsRoot)) return [];
+  const out = [];
+  const dates = fs.readdirSync(logsRoot, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && DATE_RE.test(d.name))
+    .map((d) => d.name)
+    .sort();
+  for (const date of dates) {
+    const dayDir = path.join(logsRoot, date);
+    if (fs.existsSync(path.join(dayDir, 'NO-CHANGE.json'))) { out.push(date); continue; }
+    const complete = fs.readdirSync(dayDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && VER_RE.test(d.name))
+      .some((v) => fs.existsSync(path.join(dayDir, v.name, 'meta.json')));
+    if (complete) out.push(date);
+  }
+  return out;
+}
+
 /** Write the one-file NO-CHANGE marker for a day whose version is unchanged. */
 export function writeNoChangeNote(logsRoot, date, last, sha) {
   const note = {

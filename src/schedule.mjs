@@ -43,6 +43,15 @@ const wrapperBody =
 // Execute=C:\Users\baals\Local (→ 0x80070002 file-not-found at 04:00). The
 // embedded quotes survive into the stored task action as the executable path.
 const createArgs = ['/create', '/tn', TASK, '/sc', 'DAILY', '/st', TIME, '/tr', `"${wrapper}"`, '/f'];
+// schtasks can't set these; applied via PowerShell after /create. Defaults are
+// hostile to an unattended nightly on a machine that sleeps: no catch-up for a
+// missed 04:00 (StartWhenAvailable=false), refuse-to-start + kill-mid-sweep on
+// battery. The hostile review (2026-07-14, Part A) found the June gaps were a
+// publish bug, not the scheduler — but July 12/13 died mid-run, and these
+// settings are the standing risk for any offline/asleep 04:00.
+const settingsPs =
+  `$s = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries; ` +
+  `Set-ScheduledTask -TaskName '${TASK}' -Settings $s | Out-Null`;
 
 const mode = process.argv[2] || '--print';
 
@@ -58,6 +67,12 @@ if (mode === '--print' || mode === '--help' || mode === '-h') {
   fs.mkdirSync(path.join(CANARY_ROOT, 'logs'), { recursive: true });
   fs.writeFileSync(wrapper, wrapperBody);
   execFileSync('schtasks', createArgs, { stdio: 'inherit' });
+  try {
+    execFileSync('powershell', ['-NoProfile', '-Command', settingsPs], { stdio: 'inherit' });
+    console.log(`[schedule] settings: StartWhenAvailable + battery-tolerant (missed 04:00 catches up; battery doesn't kill a sweep).`);
+  } catch {
+    console.warn(`[schedule] ⚑ could not apply StartWhenAvailable/battery settings (task still armed with defaults).`);
+  }
   console.log(`[schedule] armed "${TASK}" daily at ${TIME} → ${wrapper}. (--status to verify, --uninstall to remove)`);
 } else if (mode === '--status') {
   try { execFileSync('schtasks', ['/query', '/tn', TASK, '/v', '/fo', 'LIST'], { stdio: 'inherit' }); }

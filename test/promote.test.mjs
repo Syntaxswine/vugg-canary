@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { findLastDataBearingDay, shouldShortCircuit, writeNoChangeNote } from '../src/promote.mjs';
+import { findLastDataBearingDay, shouldShortCircuit, writeNoChangeNote, listPublishableDayDirs } from '../src/promote.mjs';
 
 let passed = 0;
 function test(name, fn) {
@@ -84,6 +84,22 @@ test('writeNoChangeNote points identical_to at the real day, never a note', () =
   assert.equal(note.version, 'v195');
   const onDisk = JSON.parse(fs.readFileSync(path.join(ROOT, '2026-06-13', 'NO-CHANGE.json'), 'utf8'));
   assert.equal(onDisk.identical_to, '2026-06-10');
+});
+
+test('listPublishableDayDirs: complete data day + NO-CHANGE day publish; partial and empty days do not', () => {
+  // ROOT currently holds: 06-10 (v195 w/ meta), 06-11 (NO-CHANGE), 06-13 (NO-CHANGE from the prior test)
+  // Add the two failure shapes from the hostile review: a partial sweep (v-dir,
+  // frequency.json but NO meta.json — the July 12 shape) and an empty v-dir
+  // (the July 13 shape). Neither is a stratum.
+  const partial = path.join(ROOT, '2026-06-12', 'v200', 'mvt');
+  fs.mkdirSync(partial, { recursive: true });
+  fs.writeFileSync(path.join(partial, 'frequency.json'), '{}');
+  fs.mkdirSync(path.join(ROOT, '2026-06-14', 'v200'), { recursive: true });
+  assert.deepEqual(listPublishableDayDirs(ROOT), ['2026-06-10', '2026-06-11', '2026-06-13']);
+});
+
+test('listPublishableDayDirs: missing root ⇒ empty list', () => {
+  assert.deepEqual(listPublishableDayDirs(path.join(os.tmpdir(), 'vugg-canary-test-nonexistent')), []);
 });
 
 // cleanup
