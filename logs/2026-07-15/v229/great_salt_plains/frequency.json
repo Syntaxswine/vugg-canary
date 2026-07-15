@@ -1,0 +1,60 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "celestine": {
+      "seeds_present": 198,
+      "pct_present": 99,
+      "mean_count": 3.56,
+      "mean_count_when_present": 3.6,
+      "size_um": {
+        "min": 1.8,
+        "median": 11.9,
+        "max": 15.8
+      }
+    },
+    "halite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 12,
+      "mean_count_when_present": 12,
+      "size_um": {
+        "min": 252987.8,
+        "median": 294368.2,
+        "max": 302391.1
+      }
+    },
+    "mirabilite": {
+      "seeds_present": 103,
+      "pct_present": 51.5,
+      "mean_count": 0.74,
+      "mean_count_when_present": 1.44,
+      "size_um": {
+        "min": 0,
+        "median": 4933.9,
+        "max": 7894.2
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 90967.8,
+        "median": 96702.1,
+        "max": 99871.3
+      }
+    },
+    "thenardite": {
+      "seeds_present": 117,
+      "pct_present": 58.5,
+      "mean_count": 0.79,
+      "mean_count_when_present": 1.35,
+      "size_um": {
+        "min": 0,
+        "median": 2829.7,
+        "max": 5976.8
+      }
+    }
+  }
+}

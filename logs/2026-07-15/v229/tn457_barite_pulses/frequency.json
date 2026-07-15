@@ -1,0 +1,71 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "barite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 3575.9,
+        "median": 3822,
+        "max": 4282.5
+      }
+    },
+    "halite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 11.78,
+      "mean_count_when_present": 11.78,
+      "size_um": {
+        "min": 5516.3,
+        "median": 9702.3,
+        "max": 10997.7
+      }
+    },
+    "pyrite": {
+      "seeds_present": 3,
+      "pct_present": 1.5,
+      "mean_count": 0.03,
+      "mean_count_when_present": 1.67,
+      "size_um": {
+        "min": 8.7,
+        "median": 29.5,
+        "max": 71.6
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.17,
+      "mean_count_when_present": 3.17,
+      "size_um": {
+        "min": 285,
+        "median": 2178.6,
+        "max": 4693.3
+      }
+    },
+    "sphalerite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.29,
+      "mean_count_when_present": 1.29,
+      "size_um": {
+        "min": 1824.1,
+        "median": 2232.5,
+        "max": 2324.4
+      }
+    },
+    "willemite": {
+      "seeds_present": 188,
+      "pct_present": 94,
+      "mean_count": 2.78,
+      "mean_count_when_present": 2.96,
+      "size_um": {
+        "min": 0,
+        "median": 80.2,
+        "max": 440.5
+      }
+    }
+  }
+}

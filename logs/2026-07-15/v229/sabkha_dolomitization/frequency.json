@@ -1,0 +1,93 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "HMC": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5.26,
+      "mean_count_when_present": 5.26,
+      "size_um": {
+        "min": 0.1,
+        "median": 0.4,
+        "max": 0.5
+      }
+    },
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.06,
+      "mean_count_when_present": 1.06,
+      "size_um": {
+        "min": 1.7,
+        "median": 6.9,
+        "max": 11.5
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.77,
+      "mean_count_when_present": 1.77,
+      "size_um": {
+        "min": 0.1,
+        "median": 0.5,
+        "max": 0.6
+      }
+    },
+    "celestine": {
+      "seeds_present": 69,
+      "pct_present": 34.5,
+      "mean_count": 0.4,
+      "mean_count_when_present": 1.14,
+      "size_um": {
+        "min": 0,
+        "median": 90.1,
+        "max": 227.4
+      }
+    },
+    "dolomite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.21,
+      "mean_count_when_present": 1.21,
+      "size_um": {
+        "min": 0.3,
+        "median": 1.3,
+        "max": 1.7
+      }
+    },
+    "halite": {
+      "seeds_present": 97,
+      "pct_present": 48.5,
+      "mean_count": 0.49,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 0,
+        "median": 83158.1,
+        "max": 95244.1
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.44,
+      "mean_count_when_present": 1.44,
+      "size_um": {
+        "min": 0,
+        "median": 89625.9,
+        "max": 95244.1
+      }
+    },
+    "sylvite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 2039.1
+      }
+    }
+  }
+}
