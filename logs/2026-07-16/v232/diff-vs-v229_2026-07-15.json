@@ -1,0 +1,168 @@
+{
+  "from": "v229@2026-07-15",
+  "to": "v232@2026-07-16",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 14,
+    "by_kind": {
+      "disappeared": 10,
+      "abs_move": 3,
+      "appeared": 1
+    },
+    "by_scenario": {
+      "elmwood": 1,
+      "mvt": 2,
+      "reactivated_fluorite_vein": 1,
+      "roughten_gill": 1,
+      "supergene_oxidation": 8,
+      "tn457_barite_pulses": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "elmwood",
+      "species": "cerussite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.15,
+      "mean_to": 0
+    },
+    {
+      "scenario": "mvt",
+      "species": "cerussite",
+      "kind": "disappeared",
+      "pct_from": 36.5,
+      "pct_to": 0,
+      "delta_pts": -36.5,
+      "mean_from": 0.62,
+      "mean_to": 0
+    },
+    {
+      "scenario": "mvt",
+      "species": "willemite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2.94,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactivated_fluorite_vein",
+      "species": "cerussite",
+      "kind": "disappeared",
+      "pct_from": 18,
+      "pct_to": 0,
+      "delta_pts": -18,
+      "mean_from": 0.2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "aurichalcite",
+      "kind": "abs_move",
+      "pct_from": 70.5,
+      "pct_to": 43.5,
+      "delta_pts": -27,
+      "mean_from": 2.49,
+      "mean_to": 1.49
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "bornite",
+      "kind": "disappeared",
+      "pct_from": 77,
+      "pct_to": 0,
+      "delta_pts": -77,
+      "mean_from": 0.8,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "descloizite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 88.5,
+      "delta_pts": 88.5,
+      "mean_from": 0,
+      "mean_to": 2.42
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "galena",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2.63,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "lepidocrocite",
+      "kind": "abs_move",
+      "pct_from": 2,
+      "pct_to": 100,
+      "delta_pts": 98,
+      "mean_from": 0.02,
+      "mean_to": 4.39
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "mottramite",
+      "kind": "disappeared",
+      "pct_from": 92.5,
+      "pct_to": 0,
+      "delta_pts": -92.5,
+      "mean_from": 3.04,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "pararealgar",
+      "kind": "abs_move",
+      "pct_from": 2,
+      "pct_to": 100,
+      "delta_pts": 98,
+      "mean_from": 0.02,
+      "mean_to": 1
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "rosasite",
+      "kind": "disappeared",
+      "pct_from": 54,
+      "pct_to": 0,
+      "delta_pts": -54,
+      "mean_from": 0.99,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "sphalerite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.21,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tn457_barite_pulses",
+      "species": "willemite",
+      "kind": "disappeared",
+      "pct_from": 94,
+      "pct_to": 0,
+      "delta_pts": -94,
+      "mean_from": 2.78,
+      "mean_to": 0
+    }
+  ]
+}
