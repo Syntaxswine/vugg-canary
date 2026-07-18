@@ -1,0 +1,182 @@
+{
+  "from": "v232@2026-07-16",
+  "to": "v234@2026-07-18",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 15,
+    "by_kind": {
+      "disappeared": 12,
+      "rel_move": 1,
+      "abs_move": 2
+    },
+    "by_scenario": {
+      "bisbee": 1,
+      "elmwood": 1,
+      "reactive_wall": 1,
+      "roughten_gill": 1,
+      "sabkha_dolomitization": 2,
+      "searles_lake": 4,
+      "sicily_solfifera": 1,
+      "supergene_oxidation": 2,
+      "tn457_barite_pulses": 1,
+      "tutorial_travertine": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "bisbee",
+      "species": "sylvite",
+      "kind": "disappeared",
+      "pct_from": 99,
+      "pct_to": 0,
+      "delta_pts": -99,
+      "mean_from": 3.4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "smithsonite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "smithsonite",
+      "kind": "disappeared",
+      "pct_from": 19.5,
+      "pct_to": 0,
+      "delta_pts": -19.5,
+      "mean_from": 0.2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "descloizite",
+      "kind": "rel_move",
+      "pct_from": 1.5,
+      "pct_to": 4,
+      "delta_pts": 2.5,
+      "mean_from": 0.05,
+      "mean_to": 0.1
+    },
+    {
+      "scenario": "sabkha_dolomitization",
+      "species": "halite",
+      "kind": "disappeared",
+      "pct_from": 48.5,
+      "pct_to": 0,
+      "delta_pts": -48.5,
+      "mean_from": 0.49,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sabkha_dolomitization",
+      "species": "sylvite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "borax",
+      "kind": "abs_move",
+      "pct_from": 7,
+      "pct_to": 100,
+      "delta_pts": 93,
+      "mean_from": 0.14,
+      "mean_to": 24.47
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "mirabilite",
+      "kind": "abs_move",
+      "pct_from": 0.5,
+      "pct_to": 99,
+      "delta_pts": 98.5,
+      "mean_from": 0.01,
+      "mean_to": 4.06
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "sylvite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4.03,
+      "mean_to": 0
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "tincalconite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 7.97,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sicily_solfifera",
+      "species": "halite",
+      "kind": "disappeared",
+      "pct_from": 92.5,
+      "pct_to": 0,
+      "delta_pts": -92.5,
+      "mean_from": 2.51,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "molybdenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2.88,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "pararealgar",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tn457_barite_pulses",
+      "species": "halite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 11.78,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tutorial_travertine",
+      "species": "halite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 8.69,
+      "mean_to": 0
+    }
+  ]
+}
