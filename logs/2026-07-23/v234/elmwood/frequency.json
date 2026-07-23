@@ -1,0 +1,126 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "aragonite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 10417.3,
+        "median": 11103.9,
+        "max": 11678.1
+      }
+    },
+    "barite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 15.75,
+      "mean_count_when_present": 15.75,
+      "size_um": {
+        "min": 240.5,
+        "median": 492.2,
+        "max": 886.9
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 18854,
+        "median": 19389.3,
+        "max": 19853.8
+      }
+    },
+    "celestine": {
+      "seeds_present": 197,
+      "pct_present": 98.5,
+      "mean_count": 7.38,
+      "mean_count_when_present": 7.49,
+      "size_um": {
+        "min": 0,
+        "median": 33.7,
+        "max": 126.3
+      }
+    },
+    "fluorite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 19315.4,
+        "median": 20337.8,
+        "max": 20755.2
+      }
+    },
+    "galena": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 138.9,
+        "median": 228.5,
+        "max": 267.2
+      }
+    },
+    "pyrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.02,
+      "mean_count_when_present": 1.02,
+      "size_um": {
+        "min": 30.9,
+        "median": 42.5,
+        "max": 79.3
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 266.1,
+        "median": 386.8,
+        "max": 390.9
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 5862.1,
+        "median": 8999.3,
+        "max": 10712.1
+      }
+    },
+    "siderite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.07,
+      "mean_count_when_present": 1.07,
+      "size_um": {
+        "min": 76,
+        "median": 1310.1,
+        "max": 6200.2
+      }
+    },
+    "sphalerite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.46,
+      "mean_count_when_present": 1.46,
+      "size_um": {
+        "min": 611.8,
+        "median": 754.3,
+        "max": 1606.9
+      }
+    }
+  }
+}
