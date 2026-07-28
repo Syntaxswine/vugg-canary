@@ -1,0 +1,104 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "cinnabar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 8030.8,
+        "median": 10530.5,
+        "max": 11946.9
+      }
+    },
+    "marcasite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.4,
+      "mean_count_when_present": 1.4,
+      "size_um": {
+        "min": 1244.1,
+        "median": 8267.9,
+        "max": 31320.9
+      }
+    },
+    "metacinnabar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 10433.9,
+        "median": 20101.1,
+        "max": 21934.1
+      }
+    },
+    "native_sulfur": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.68,
+      "mean_count_when_present": 4.68,
+      "size_um": {
+        "min": 1191.8,
+        "median": 2863.8,
+        "max": 4883.3
+      }
+    },
+    "orpiment": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6.15,
+      "mean_count_when_present": 6.15,
+      "size_um": {
+        "min": 2292.9,
+        "median": 3210.8,
+        "max": 4044.2
+      }
+    },
+    "pararealgar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 825.7,
+        "median": 1467.1,
+        "max": 2001.3
+      }
+    },
+    "pyrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.25,
+      "mean_count_when_present": 1.25,
+      "size_um": {
+        "min": 707.6,
+        "median": 3728.5,
+        "max": 5286.1
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 10.03,
+      "mean_count_when_present": 10.03,
+      "size_um": {
+        "min": 1583.6,
+        "median": 3920.3,
+        "max": 9625.2
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 26122,
+        "median": 32312.9,
+        "max": 42487.2
+      }
+    }
+  }
+}
