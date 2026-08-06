@@ -1,0 +1,93 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "borax": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 24.47,
+      "mean_count_when_present": 24.47,
+      "size_um": {
+        "min": 10084,
+        "median": 22185.1,
+        "max": 27949.3
+      }
+    },
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 63.1,
+      "mean_count_when_present": 63.1,
+      "size_um": {
+        "min": 4.4,
+        "median": 16.8,
+        "max": 30.1
+      }
+    },
+    "celestine": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 11.07,
+      "mean_count_when_present": 11.07,
+      "size_um": {
+        "min": 195.8,
+        "median": 252.1,
+        "max": 271.5
+      }
+    },
+    "halite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 16.47,
+      "mean_count_when_present": 16.47,
+      "size_um": {
+        "min": 311.3,
+        "median": 538.6,
+        "max": 567.7
+      }
+    },
+    "mirabilite": {
+      "seeds_present": 198,
+      "pct_present": 99,
+      "mean_count": 4.06,
+      "mean_count_when_present": 4.1,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.48,
+      "mean_count_when_present": 4.48,
+      "size_um": {
+        "min": 17.5,
+        "median": 29.5,
+        "max": 191.3
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 26577.9,
+        "median": 34388.2,
+        "max": 36906
+      }
+    },
+    "thenardite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 40.08,
+      "mean_count_when_present": 40.08,
+      "size_um": {
+        "min": 31019.3,
+        "median": 37025.8,
+        "max": 46734
+      }
+    }
+  }
+}

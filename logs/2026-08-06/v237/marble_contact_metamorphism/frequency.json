@@ -1,0 +1,27 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 34256.4,
+        "median": 40126.1,
+        "max": 41015.4
+      }
+    },
+    "ruby": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 156.3,
+        "median": 165,
+        "max": 175.2
+      }
+    }
+  }
+}

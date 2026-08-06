@@ -1,0 +1,38 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "celestine": {
+      "seeds_present": 194,
+      "pct_present": 97,
+      "mean_count": 3.11,
+      "mean_count_when_present": 3.21,
+      "size_um": {
+        "min": 0.3,
+        "median": 997.1,
+        "max": 1354.7
+      }
+    },
+    "native_sulfur": {
+      "seeds_present": 193,
+      "pct_present": 96.5,
+      "mean_count": 2.29,
+      "mean_count_when_present": 2.37,
+      "size_um": {
+        "min": 2.2,
+        "median": 151.5,
+        "max": 241.8
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 37803.5,
+        "median": 40385.1,
+        "max": 47607.4
+      }
+    }
+  }
+}
