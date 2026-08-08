@@ -1,0 +1,7 @@
+{
+  "date": "2026-08-08",
+  "version": "v237",
+  "sha": "8cb5a07",
+  "identical_to": "2026-08-06",
+  "note": "target unchanged since last sweep (sha 8cb5a07); deterministic → output identical, not re-stored"
+}
