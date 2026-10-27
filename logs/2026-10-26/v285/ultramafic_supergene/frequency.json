@@ -1,0 +1,49 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.75,
+      "mean_count_when_present": 1.75,
+      "size_um": {
+        "min": 0.3,
+        "median": 2.1,
+        "max": 2.3
+      }
+    },
+    "chrysoprase": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 5166.7,
+        "median": 5551.5,
+        "max": 5671.1
+      }
+    },
+    "dolomite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 8.72,
+      "mean_count_when_present": 8.72,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "opal": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 8238.5,
+        "median": 8385.1,
+        "max": 8545.1
+      }
+    }
+  }
+}

@@ -1,0 +1,1906 @@
+{
+  "from": "v237@2026-08-15",
+  "to": "v285@2026-10-26",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases).",
+    "absPts": 15,
+    "relMult": 2,
+    "minPctForRel": 2
+  },
+  "summary": {
+    "total": 186,
+    "by_kind": {
+      "appeared": 42,
+      "scenario_added": 2,
+      "abs_move": 23,
+      "disappeared": 119
+    },
+    "by_scenario": {
+      "amethyst_geode": 1,
+      "asbestos_hills_crack_seal": 1,
+      "asbestos_hills_surficial_alteration": 1,
+      "bisbee": 16,
+      "colorado_plateau": 1,
+      "deccan_zeolite": 8,
+      "elmwood": 8,
+      "epithermal_telluride": 4,
+      "gem_pegmatite": 1,
+      "great_salt_plains": 3,
+      "grimsel_alpine_cleft": 1,
+      "jeffrey_mine": 6,
+      "marble_contact_metamorphism": 2,
+      "mvt": 6,
+      "naica_geothermal": 3,
+      "ouro_preto": 5,
+      "porphyry": 16,
+      "radioactive_pegmatite": 2,
+      "reactivated_fluorite_vein": 4,
+      "reactive_wall": 11,
+      "roughten_gill": 22,
+      "sabkha_dolomitization": 3,
+      "schneeberg": 8,
+      "searles_lake": 4,
+      "shigar_pegmatite": 1,
+      "sicily_solfifera": 2,
+      "sulphur_bank": 2,
+      "sunnyside_american_tunnel": 16,
+      "supergene_oxidation": 8,
+      "tn457_barite_pulses": 2,
+      "tutorial_first_crystal": 3,
+      "tutorial_travertine": 2,
+      "ultramafic_supergene": 2,
+      "wittichen": 10,
+      "zoned_dripstone_cave": 1
+    }
+  },
+  "alarms": [
+    {
+      "scenario": "amethyst_geode",
+      "species": "chalcedony",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 2.79
+    },
+    {
+      "scenario": "asbestos_hills_crack_seal",
+      "kind": "scenario_added"
+    },
+    {
+      "scenario": "asbestos_hills_surficial_alteration",
+      "kind": "scenario_added"
+    },
+    {
+      "scenario": "bisbee",
+      "species": "alunite",
+      "kind": "abs_move",
+      "pct_from": 18,
+      "pct_to": 96.5,
+      "delta_pts": 78.5,
+      "mean_from": 0.18,
+      "mean_to": 4.78
+    },
+    {
+      "scenario": "bisbee",
+      "species": "annabergite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.54,
+      "mean_to": 0
+    },
+    {
+      "scenario": "bisbee",
+      "species": "arsenopyrite",
+      "kind": "disappeared",
+      "pct_from": 65,
+      "pct_to": 0,
+      "delta_pts": -65,
+      "mean_from": 0.94,
+      "mean_to": 0
+    },
+    {
+      "scenario": "bisbee",
+      "species": "chalcedony",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4
+    },
+    {
+      "scenario": "bisbee",
+      "species": "conichalcite",
+      "kind": "disappeared",
+      "pct_from": 12,
+      "pct_to": 0,
+      "delta_pts": -12,
+      "mean_from": 0.41,
+      "mean_to": 0
+    },
+    {
+      "scenario": "bisbee",
+      "species": "erythrite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.44,
+      "mean_to": 0
+    },
+    {
+      "scenario": "bisbee",
+      "species": "goethite",
+      "kind": "abs_move",
+      "pct_from": 64,
+      "pct_to": 100,
+      "delta_pts": 36,
+      "mean_from": 1.01,
+      "mean_to": 2.94
+    },
+    {
+      "scenario": "bisbee",
+      "species": "halite",
+      "kind": "disappeared",
+      "pct_from": 99.5,
+      "pct_to": 0,
+      "delta_pts": -99.5,
+      "mean_from": 5.47,
+      "mean_to": 0
+    },
+    {
+      "scenario": "bisbee",
+      "species": "hematite",
+      "kind": "abs_move",
+      "pct_from": 2.5,
+      "pct_to": 100,
+      "delta_pts": 97.5,
+      "mean_from": 0.03,
+      "mean_to": 1.07
+    },
+    {
+      "scenario": "bisbee",
+      "species": "jarosite",
+      "kind": "abs_move",
+      "pct_from": 20.5,
+      "pct_to": 96,
+      "delta_pts": 75.5,
+      "mean_from": 0.21,
+      "mean_to": 5.65
+    },
+    {
+      "scenario": "bisbee",
+      "species": "lepidocrocite",
+      "kind": "abs_move",
+      "pct_from": 31.5,
+      "pct_to": 100,
+      "delta_pts": 68.5,
+      "mean_from": 0.54,
+      "mean_to": 16.03
+    },
+    {
+      "scenario": "bisbee",
+      "species": "marcasite",
+      "kind": "abs_move",
+      "pct_from": 36.5,
+      "pct_to": 100,
+      "delta_pts": 63.5,
+      "mean_from": 0.37,
+      "mean_to": 1.02
+    },
+    {
+      "scenario": "bisbee",
+      "species": "native_copper",
+      "kind": "abs_move",
+      "pct_from": 79,
+      "pct_to": 100,
+      "delta_pts": 21,
+      "mean_from": 0.79,
+      "mean_to": 1.01
+    },
+    {
+      "scenario": "bisbee",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.99,
+      "mean_to": 0
+    },
+    {
+      "scenario": "bisbee",
+      "species": "siderite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 2.03
+    },
+    {
+      "scenario": "bisbee",
+      "species": "turquoise",
+      "kind": "abs_move",
+      "pct_from": 54,
+      "pct_to": 100,
+      "delta_pts": 46,
+      "mean_from": 2.16,
+      "mean_to": 3.55
+    },
+    {
+      "scenario": "colorado_plateau",
+      "species": "opal",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 5.07
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "aragonite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "chabazite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 5.26,
+      "mean_to": 0
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "chalcedony",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 3.99
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "epidote",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4.24,
+      "mean_to": 0
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "feldspar",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1.02
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "opal",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 5,
+      "mean_to": 0
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "prehnite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1.17
+    },
+    {
+      "scenario": "deccan_zeolite",
+      "species": "thomsonite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 6.14,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "aragonite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "chalcedony",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "elmwood",
+      "species": "galena",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "pyrite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.02,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "siderite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "elmwood",
+      "species": "strontianite",
+      "kind": "disappeared",
+      "pct_from": 9.5,
+      "pct_to": 0,
+      "delta_pts": -9.5,
+      "mean_from": 0.12,
+      "mean_to": 0
+    },
+    {
+      "scenario": "epithermal_telluride",
+      "species": "acanthite",
+      "kind": "disappeared",
+      "pct_from": 26,
+      "pct_to": 0,
+      "delta_pts": -26,
+      "mean_from": 0.33,
+      "mean_to": 0
+    },
+    {
+      "scenario": "epithermal_telluride",
+      "species": "amosite",
+      "kind": "disappeared",
+      "pct_from": 3,
+      "pct_to": 0,
+      "delta_pts": -3,
+      "mean_from": 0.03,
+      "mean_to": 0
+    },
+    {
+      "scenario": "epithermal_telluride",
+      "species": "argentite",
+      "kind": "disappeared",
+      "pct_from": 15.5,
+      "pct_to": 0,
+      "delta_pts": -15.5,
+      "mean_from": 0.21,
+      "mean_to": 0
+    },
+    {
+      "scenario": "epithermal_telluride",
+      "species": "native_gold",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4
+    },
+    {
+      "scenario": "gem_pegmatite",
+      "species": "emerald",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.86,
+      "mean_to": 0
+    },
+    {
+      "scenario": "great_salt_plains",
+      "species": "celestine",
+      "kind": "disappeared",
+      "pct_from": 99.5,
+      "pct_to": 0,
+      "delta_pts": -99.5,
+      "mean_from": 4.47,
+      "mean_to": 0
+    },
+    {
+      "scenario": "great_salt_plains",
+      "species": "mirabilite",
+      "kind": "disappeared",
+      "pct_from": 51.5,
+      "pct_to": 0,
+      "delta_pts": -51.5,
+      "mean_from": 0.74,
+      "mean_to": 0
+    },
+    {
+      "scenario": "great_salt_plains",
+      "species": "thenardite",
+      "kind": "disappeared",
+      "pct_from": 58.5,
+      "pct_to": 0,
+      "delta_pts": -58.5,
+      "mean_from": 0.79,
+      "mean_to": 0
+    },
+    {
+      "scenario": "grimsel_alpine_cleft",
+      "species": "apophyllite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1.92
+    },
+    {
+      "scenario": "jeffrey_mine",
+      "species": "dolomite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "jeffrey_mine",
+      "species": "pectolite",
+      "kind": "abs_move",
+      "pct_from": 40.5,
+      "pct_to": 100,
+      "delta_pts": 59.5,
+      "mean_from": 0.59,
+      "mean_to": 3.77
+    },
+    {
+      "scenario": "jeffrey_mine",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 11,
+      "pct_to": 0,
+      "delta_pts": -11,
+      "mean_from": 0.12,
+      "mean_to": 0
+    },
+    {
+      "scenario": "jeffrey_mine",
+      "species": "rhodochrosite",
+      "kind": "disappeared",
+      "pct_from": 17,
+      "pct_to": 0,
+      "delta_pts": -17,
+      "mean_from": 0.18,
+      "mean_to": 0
+    },
+    {
+      "scenario": "jeffrey_mine",
+      "species": "siderite",
+      "kind": "disappeared",
+      "pct_from": 83.5,
+      "pct_to": 0,
+      "delta_pts": -83.5,
+      "mean_from": 0.84,
+      "mean_to": 0
+    },
+    {
+      "scenario": "jeffrey_mine",
+      "species": "titanite",
+      "kind": "disappeared",
+      "pct_from": 97.5,
+      "pct_to": 0,
+      "delta_pts": -97.5,
+      "mean_from": 0.98,
+      "mean_to": 0
+    },
+    {
+      "scenario": "marble_contact_metamorphism",
+      "species": "calcite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "marble_contact_metamorphism",
+      "species": "ruby",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "mvt",
+      "species": "anhydrite",
+      "kind": "abs_move",
+      "pct_from": 57,
+      "pct_to": 100,
+      "delta_pts": 43,
+      "mean_from": 0.81,
+      "mean_to": 7.69
+    },
+    {
+      "scenario": "mvt",
+      "species": "aragonite",
+      "kind": "disappeared",
+      "pct_from": 16.5,
+      "pct_to": 0,
+      "delta_pts": -16.5,
+      "mean_from": 0.17,
+      "mean_to": 0
+    },
+    {
+      "scenario": "mvt",
+      "species": "celestine",
+      "kind": "disappeared",
+      "pct_from": 79.5,
+      "pct_to": 0,
+      "delta_pts": -79.5,
+      "mean_from": 1.49,
+      "mean_to": 0
+    },
+    {
+      "scenario": "mvt",
+      "species": "hawleyite",
+      "kind": "disappeared",
+      "pct_from": 23.5,
+      "pct_to": 0,
+      "delta_pts": -23.5,
+      "mean_from": 0.58,
+      "mean_to": 0
+    },
+    {
+      "scenario": "mvt",
+      "species": "rhodochrosite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "mvt",
+      "species": "siderite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "naica_geothermal",
+      "species": "opal",
+      "kind": "disappeared",
+      "pct_from": 8,
+      "pct_to": 0,
+      "delta_pts": -8,
+      "mean_from": 0.4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "naica_geothermal",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 5.17,
+      "mean_to": 0
+    },
+    {
+      "scenario": "naica_geothermal",
+      "species": "thenardite",
+      "kind": "disappeared",
+      "pct_from": 99,
+      "pct_to": 0,
+      "delta_pts": -99,
+      "mean_from": 3.99,
+      "mean_to": 0
+    },
+    {
+      "scenario": "ouro_preto",
+      "species": "goethite",
+      "kind": "disappeared",
+      "pct_from": 99.5,
+      "pct_to": 0,
+      "delta_pts": -99.5,
+      "mean_from": 1.01,
+      "mean_to": 0
+    },
+    {
+      "scenario": "ouro_preto",
+      "species": "hematite",
+      "kind": "disappeared",
+      "pct_from": 14,
+      "pct_to": 0,
+      "delta_pts": -14,
+      "mean_from": 0.14,
+      "mean_to": 0
+    },
+    {
+      "scenario": "ouro_preto",
+      "species": "lepidocrocite",
+      "kind": "disappeared",
+      "pct_from": 87,
+      "pct_to": 0,
+      "delta_pts": -87,
+      "mean_from": 1.26,
+      "mean_to": 0
+    },
+    {
+      "scenario": "ouro_preto",
+      "species": "opal",
+      "kind": "disappeared",
+      "pct_from": 97,
+      "pct_to": 0,
+      "delta_pts": -97,
+      "mean_from": 6.12,
+      "mean_to": 0
+    },
+    {
+      "scenario": "ouro_preto",
+      "species": "pyrolusite",
+      "kind": "disappeared",
+      "pct_from": 3.5,
+      "pct_to": 0,
+      "delta_pts": -3.5,
+      "mean_from": 0.04,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "acanthite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4
+    },
+    {
+      "scenario": "porphyry",
+      "species": "anglesite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4
+    },
+    {
+      "scenario": "porphyry",
+      "species": "anhydrite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 5.58,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "argentite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "bornite",
+      "kind": "disappeared",
+      "pct_from": 83.5,
+      "pct_to": 0,
+      "delta_pts": -83.5,
+      "mean_from": 2.25,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "brochantite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4.63
+    },
+    {
+      "scenario": "porphyry",
+      "species": "epidote",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4.71,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "ferrimolybdite",
+      "kind": "abs_move",
+      "pct_from": 10,
+      "pct_to": 100,
+      "delta_pts": 90,
+      "mean_from": 0.21,
+      "mean_to": 5.29
+    },
+    {
+      "scenario": "porphyry",
+      "species": "goethite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 2
+    },
+    {
+      "scenario": "porphyry",
+      "species": "hematite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "porphyry",
+      "species": "magnetite",
+      "kind": "abs_move",
+      "pct_from": 7.5,
+      "pct_to": 100,
+      "delta_pts": 92.5,
+      "mean_from": 0.09,
+      "mean_to": 1.05
+    },
+    {
+      "scenario": "porphyry",
+      "species": "malachite",
+      "kind": "abs_move",
+      "pct_from": 29,
+      "pct_to": 100,
+      "delta_pts": 71,
+      "mean_from": 0.31,
+      "mean_to": 1.07
+    },
+    {
+      "scenario": "porphyry",
+      "species": "native_gold",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.08,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "powellite",
+      "kind": "disappeared",
+      "pct_from": 35.5,
+      "pct_to": 0,
+      "delta_pts": -35.5,
+      "mean_from": 0.76,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.07,
+      "mean_to": 0
+    },
+    {
+      "scenario": "porphyry",
+      "species": "titanite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 3,
+      "mean_to": 0
+    },
+    {
+      "scenario": "radioactive_pegmatite",
+      "species": "autunite",
+      "kind": "abs_move",
+      "pct_from": 30,
+      "pct_to": 3,
+      "delta_pts": -27,
+      "mean_from": 0.45,
+      "mean_to": 0.03
+    },
+    {
+      "scenario": "radioactive_pegmatite",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 80,
+      "pct_to": 0,
+      "delta_pts": -80,
+      "mean_from": 1.06,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactivated_fluorite_vein",
+      "species": "anhydrite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 7.41
+    },
+    {
+      "scenario": "reactivated_fluorite_vein",
+      "species": "hawleyite",
+      "kind": "disappeared",
+      "pct_from": 4,
+      "pct_to": 0,
+      "delta_pts": -4,
+      "mean_from": 0.04,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactivated_fluorite_vein",
+      "species": "pyrite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactivated_fluorite_vein",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2.98,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "acanthite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "anhydrite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 6.73
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "aragonite",
+      "kind": "disappeared",
+      "pct_from": 31,
+      "pct_to": 0,
+      "delta_pts": -31,
+      "mean_from": 0.31,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "barite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 12.29,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "calcite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "celestine",
+      "kind": "disappeared",
+      "pct_from": 98,
+      "pct_to": 0,
+      "delta_pts": -98,
+      "mean_from": 4.74,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "dolomite",
+      "kind": "disappeared",
+      "pct_from": 67,
+      "pct_to": 0,
+      "delta_pts": -67,
+      "mean_from": 0.67,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 3,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "rhodochrosite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.38,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 46.5,
+      "pct_to": 0,
+      "delta_pts": -46.5,
+      "mean_from": 0.69,
+      "mean_to": 0
+    },
+    {
+      "scenario": "reactive_wall",
+      "species": "siderite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.56,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "aurichalcite",
+      "kind": "abs_move",
+      "pct_from": 43.5,
+      "pct_to": 100,
+      "delta_pts": 56.5,
+      "mean_from": 1.49,
+      "mean_to": 3.93
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "azurite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "calcite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "caledonite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "chalcopyrite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 3.44
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "covellite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "descloizite",
+      "kind": "disappeared",
+      "pct_from": 4,
+      "pct_to": 0,
+      "delta_pts": -4,
+      "mean_from": 0.1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "hemimorphite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 3.32
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "leadhillite",
+      "kind": "disappeared",
+      "pct_from": 67.5,
+      "pct_to": 0,
+      "delta_pts": -67.5,
+      "mean_from": 1.55,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "linarite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "malachite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "mimetite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1.24
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "olivenite",
+      "kind": "disappeared",
+      "pct_from": 52,
+      "pct_to": 0,
+      "delta_pts": -52,
+      "mean_from": 1.91,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "orpiment",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.08,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "pararealgar",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 5,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "proustite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "quartz",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1.01
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "rosasite",
+      "kind": "disappeared",
+      "pct_from": 57,
+      "pct_to": 0,
+      "delta_pts": -57,
+      "mean_from": 1.62,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "smithsonite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1.48
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "turquoise",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 3.83,
+      "mean_to": 0
+    },
+    {
+      "scenario": "roughten_gill",
+      "species": "vanadinite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 6,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sabkha_dolomitization",
+      "species": "anhydrite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 10
+    },
+    {
+      "scenario": "sabkha_dolomitization",
+      "species": "celestine",
+      "kind": "abs_move",
+      "pct_from": 44.5,
+      "pct_to": 100,
+      "delta_pts": 55.5,
+      "mean_from": 0.53,
+      "mean_to": 6
+    },
+    {
+      "scenario": "sabkha_dolomitization",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.64,
+      "mean_to": 0
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "argentite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 17.5,
+      "delta_pts": 17.5,
+      "mean_from": 0,
+      "mean_to": 0.18
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "bismuthinite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "dioptase",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 3.98,
+      "mean_to": 0
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "opal",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 5,
+      "mean_to": 0
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "pararealgar",
+      "kind": "disappeared",
+      "pct_from": 32.5,
+      "pct_to": 0,
+      "delta_pts": -32.5,
+      "mean_from": 0.33,
+      "mean_to": 0
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "pharmacolite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 97.5,
+      "delta_pts": 97.5,
+      "mean_from": 0,
+      "mean_to": 3.1
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "schneeberg",
+      "species": "torbernite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 4.5,
+      "delta_pts": 4.5,
+      "mean_from": 0,
+      "mean_to": 0.05
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "borax",
+      "kind": "abs_move",
+      "pct_from": 100,
+      "pct_to": 8.5,
+      "delta_pts": -91.5,
+      "mean_from": 24.47,
+      "mean_to": 0.13
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4.48,
+      "mean_to": 0
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "searles_lake",
+      "species": "tincalconite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 8
+    },
+    {
+      "scenario": "shigar_pegmatite",
+      "species": "aquamarine",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4.16,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sicily_solfifera",
+      "species": "calcite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "sicily_solfifera",
+      "species": "strontianite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4.04
+    },
+    {
+      "scenario": "sulphur_bank",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 10.03,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sulphur_bank",
+      "species": "selenite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "acanthite",
+      "kind": "disappeared",
+      "pct_from": 45,
+      "pct_to": 0,
+      "delta_pts": -45,
+      "mean_from": 1.88,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "albite",
+      "kind": "disappeared",
+      "pct_from": 83.5,
+      "pct_to": 0,
+      "delta_pts": -83.5,
+      "mean_from": 0.87,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "argentite",
+      "kind": "abs_move",
+      "pct_from": 55,
+      "pct_to": 100,
+      "delta_pts": 45,
+      "mean_from": 2.2,
+      "mean_to": 6.08
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "arsenopyrite",
+      "kind": "abs_move",
+      "pct_from": 36,
+      "pct_to": 96,
+      "delta_pts": 60,
+      "mean_from": 1.21,
+      "mean_to": 3.07
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "calaverite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 2
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "calcite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "chalcopyrite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1.27
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "native_gold",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4.71
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "native_silver",
+      "kind": "abs_move",
+      "pct_from": 51,
+      "pct_to": 100,
+      "delta_pts": 49,
+      "mean_from": 1.98,
+      "mean_to": 3.98
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "pararealgar",
+      "kind": "disappeared",
+      "pct_from": 18,
+      "pct_to": 0,
+      "delta_pts": -18,
+      "mean_from": 0.19,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "proustite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2.75,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "pyrite",
+      "kind": "abs_move",
+      "pct_from": 31,
+      "pct_to": 100,
+      "delta_pts": 69,
+      "mean_from": 0.76,
+      "mean_to": 1
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "realgar",
+      "kind": "disappeared",
+      "pct_from": 12,
+      "pct_to": 0,
+      "delta_pts": -12,
+      "mean_from": 0.28,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "siderite",
+      "kind": "disappeared",
+      "pct_from": 90,
+      "pct_to": 0,
+      "delta_pts": -90,
+      "mean_from": 1.88,
+      "mean_to": 0
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "sylvanite",
+      "kind": "abs_move",
+      "pct_from": 62,
+      "pct_to": 100,
+      "delta_pts": 38,
+      "mean_from": 1.24,
+      "mean_to": 2
+    },
+    {
+      "scenario": "sunnyside_american_tunnel",
+      "species": "titanite",
+      "kind": "disappeared",
+      "pct_from": 86,
+      "pct_to": 0,
+      "delta_pts": -86,
+      "mean_from": 0.86,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "alunite",
+      "kind": "disappeared",
+      "pct_from": 70.5,
+      "pct_to": 0,
+      "delta_pts": -70.5,
+      "mean_from": 0.97,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "chalcocite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4.13,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "covellite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 6.99,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "haidingerite",
+      "kind": "disappeared",
+      "pct_from": 98,
+      "pct_to": 0,
+      "delta_pts": -98,
+      "mean_from": 2.89,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "koettigite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "pharmacolite",
+      "kind": "disappeared",
+      "pct_from": 96.5,
+      "pct_to": 0,
+      "delta_pts": -96.5,
+      "mean_from": 2.86,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "supergene_oxidation",
+      "species": "raspite",
+      "kind": "abs_move",
+      "pct_from": 78.5,
+      "pct_to": 97,
+      "delta_pts": 18.5,
+      "mean_from": 1.45,
+      "mean_to": 2.84
+    },
+    {
+      "scenario": "tn457_barite_pulses",
+      "species": "pyrite",
+      "kind": "disappeared",
+      "pct_from": 2,
+      "pct_to": 0,
+      "delta_pts": -2,
+      "mean_from": 0.04,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tn457_barite_pulses",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 3.02,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tutorial_first_crystal",
+      "species": "opal",
+      "kind": "disappeared",
+      "pct_from": 16,
+      "pct_to": 0,
+      "delta_pts": -16,
+      "mean_from": 0.22,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tutorial_first_crystal",
+      "species": "rhodochrosite",
+      "kind": "disappeared",
+      "pct_from": 2,
+      "pct_to": 0,
+      "delta_pts": -2,
+      "mean_from": 0.02,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tutorial_first_crystal",
+      "species": "siderite",
+      "kind": "disappeared",
+      "pct_from": 5,
+      "pct_to": 0,
+      "delta_pts": -5,
+      "mean_from": 0.05,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tutorial_travertine",
+      "species": "opal",
+      "kind": "disappeared",
+      "pct_from": 19.5,
+      "pct_to": 0,
+      "delta_pts": -19.5,
+      "mean_from": 0.4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "tutorial_travertine",
+      "species": "quartz",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.99,
+      "mean_to": 0
+    },
+    {
+      "scenario": "ultramafic_supergene",
+      "species": "HMC",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4,
+      "mean_to": 0
+    },
+    {
+      "scenario": "ultramafic_supergene",
+      "species": "goethite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1.12,
+      "mean_to": 0
+    },
+    {
+      "scenario": "wittichen",
+      "species": "acanthite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 3.71,
+      "mean_to": 0
+    },
+    {
+      "scenario": "wittichen",
+      "species": "anhydrite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 5.48
+    },
+    {
+      "scenario": "wittichen",
+      "species": "annabergite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "wittichen",
+      "species": "calcite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "wittichen",
+      "species": "chalcedony",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 4
+    },
+    {
+      "scenario": "wittichen",
+      "species": "erythrite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 100,
+      "delta_pts": 100,
+      "mean_from": 0,
+      "mean_to": 1
+    },
+    {
+      "scenario": "wittichen",
+      "species": "haidingerite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 99.5,
+      "delta_pts": 99.5,
+      "mean_from": 0,
+      "mean_to": 4.17
+    },
+    {
+      "scenario": "wittichen",
+      "species": "pharmacolite",
+      "kind": "appeared",
+      "pct_from": 0,
+      "pct_to": 43.5,
+      "delta_pts": 43.5,
+      "mean_from": 0,
+      "mean_to": 0.83
+    },
+    {
+      "scenario": "wittichen",
+      "species": "proustite",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 2,
+      "mean_to": 0
+    },
+    {
+      "scenario": "wittichen",
+      "species": "realgar",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 1,
+      "mean_to": 0
+    },
+    {
+      "scenario": "zoned_dripstone_cave",
+      "species": "HMC",
+      "kind": "disappeared",
+      "pct_from": 100,
+      "pct_to": 0,
+      "delta_pts": -100,
+      "mean_from": 4.07,
+      "mean_to": 0
+    }
+  ]
+}

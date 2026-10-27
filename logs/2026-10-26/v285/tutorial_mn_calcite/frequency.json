@@ -1,0 +1,49 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1113.4,
+        "median": 1671.2,
+        "max": 2161.3
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1.8,
+        "median": 2.5,
+        "max": 3.3
+      }
+    },
+    "rhodochrosite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.01,
+      "mean_count_when_present": 1.01,
+      "size_um": {
+        "min": 524.1,
+        "median": 598.3,
+        "max": 700.3
+      }
+    },
+    "siderite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 233.6,
+        "median": 258.7,
+        "max": 280.8
+      }
+    }
+  }
+}

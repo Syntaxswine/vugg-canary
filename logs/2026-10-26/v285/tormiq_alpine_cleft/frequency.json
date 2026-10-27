@@ -1,0 +1,71 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "actinolite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.07,
+      "mean_count_when_present": 4.07,
+      "size_um": {
+        "min": 558.4,
+        "median": 1396,
+        "max": 1468.8
+      }
+    },
+    "albite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 34136,
+        "median": 63654.2,
+        "max": 67728
+      }
+    },
+    "epidote": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 13977.6,
+        "median": 23802.1,
+        "max": 24343.3
+      }
+    },
+    "feldspar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 5437.7,
+        "median": 36312.4,
+        "max": 38629.6
+      }
+    },
+    "quartz": {
+      "seeds_present": 194,
+      "pct_present": 97,
+      "mean_count": 4.07,
+      "mean_count_when_present": 4.2,
+      "size_um": {
+        "min": 2.3,
+        "median": 637.3,
+        "max": 4779.6
+      }
+    },
+    "titanite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.01,
+      "mean_count_when_present": 3.01,
+      "size_um": {
+        "min": 849.6,
+        "median": 5227.4,
+        "max": 5331.8
+      }
+    }
+  }
+}

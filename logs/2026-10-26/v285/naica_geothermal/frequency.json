@@ -1,0 +1,27 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "celestine": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6.03,
+      "mean_count_when_present": 6.03,
+      "size_um": {
+        "min": 1995.3,
+        "median": 2219.6,
+        "max": 2289
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 2744.1,
+        "median": 2812.1,
+        "max": 2897
+      }
+    }
+  }
+}

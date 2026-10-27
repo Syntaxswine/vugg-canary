@@ -1,0 +1,104 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "albite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.31,
+      "mean_count_when_present": 3.31,
+      "size_um": {
+        "min": 132.3,
+        "median": 887.3,
+        "max": 1512.4
+      }
+    },
+    "calaverite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.03,
+      "mean_count_when_present": 2.03,
+      "size_um": {
+        "min": 10006.8,
+        "median": 10058.3,
+        "max": 10651.2
+      }
+    },
+    "feldspar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.01,
+      "mean_count_when_present": 2.01,
+      "size_um": {
+        "min": 2988.4,
+        "median": 7668.7,
+        "max": 9347.6
+      }
+    },
+    "hessite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 17063.3,
+        "median": 17265.4,
+        "max": 17425.5
+      }
+    },
+    "native_gold": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 2789,
+        "median": 3084.7,
+        "max": 3170.7
+      }
+    },
+    "native_silver": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 5412.1,
+        "median": 6777.7,
+        "max": 8340.3
+      }
+    },
+    "native_tellurium": {
+      "seeds_present": 199,
+      "pct_present": 99.5,
+      "mean_count": 3.54,
+      "mean_count_when_present": 3.55,
+      "size_um": {
+        "min": 12.4,
+        "median": 34.3,
+        "max": 39.8
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3.16,
+      "mean_count_when_present": 3.16,
+      "size_um": {
+        "min": 2632.2,
+        "median": 4407.5,
+        "max": 9344.6
+      }
+    },
+    "sylvanite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 10015.6,
+        "median": 10104.3,
+        "max": 10259.4
+      }
+    }
+  }
+}

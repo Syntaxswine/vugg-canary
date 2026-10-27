@@ -1,0 +1,104 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "amosite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 910.5,
+        "median": 1316.7,
+        "max": 1381
+      }
+    },
+    "crocidolite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 1478.7,
+        "median": 2420,
+        "max": 2536.1
+      }
+    },
+    "goethite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 410,
+        "median": 1959.7,
+        "max": 2050.5
+      }
+    },
+    "hematite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 151.1,
+        "median": 1019.4,
+        "max": 1079.2
+      }
+    },
+    "magnetite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.46,
+      "mean_count_when_present": 1.46,
+      "size_um": {
+        "min": 59.7,
+        "median": 186.3,
+        "max": 195.4
+      }
+    },
+    "opal": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 5623,
+        "median": 5929.5,
+        "max": 6216
+      }
+    },
+    "quartz": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1.01,
+      "mean_count_when_present": 1.01,
+      "size_um": {
+        "min": 240.3,
+        "median": 289.9,
+        "max": 340.4
+      }
+    },
+    "siderite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 7175.3,
+        "median": 7487.7,
+        "max": 7797.6
+      }
+    },
+    "tigers_eye": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 2698.5,
+        "median": 2804.1,
+        "max": 2914.5
+      }
+    }
+  }
+}

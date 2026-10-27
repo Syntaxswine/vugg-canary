@@ -1,0 +1,60 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "calcite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 943.3,
+        "median": 1001.7,
+        "max": 1053.3
+      }
+    },
+    "celestine": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 7323.6,
+        "median": 9139.2,
+        "max": 9539.1
+      }
+    },
+    "native_sulfur": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.44,
+      "mean_count_when_present": 4.44,
+      "size_um": {
+        "min": 4505.9,
+        "median": 4995.1,
+        "max": 5174.8
+      }
+    },
+    "selenite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 100.1,
+        "median": 116.1,
+        "max": 129.9
+      }
+    },
+    "strontianite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4.04,
+      "mean_count_when_present": 4.04,
+      "size_um": {
+        "min": 999.5,
+        "median": 1267.3,
+        "max": 1327.3
+      }
+    }
+  }
+}

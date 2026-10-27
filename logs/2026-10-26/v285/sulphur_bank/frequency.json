@@ -1,0 +1,93 @@
+{
+  "n_seeds": 200,
+  "species": {
+    "cinnabar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6.18,
+      "mean_count_when_present": 6.18,
+      "size_um": {
+        "min": 6508.5,
+        "median": 8497.2,
+        "max": 9382.8
+      }
+    },
+    "marcasite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 5675.6,
+        "median": 39442.4,
+        "max": 40540.2
+      }
+    },
+    "metacinnabar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 6113.7,
+        "median": 16217.3,
+        "max": 17331.9
+      }
+    },
+    "native_sulfur": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 4264.2,
+        "median": 5159.8,
+        "max": 5322.9
+      }
+    },
+    "orpiment": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 7.28,
+      "mean_count_when_present": 7.28,
+      "size_um": {
+        "min": 2292.7,
+        "median": 3255.3,
+        "max": 3858.8
+      }
+    },
+    "pararealgar": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 958.1,
+        "median": 1513.4,
+        "max": 2004.1
+      }
+    },
+    "pyrite": {
+      "seeds_present": 200,
+      "pct_present": 100,
+      "mean_count": 2.09,
+      "mean_count_when_present": 2.09,
+      "size_um": {
+        "min": 72.6,
+        "median": 537.1,
+        "max": 570.3
+      }
+    },
+    "realgar": {
+      "seeds_present": 1,
+      "pct_present": 0.5,
+      "mean_count": 0.01,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 162.1,
+        "median": 162.1,
+        "max": 162.1
+      }
+    }
+  }
+}
