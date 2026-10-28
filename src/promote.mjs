@@ -14,6 +14,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { TARGET_FAILED } from './target.mjs';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const VER_RE = /^v\d+$/;
@@ -74,8 +75,9 @@ export function shouldShortCircuit(logsRoot, { date, sha, dirty, canaryVersion, 
 
 /**
  * List every dated day dir that is PUBLISHABLE — i.e. represents a COMPLETED
- * canary observation: either a NO-CHANGE marker, or at least one v<N> dir whose
- * sweep finished (meta.json present). Partial v-dirs (killed mid-sweep, no
+ * canary observation: a NO-CHANGE marker, a TARGET-FAILED marker (the night ran
+ * and says why nothing was swept), or at least one v<N> dir whose sweep
+ * finished (meta.json present). Partial v-dirs (killed mid-sweep, no
  * meta.json) and empty day dirs are NOT publishable — an aborted run is not a
  * stratum. Used by the publish step for catch-up staging, so a day whose
  * publish failed (offline night, or the pre-fix NO-CHANGE early-return) is
@@ -95,6 +97,7 @@ export function listPublishableDayDirs(logsRoot) {
   for (const date of dates) {
     const dayDir = path.join(logsRoot, date);
     if (fs.existsSync(path.join(dayDir, 'NO-CHANGE.json'))) { out.push(date); continue; }
+    if (fs.existsSync(path.join(dayDir, TARGET_FAILED))) { out.push(date); continue; }
     const complete = fs.readdirSync(dayDir, { withFileTypes: true })
       .filter((d) => d.isDirectory() && VER_RE.test(d.name))
       .some((v) => fs.existsSync(path.join(dayDir, v.name, 'meta.json')));
@@ -104,13 +107,14 @@ export function listPublishableDayDirs(logsRoot) {
 }
 
 /** Write the one-file NO-CHANGE marker for a day whose version is unchanged. */
-export function writeNoChangeNote(logsRoot, date, last, sha) {
+export function writeNoChangeNote(logsRoot, date, last, sha, { follow } = {}) {
   const note = {
     date,
     version: last.version,
     sha,
     identical_to: last.date,            // always a real day, never a note→note chain
     note: `target unchanged since last sweep (sha ${sha}); deterministic → output identical, not re-stored`,
+    follow,                             // the night's fetch of main (src/target.mjs), when the target follows one
   };
   const dayDir = path.join(logsRoot, date);
   fs.mkdirSync(dayDir, { recursive: true });

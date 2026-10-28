@@ -116,6 +116,30 @@ test('a changed seed count never short-circuits (200 → 30 on an unchanged targ
   fs.rmSync(root, { recursive: true, force: true });
 });
 
+test('a TARGET-FAILED night is publishable (it ran, and says why nothing was swept); it carries no data', () => {
+  const root = path.join(os.tmpdir(), 'vugg-canary-test-promote-failed');
+  fs.rmSync(root, { recursive: true, force: true });
+  const d = path.join(root, '2026-10-29', 'v286');
+  fs.mkdirSync(d, { recursive: true });
+  fs.writeFileSync(path.join(d, 'meta.json'), JSON.stringify({ sha: 'aaa111', canary_version: '0.1.0', n_seeds: 30 }));
+  fs.mkdirSync(path.join(root, '2026-10-30'), { recursive: true });
+  fs.writeFileSync(path.join(root, '2026-10-30', 'TARGET-FAILED.json'), JSON.stringify({ stage: 'build', sha: 'bbb222' }));
+  assert.deepEqual(listPublishableDayDirs(root), ['2026-10-29', '2026-10-30']);
+  assert.equal(findLastDataBearingDay(root).date, '2026-10-29');
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('a NO-CHANGE note carries the night\'s fetch when given one', () => {
+  const root = path.join(os.tmpdir(), 'vugg-canary-test-promote-follow');
+  fs.rmSync(root, { recursive: true, force: true });
+  const follow = { remote: 'origin', branch: 'main', from: 'aaa', to: 'aaa', moved: false };
+  writeNoChangeNote(root, '2026-10-30', { version: 'v286', date: '2026-10-29' }, 'aaa111', { follow });
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root, '2026-10-30', 'NO-CHANGE.json'), 'utf8')).follow, follow);
+  writeNoChangeNote(root, '2026-10-31', { version: 'v286', date: '2026-10-29' }, 'aaa111');
+  assert.equal('follow' in JSON.parse(fs.readFileSync(path.join(root, '2026-10-31', 'NO-CHANGE.json'), 'utf8')), false);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
 // cleanup
 fs.rmSync(ROOT, { recursive: true, force: true });
 fs.rmSync(path.join(os.tmpdir(), 'vugg-canary-test-empty'), { recursive: true, force: true });

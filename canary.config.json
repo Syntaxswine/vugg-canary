@@ -1,8 +1,12 @@
 {
-  "_comment": "vugg-canary config. vuggPath is resolved relative to this repo root. For Phase 1 it points at the live vugg checkout; the two-folder promote (Phase 3) will repoint it at today/.",
-  "vuggPath": "../vugg/vugg-simulator",
+  "_comment": "vugg-canary config. vuggPath is resolved relative to this repo root. Since 2026-10-28 (boss) it is the canary's own vugg checkout, a detached worktree of the vugg repo (README: The target). Before every full run `follow` moves it to the newest <remote>/<branch>; a run that sweeps then installs (npm ci, only when package-lock.json changed) and compiles dist/ from source. Before that, vuggPath was the vugg checkout people work in, which sat on a September branch while main moved on.",
+  "vuggPath": "../vugg/vugg-canary-target",
+  "follow": {
+    "remote": "origin",
+    "branch": "main"
+  },
   "seeds": 30,
-  "_seeds_comment": "30 since 2026-10-28 (boss), down from 200: a 200-seed sweep took 31 h at v285 (9.3 min per seed across 41 scenarios; supergene_oxidation, tn457_barite_pulses, reactive_wall and bisbee are 74% of it), so it could not finish in a night. 30 seeds is ~4.8 h. GO BACK UP once the wall-dissolution proxy fix (vugg session 'Remove the proxy tax from vugg's wall-dissolution step', branch perf/surface-raw-reads) is in the checkout at vuggPath: re-measure per-seed cost, pick the most seeds that fit 04:00-09:00, and move diffThreshold.absPts with it (3 standard errors: 300*sqrt(0.5/N), i.e. 15 at 200, 30 at 50, 34 at 40, 39 at 30). status.mjs flags an absPts that doesn't fit the seed count.",
+  "_seeds_comment": "30 since 2026-10-28 (boss), down from 200: a 200-seed sweep took 31 h at v285 (9.3 min per seed across 41 scenarios; supergene_oxidation, tn457_barite_pulses, reactive_wall and bisbee are 74% of it), so it could not finish in a night. 30 seeds is ~4.8 h. GO BACK UP once the wall-dissolution proxy fix (vugg PR #41, branch perf/surface-raw-reads) is in main: the canary follows main, so its first sweep with the fix times the faster engine, and `npm run status` then prints '⚑ seeds: ~N fit 04:00–09:00 ... go back up'. Take the most seeds that fit and move diffThreshold.absPts with them (3 standard errors: 300*sqrt(0.5/N), i.e. 15 at 200, 30 at 50, 34 at 40, 39 at 30). status.mjs flags an absPts that doesn't fit the seed count.",
   "shapeSeedMode": "scenario-authored",
   "logsDir": "logs",
   "autoPush": true,

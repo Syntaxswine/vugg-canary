@@ -13,7 +13,13 @@
  * reports how old the last finished observation is, the killed runs since, a
  * sweep in progress, and whether the armed task still matches task-spec.mjs.
  *
+ * Since the canary follows main (2026-10-28, src/target.mjs) it also reports
+ * where its checkout came from, nights whose target could not be built, and
+ * how many seeds the last full sweep says fit one night: the trigger for the
+ * boss's "go back up on seeds once the proxy fix is in main".
+ *
  *   node src/status.mjs [logsDirOverride] [--no-task]
+ *   (env CANARY_STATUS_CONFIG=<file> reads another config, for tests)
  *
  * Passive, like the rest: it only reports. Exit code is always 0 — a loud
  * console line is the signal, not a failed process.
@@ -26,6 +32,7 @@ import { findLastDataBearingDay } from './promote.mjs';
 import { threeSigmaPts } from './diff.mjs';
 import { SWEEP_IDENTITY } from './resume.mjs';
 import { readTask, taskDrift } from './task-spec.mjs';
+import { describeFollow, TARGET_FAILED } from './target.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -34,6 +41,10 @@ const VER_RE = /^v\d+$/;
 // a launch while one is still running. Two days without a finished observation
 // (a sweep or a NO-CHANGE marker) means the canary has stopped.
 const STALE_DAYS = 2;
+// The night a sweep must fit: the task fires at 04:00 and the box is the boss's
+// again by 09:00 (2026-10-28). 200 seeds is the canary's design count.
+const WINDOW_MIN = 300;
+const MAX_SEEDS = 200;
 
 // Never let a half-written or missing file crash the glance — a partial read
 // just means "not ready", not "explode". Returns null on any read/parse failure.
@@ -63,6 +74,9 @@ function dayState(logsRoot, date) {
   }
   const nc = readJsonSafe(path.join(dayDir, 'NO-CHANGE.json'));
   if (nc) return { date, kind: 'nochange', nc };
+  // the night ran but its target could not be installed or built: nothing swept
+  const tf = readJsonSafe(path.join(dayDir, TARGET_FAILED));
+  if (tf) return { date, kind: 'failed', tf };
   if (!vers.length) return { date, kind: 'empty' };
   // A v<N>/ dir with no readable meta.json = a sweep IN PROGRESS (meta is
   // written last) or one that was killed. sweep-identity.json (written at the
@@ -89,15 +103,52 @@ function main() {
   const argv = process.argv.slice(2);
   const skipTask = argv.includes('--no-task');
   const logsArg = argv.find((a) => !a.startsWith('--'));
-  const cfg = readJsonSafe(path.join(CANARY_ROOT, 'canary.config.json')) || {};
-  const logsRoot = path.resolve(CANARY_ROOT, logsArg || cfg.logsDir || 'logs');
+  const cfgPath = process.env.CANARY_STATUS_CONFIG || path.join(CANARY_ROOT, 'canary.config.json');
+  const cfgDir = path.dirname(cfgPath);
+  const cfg = readJsonSafe(cfgPath) || {};
+  const logsRoot = path.resolve(cfgDir, logsArg || cfg.logsDir || 'logs');
   const today = process.env.CANARY_STATUS_TODAY || new Date().toISOString().slice(0, 10);
 
   console.log('vugg-canary status');
-  try { reportLogs(logsRoot, today); }
+  try { reportLogs(logsRoot, today, cfg); }
   catch (e) { console.log(`  (could not read the logs: ${e.message})`); }
+  reportTargetPresence(cfg, cfgDir);
   reportConfig(cfg);
   if (!skipTask && process.platform === 'win32') reportTask();
+}
+
+/** A missing checkout makes the next run stop before it writes anything; say so now. */
+function reportTargetPresence(cfg, cfgDir) {
+  if (!cfg.vuggPath) return;
+  const p = path.resolve(cfgDir, cfg.vuggPath);
+  if (!fs.existsSync(path.join(p, 'tools', '_harness.mjs'))) {
+    console.log(`  ⚑ target:   ${p} has no tools/_harness.mjs — the next run will stop before sweeping`);
+  }
+}
+
+/**
+ * How many seeds the last full sweep says fit one night. A sweep costs its N
+ * seeds plus the seed-42 self-test pass, so per seed = wall time / (N + 1).
+ * Loud when at least a quarter more seeds fit than are configured (go back up),
+ * or when the configured count no longer fits (the sweep overruns its night,
+ * which is how the canary died in 2026-08..10). Only full, unresumed sweeps are
+ * timed; contention during the sweep makes the estimate low, never high.
+ */
+function reportSeedBudget(meta, configured) {
+  const minutes = (Date.parse(meta.generated_at) - Date.parse(meta.started_at)) / 60000;
+  if (!meta.full_run || meta.resumed || !(minutes > 0) || !(meta.n_seeds > 0)) return;
+  const perSeed = minutes / (meta.n_seeds + 1);
+  const fit = Math.max(0, Math.min(MAX_SEEDS, Math.floor(WINDOW_MIN / perSeed) - 1));
+  const n = configured > 0 ? configured : meta.n_seeds;
+  const m = Math.round(minutes);
+  const took = `last sweep ${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min for ${meta.n_seeds} seeds, ${perSeed.toFixed(1)} min/seed`;
+  if (fit >= Math.ceil(1.25 * n)) {
+    console.log(`  ⚑ seeds:    ~${fit} fit 04:00–09:00 (${took}); ${n} configured — go back up: seeds ${fit}, absPts ${Math.round(threeSigmaPts(fit))}`);
+  } else if (fit < n) {
+    console.log(`  ⚑ seeds:    only ~${fit} fit 04:00–09:00 (${took}); ${n} configured — the sweep overruns its night`);
+  } else {
+    console.log(`  seeds:      ${n} a night (${took}) → ~${fit} fit 04:00–09:00`);
+  }
 }
 
 /**
@@ -115,7 +166,7 @@ function reportConfig(cfg) {
   }
 }
 
-function reportLogs(logsRoot, today) {
+function reportLogs(logsRoot, today, cfg) {
   let days = [];
   try {
     days = fs.readdirSync(logsRoot, { withFileTypes: true })
@@ -156,15 +207,30 @@ function reportLogs(logsRoot, today) {
     const k = killed[killed.length - 1];
     console.log(`  ⚑ ${killed.length} killed run(s) since ${lastObs ? lastObs.date : 'the first log'} — newest ${k.date} ${k.ver}: ${progress(k)}`);
   }
+  // nights that ran but could not install or build their target: nothing swept
+  const failed = states.slice(lastObsIdx + 1).filter((s) => s.kind === 'failed');
+  if (failed.length) {
+    const f = failed[failed.length - 1];
+    const err = String(f.tf.error || '').split(/\r?\n/)[0];
+    console.log(`  ⚑ ${failed.length} night(s) not swept since ${lastObs ? lastObs.date : 'the first log'} — newest ${f.date}: the target's ${f.tf.stage} failed at ${f.tf.sha}${err ? ` (${err})` : ''}`);
+  }
 
-  // 3. the last COMPLETED sweep: self-test + alarm
+  // where the canary's own checkout came from, per the newest night that says
+  const followOf = (s) => (s.kind === 'sweep' ? s.meta.follow : s.kind === 'nochange' ? s.nc.follow : s.kind === 'failed' ? s.tf.follow : null);
+  const latest = [...states].reverse().find((s) => followOf(s));
+  if (latest) {
+    const f = followOf(latest);
+    console.log(`  ${f.error || f.fetch_error ? '⚑ target:   ' : 'target:     '}${latest.date}: ${describeFollow(f)}`);
+  }
+
+  // 3. the last COMPLETED sweep: self-test + alarm + seed budget
   const lastSweep = findLastDataBearingDay(logsRoot);
   if (!lastSweep) {
     if (lastObs) console.log('  no completed sweep yet to report.');
     return;
   }
   if (newest.date !== lastSweep.date) console.log('  ── last completed ──');
-  reportVersion(logsRoot, lastSweep.date, lastSweep.version);
+  reportVersion(logsRoot, lastSweep.date, lastSweep.version, cfg);
 }
 
 function printAlarmFromDiff(diffPath) {
@@ -182,8 +248,8 @@ function printAlarmFromDiff(diffPath) {
   }
 }
 
-/** Print the last-sweep / self-test / alarm lines for one day's version dir. */
-function reportVersion(logsRoot, day, ver) {
+/** Print the last-sweep / self-test / alarm / seed-budget lines for one day's version dir. */
+function reportVersion(logsRoot, day, ver, cfg = {}) {
   const verDir = path.join(logsRoot, day, ver);
   const meta = readJsonSafe(path.join(verDir, 'meta.json'));
   if (!meta) { console.log(`  ${day} ${ver}: meta.json unreadable.`); return; }
@@ -201,6 +267,7 @@ function reportVersion(logsRoot, day, ver) {
   try { diffFile = fs.readdirSync(verDir).find((f) => f.startsWith('diff-vs-') && f.endsWith('.json')); } catch { /* none */ }
   if (diffFile) printAlarmFromDiff(path.join(verDir, diffFile));
   else console.log(`  alarm:     none yet (first day for this logs dir; arms on the next version).`);
+  reportSeedBudget(meta, cfg.seeds);
 }
 
 /** Does the armed task still match task-spec.mjs? (The July settings never reached it.) */

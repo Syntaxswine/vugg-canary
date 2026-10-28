@@ -10,7 +10,7 @@
     "regenerate": "node src/regenerate.mjs",
     "schedule": "node src/schedule.mjs",
     "status": "node src/status.mjs",
-    "test": "node test/diff.test.mjs && node test/promote.test.mjs && node test/repo-meta.test.mjs && node test/status.test.mjs && node test/creep.test.mjs && node test/resume.test.mjs",
+    "test": "node test/diff.test.mjs && node test/promote.test.mjs && node test/repo-meta.test.mjs && node test/status.test.mjs && node test/creep.test.mjs && node test/resume.test.mjs && node test/target.test.mjs && node test/nightly.test.mjs",
     "help": "node src/sweep.mjs --help",
     "creep": "node src/creep.mjs"
   },

@@ -16,8 +16,14 @@
  *      which the self-test asserts on every run. Divergence = entrypoint drift
  *      or a stale baseline, surfaced loudly.
  *
+ * THE TARGET (since 2026-10-28): the canary's own vugg checkout. A full run
+ * first moves it to the newest main (config.follow), then, if it is going to
+ * sweep, makes it runnable (npm ci when the lockfile changed, compile dist/);
+ * see src/target.mjs. Manual partial runs (--scenario / --seeds) sweep the
+ * checkout as it is.
+ *
  * Usage:
- *   node src/sweep.mjs --now [--seeds N] [--scenario a,b] [--date YYYY-MM-DD] [--out DIR]
+ *   node src/sweep.mjs --now [--seeds N] [--scenario a,b] [--date YYYY-MM-DD] [--out DIR] [--no-follow]
  *   node src/sweep.mjs --help
  */
 
@@ -31,6 +37,7 @@ import { shouldShortCircuit, writeNoChangeNote, findLastDataBearingDay, listPubl
 import { loadVersionFingerprint, diffFingerprints, summarizeAlarms } from './diff.mjs';
 import { makeRunner } from './run.mjs';
 import { runtimeIdentity, prepareOutDir, planReuse, adoptScenario, writeScenarioIdentity } from './resume.mjs';
+import { followTarget, describeFollow, prepareTarget, writeTargetFailed, TARGET_FAILED } from './target.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PKG = JSON.parse(fs.readFileSync(path.join(CANARY_ROOT, 'package.json'), 'utf8'));
@@ -39,7 +46,7 @@ const STEPS_MODE = 'defaultSteps??100 (matches gen-baseline)';
 const SHAPE_MODE = 'scenario-authored';
 
 function parseArgs(argv) {
-  const a = { now: false, help: false, build: false, force: false, noPublish: false, seeds: null, scenario: null, date: null, out: null };
+  const a = { now: false, help: false, build: false, force: false, noPublish: false, noFollow: false, seeds: null, scenario: null, date: null, out: null };
   for (let i = 2; i < argv.length; i++) {
     const t = argv[i];
     if (t === '--now') a.now = true;
@@ -47,6 +54,7 @@ function parseArgs(argv) {
     else if (t === '--build') a.build = true;
     else if (t === '--force') a.force = true;
     else if (t === '--no-publish') a.noPublish = true;
+    else if (t === '--no-follow') a.noFollow = true;
     else if (t === '--seeds') a.seeds = parseInt(argv[++i], 10);
     else if (t === '--scenario') a.scenario = argv[++i];
     else if (t === '--date') a.date = argv[++i];
@@ -71,18 +79,14 @@ function sourceSimVersion(vuggPath) {
   } catch { return null; }
 }
 
-function buildTarget(vuggPath) {
-  console.log(`[canary] --build: running \`npm run build\` in target so dist/ matches source…`);
-  // shell:true so Windows resolves npm.cmd; inherit stdio for visibility.
-  execFileSync('npm', ['run', 'build'], { cwd: vuggPath, stdio: 'inherit', shell: true });
-}
-
 const HELP = `vugg-canary sweep (Phase 1)
 
   node src/sweep.mjs --now [options]
 
   --now                 run a sweep immediately (the only mode in Phase 1)
-  --build               run \`npm run build\` in the target first, so dist/ matches source
+  --build               compile the target's dist/ from source first (clean dist/, tsc), as a
+                        full run on a followed target always does; never touches node_modules
+  --no-follow           a full run that sweeps the target where it is, without fetching main
   --force               sweep even if the SHA is unchanged (skip the no-change short-circuit),
                         and recompute every scenario (no resume)
   --seeds N             chemistry seeds 1..N to sweep (default: config.seeds=200)
@@ -103,6 +107,7 @@ async function main() {
   if (args.help) { console.log(HELP); return; }
   if (!args.now) { console.error('Phase 1 requires --now (see --help)'); process.exit(2); }
 
+  const startedAt = new Date().toISOString();
   const cfg = JSON.parse(fs.readFileSync(path.join(CANARY_ROOT, 'canary.config.json'), 'utf8'));
   const vuggPath = path.resolve(CANARY_ROOT, cfg.vuggPath);
   const seeds = args.seeds ?? cfg.seeds ?? 200;
@@ -116,19 +121,27 @@ async function main() {
 
   console.log(`[canary] target: ${vuggPath}`);
 
+  // --- follow: a full run first moves the canary's own checkout to the newest main ---
+  const fullRun = !args.scenario && args.seeds == null;
+  const following = Boolean(cfg.follow) && fullRun && !args.noFollow;
+  let follow;
+  if (following) {
+    follow = followTarget(vuggPath, cfg.follow);
+    console.log(`[canary] ${follow.error || follow.fetch_error ? '⚑ ' : ''}follow: ${describeFollow(follow)}`);
+  }
+
   // --- Phase 3a: no-change short-circuit (cheap git check, BEFORE any build/load) ---
   // A full scheduled run with an unchanged, clean tree is deterministically
   // identical to the last sweep — skip it and write a NO-CHANGE note. Manual
   // runs (--scenario / explicit --seeds) and --force always proceed.
   const meta0 = repoMeta(vuggPath);
-  const fullRun = !args.scenario && args.seeds == null;
   if (fullRun && !args.force) {
     // Gate on ENGINE dirt, not whole-tree dirt: a stray untracked tool or a doc
     // edit can't change the fingerprint, so it must not force a 2.5h re-sweep.
     // (Whole-tree dirt is still recorded in meta for the honest sample label.)
     const sc = shouldShortCircuit(outRoot, { date, sha: meta0.sha, dirty: meta0.engineDirty, canaryVersion: CANARY_VERSION, nSeeds: seeds });
     if (sc.skip) {
-      const note = writeNoChangeNote(outRoot, date, sc.last, meta0.sha);
+      const note = writeNoChangeNote(outRoot, date, sc.last, meta0.sha, { follow });
       console.log(`[canary] no change — ${sc.reason} — deterministic, sweep skipped.`);
       console.log(`[canary] wrote ${path.relative(CANARY_ROOT, path.join(outRoot, date, 'NO-CHANGE.json'))} → identical_to ${note.identical_to}`);
       // Publish the quiet stratum too. Pre-fix, this branch returned before
@@ -143,8 +156,21 @@ async function main() {
     if (sc.last) console.log(`[canary] proceeding (${sc.reason})`);
   }
 
-  // --- optionally build the target so dist/ is guaranteed consistent with source ---
-  if (args.build) buildTarget(vuggPath);
+  // --- make the target runnable: npm ci when its lockfile changed, then compile dist/ from source ---
+  let prep;
+  if (following || args.build) {
+    prep = prepareTarget(vuggPath, { install: following });
+    if (!prep.ok) {
+      writeTargetFailed(outRoot, date, { stage: prep.stage, error: prep.error, sha: meta0.sha, follow });
+      console.error(`[canary] ⚑ the target's ${prep.stage} failed at ${meta0.sha}; nothing swept. Wrote ${path.relative(CANARY_ROOT, path.join(outRoot, date, TARGET_FAILED))}.`);
+      if (cfg.autoPush !== false && !args.noPublish) {
+        publishSpine(CANARY_ROOT, outRoot, date, `canary: ${date} TARGET FAILED — ${prep.stage} failed at ${meta0.sha}`);
+      }
+      process.exitCode = 1;
+      return;
+    }
+    console.log(`[canary] target ready: ${prep.installed ? `npm ci (${prep.install_s} s), ` : ''}dist/ compiled from source (${prep.build_s} s)`);
+  }
 
   // --- load the target repo's bundle through ITS OWN harness ---
   const harnessUrl = pathToFileURL(path.join(vuggPath, 'tools', '_harness.mjs')).href;
@@ -185,19 +211,20 @@ async function main() {
 
   const outDir = path.join(outRoot, date, `v${SIM_VERSION}`);
 
-  // A real sweep for a date retires that date's NO-CHANGE marker, whose claim
-  // ("nothing re-stored") is now false. It happened on 2026-10-28: a test
-  // trigger wrote one at 01:42, then the 200 → 30 seed change made the 04:00 run
-  // a real sweep into the same folder. Kept locally (gitignored); git history
-  // keeps the published one.
-  const ncPath = path.join(outRoot, date, 'NO-CHANGE.json');
-  if (fs.existsSync(ncPath)) {
+  // A real sweep for a date retires that date's NO-CHANGE or TARGET-FAILED
+  // marker, whose claim ("nothing re-stored", "nothing swept") is now false. It
+  // happened on 2026-10-28: a test trigger wrote a NO-CHANGE at 01:42, then the
+  // 200 → 30 seed change made the 04:00 run a real sweep into the same folder.
+  // Kept locally (gitignored); git history keeps the published one.
+  for (const marker of ['NO-CHANGE.json', TARGET_FAILED]) {
+    const from = path.join(outRoot, date, marker);
+    if (!fs.existsSync(from)) continue;
     try {
-      const to = path.join(outRoot, date, `NO-CHANGE.superseded-${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z.json`);
-      fs.renameSync(ncPath, to);
-      console.log(`[canary] ${date} gets a real sweep — moved its NO-CHANGE marker aside to ${path.basename(to)}`);
+      const to = path.join(outRoot, date, marker.replace(/\.json$/, `.superseded-${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z.json`));
+      fs.renameSync(from, to);
+      console.log(`[canary] ${date} gets a real sweep — moved its ${marker} aside to ${path.basename(to)}`);
     } catch (e) {
-      console.warn(`[canary] could not move ${date}/NO-CHANGE.json aside (${e.message}).`);
+      console.warn(`[canary] could not move ${date}/${marker} aside (${e.message}).`);
     }
   }
 
@@ -288,6 +315,10 @@ async function main() {
       ? { key: identity.key, sha_full: identity.fields.sha, dist_sha256: identity.fields.dist_sha256, node: identity.fields.node }
       : { key: null, reason: identity.reason },
     resumed: Object.keys(reusedFrom).length ? reusedFrom : undefined,  // scenario → where it was reused from
+    full_run: fullRun,                   // every scenario at config seeds: the only runs status times for the seed budget
+    follow,                              // where tonight's checkout came from (src/target.mjs); absent on manual runs
+    target_prep: prep ? { installed: prep.installed, install_s: prep.install_s, built: prep.built, build_s: prep.build_s } : undefined,
+    started_at: startedAt,
     generated_at: new Date().toISOString(),
   };
   fs.writeFileSync(path.join(outDir, 'meta.json'), JSON.stringify(meta, null, 2) + '\n');

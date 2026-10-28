@@ -47,20 +47,26 @@ to raise an alarm when a new build silently moves what the rocks produce.
   (see [Resume](#resume-a-killed-sweep)).
 - **Status glance** ✅ `src/status.mjs`, run by the vugg session-start ritual:
   the last finished observation and its age (⚑ STALE past 2 days), killed runs
-  since, a sweep in progress, the last sweep's self-test and alarm, and any
-  drift between the armed task and `src/task-spec.mjs`.
+  since, a sweep in progress, where the target came from and nights it could
+  not be built, the last sweep's self-test and alarm, how many seeds fit one
+  night, and any drift between the armed task and `src/task-spec.mjs`.
+- **Follows main** ✅ `src/target.mjs` (2026-10-28). The canary sweeps its own
+  vugg checkout and moves it to the newest `origin/main` before every full run,
+  then installs and compiles it before sweeping (see
+  [The target](#the-target-its-own-checkout-that-follows-main)). Until then it
+  swept the checkout people work in, which sat on a September branch 94
+  commits behind main, so it would have reported NO-CHANGE every night.
 
-Deferred by choice: **3b** the two-folder `today/`/`tomorrow/` promote. The
-canary sweeps the configured `vuggPath` (the live checkout) directly; the
-no-change short-circuit already prevents redundant runs. The promote is a
-*gate* (don't record half-finished work) worth adding only if that need
-appears — its copy mechanics are machine-specific.
+**3b**, the two-folder `today/`/`tomorrow/` promote, is now covered by the
+canary's own checkout: main plays `tomorrow/`, and the canary's worktree is the
+frozen `today/` that moves only at 04:00.
 
 ## Run it
 
 ```sh
-node src/sweep.mjs --now                      # full sweep (config.seeds = 30)
-node src/sweep.mjs --now --seeds 5 --scenario mvt,supergene_oxidation --no-publish   # smoke
+node src/sweep.mjs --now                      # full sweep (config.seeds = 30): follow main, compile, sweep
+node src/sweep.mjs --now --no-follow          # full sweep of the target where it is
+node src/sweep.mjs --now --seeds 5 --scenario mvt,supergene_oxidation --no-publish   # smoke (never moves the target)
 node src/sweep.mjs --help
 
 node src/diff.mjs <olderVersionDir> <newerVersionDir>   # standalone regression diff
@@ -69,8 +75,43 @@ node src/status.mjs                                     # glance: freshness, kil
 node src/schedule.mjs                                   # print the 04:00 task cmd (arms nothing)
 node src/schedule.mjs --install                         # arm it headless (deliberate, human-only step)
 node src/schedule.mjs --status                          # read the live task back, report drift
-npm test                                                # alarm, short-circuit, status, creep, resume (59 tests)
+npm test                                                # alarm, short-circuit, status, creep, resume, target, nightly (92 tests)
 ```
+
+### The target: its own checkout that follows main
+
+`vuggPath` is `../vugg/vugg-canary-target`, a detached worktree of the vugg
+repo that belongs to the canary. Nobody works in it. A full run (the nightly)
+does this before anything else:
+
+1. **Follow.** `git fetch origin main`, then check the fetched tip out
+   (detached). `meta.json`, `NO-CHANGE.json` and `TARGET-FAILED.json` record
+   the move as `follow: {from, to, moved, fast_forward}`. A failed fetch keeps
+   the old commit and the night goes on with it. A tracked edit in the checkout
+   means someone worked in it: the canary leaves it where it is and records
+   why, rather than discard the edit. An untracked file doesn't block the move.
+2. **Short-circuit.** Same commit, canary version and seed count as the last
+   sweep, on a clean engine: NO-CHANGE, and nothing is installed or built.
+3. **Prepare.** `npm ci --ignore-scripts` when `package-lock.json` changed
+   since the canary's last install (stamped in
+   `node_modules/.canary-install.json`), then the compile step of vugg's
+   `tools/build-all.mjs`: clean `dist/`, `tsc -p tsconfig.json`. Not all of
+   `npm run build`: that also regenerates the narrative manifest and
+   re-splices `index.html`, both tracked, and the harness reads only `dist/`.
+   So the canary never edits its own checkout. If the install or the compile
+   fails, the day gets a `TARGET-FAILED.json` (stage, commit, the output's
+   tail), it is published like a NO-CHANGE day, and status flags it. The next
+   night tries again.
+
+Manual runs with `--scenario` or `--seeds` sweep the checkout as it is.
+`--no-follow` does a full run without fetching. To recreate the checkout:
+
+```sh
+git -C ../vugg/vugg-simulator fetch origin main
+git -C ../vugg/vugg-simulator worktree add --detach ../vugg-canary-target FETCH_HEAD
+```
+
+The next nightly installs and compiles it.
 
 ### Resume a killed sweep
 
@@ -128,12 +169,17 @@ Checked on the 10-26 sweep's own per-seed digests (one engine, so every alarm
 is false): disjoint 30-seed blocks raise 0.8 false alarms per pair at 39 pts /
 3 seeds (mostly rel_move; 0.33 with relMult 3), against 4.4 at 15 pts / 2%.
 
-**Go back up** once the wall-dissolution proxy fix is in the checkout at
-`vuggPath` (vugg branch `perf/surface-raw-reads`; the slow four spend most of
-their time in a read-only Proxy around the cavity mesh). Re-measure the per-seed
-cost, take the most seeds that fit 04:00–09:00, and move `absPts` with them.
-The no-change short-circuit compares seed counts, so the first night after a
-change always sweeps.
+**Go back up** once the wall-dissolution proxy fix is in main (vugg PR #41,
+branch `perf/surface-raw-reads`; the slow four spend most of their time in a
+read-only Proxy around the cavity mesh). The canary follows main, so its first
+sweep with the fix times the faster engine. `status.mjs` divides each full,
+unresumed sweep's wall time by its seeds plus the seed-42 self-test pass, and
+when at least a quarter more seeds fit 04:00–09:00 than are configured it
+prints `⚑ seeds: ~N fit 04:00–09:00 … go back up: seeds N, absPts M`. Take
+them, and move `absPts` with them. It also flags a sweep that overruns the
+night. Contention during the sweep only makes the estimate low. The no-change
+short-circuit compares seed counts, so the first night after a change always
+sweeps.
 
 It writes `diff-vs-<olderVer>.json` and prints a summary. Like the sweep, it's
 passive: it *records* alarms and never exits nonzero — surfacing the move is the
@@ -147,9 +193,9 @@ built once: `npm run build` in the vugg repo.)
 
 ## What it is (and isn't)
 
-It's a **passive sediment scanner**, not a CI gate. Each day it cores whatever
-stratum is sitting in the target (`today/` once the promote lands) and accretes
-a longitudinal record of what the rocks produce. It does **not** need to be the
+It's a **passive sediment scanner**, not a CI gate. Each night it cores the
+stratum main has laid down (its own checkout, moved to main at 04:00) and
+accretes a longitudinal record of what the rocks produce. It does **not** need to be the
 newest version, and it never *halts* the gathering when something looks off — it
 **annotates the sample honestly and keeps coring**. The value is the accreted
 record over time, not catching the latest commit.
@@ -180,13 +226,18 @@ sample*, not gatekeeping.
 | 2 | Sweep axis | vary chemistry 1..N, hold shape (assemblage robustness is chem-driven) |
 | 3 | Diff alarm threshold | ±15 spawn-% points, **plus** a >2× relative gate for rare-but-present species; at 30 seeds (2026-10-28) ±39 points and a 3-seed rare-species floor |
 | 4 | Commit the spine | yes — `frequency.json`/`meta.json`/diffs are committable; heavy tiers gitignored, regenerable |
-| 5 | Seeds per night | 30 (2026-10-28), so a sweep finishes in a night; back up once the wall-dissolution proxy fix is in `vuggPath` |
+| 5 | Seeds per night | 30 (2026-10-28), so a sweep finishes in a night; back up once the wall-dissolution proxy fix is in main (status says when) |
+| 6 | What it sweeps | its own vugg worktree, moved to `origin/main` before every full run and compiled before sweeping (2026-10-28) |
 
 ## Output layout
 
 ```
+logs/<date>/
+  NO-CHANGE.json                  # instead of v<SIM>/: main unchanged since the last sweep (with the night's fetch)
+  TARGET-FAILED.json              # instead of v<SIM>/: the target could not be installed or compiled
 logs/<date>/v<SIM>/
-  meta.json                       # sha, dirty, sim_version, seed axis, self-test, runtime identity, resumed
+  meta.json                       # sha, dirty, sim_version, seed axis, self-test, runtime identity, resumed,
+                                  #   follow (where the checkout came from), target_prep, started_at, full_run
   sweep-identity.json             # local: the runtime key + every attempt (pid, start, planned scenarios)
   <scenario>/
     frequency.json                # SPINE: per-species pct_present, mean_count, size dist (committable)
