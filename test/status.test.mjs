@@ -22,9 +22,11 @@ const STATUS = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'sr
 const ROOT = path.join(os.tmpdir(), 'vugg-canary-test-status');
 
 // run status against a given logs dir; returns { out, code } and never throws.
-function runStatus(logsDir) {
+// --no-task: these cases are about the logs, not this machine's scheduler.
+function runStatus(logsDir, today = '2026-06-14') {
   try {
-    const out = execFileSync('node', [STATUS, logsDir], { encoding: 'utf8' });
+    const out = execFileSync('node', [STATUS, logsDir, '--no-task'],
+      { encoding: 'utf8', env: { ...process.env, CANARY_STATUS_TODAY: today } });
     return { out, code: 0 };
   } catch (e) {
     return { out: (e.stdout || '') + (e.stderr || ''), code: e.status ?? 1 };
@@ -90,6 +92,58 @@ test('complete sweep with engine-dirty meta ⇒ reports it cleanly', () => {
   assert.match(r.out, /last sweep/);
   assert.match(r.out, /ENGINE-dirty/);
   assert.match(r.out, /self-test:\s+PASS/);
+});
+
+// --- a canary that quietly STOPPED must be loud (2026-08-16 → 10-25: 67 killed sweeps, unseen) ---
+
+const partialRun = (date, ver, scenarios, attempt = null) => {
+  const vdir = path.join(ROOT, date, ver);
+  for (const s of scenarios) {
+    fs.mkdirSync(path.join(vdir, s), { recursive: true });
+    fs.writeFileSync(path.join(vdir, s, 'frequency.json'), '{}');
+  }
+  fs.mkdirSync(vdir, { recursive: true });
+  if (attempt) fs.writeFileSync(path.join(vdir, 'sweep-identity.json'), JSON.stringify({ key: 'k', attempts: [attempt] }));
+};
+
+test('last finished observation older than 2 days ⇒ ⚑ STALE; a fresh one is quiet', () => {
+  fs.rmSync(ROOT, { recursive: true, force: true });
+  const ver = path.join(ROOT, '2026-06-01', 'v195');
+  fs.mkdirSync(path.join(ver, 'mvt'), { recursive: true });
+  writeMeta(ver);
+  assert.match(runStatus(ROOT, '2026-06-14').out, /⚑ STALE — last observation: 2026-06-01 .* 13 d ago/);
+  assert.doesNotMatch(runStatus(ROOT, '2026-06-02').out, /STALE/);
+});
+
+test('killed runs since the last observation are counted, newest named with its progress', () => {
+  fs.rmSync(ROOT, { recursive: true, force: true });
+  const ver = path.join(ROOT, '2026-06-10', 'v195');
+  fs.mkdirSync(path.join(ver, 'mvt'), { recursive: true });
+  writeMeta(ver);
+  partialRun('2026-06-11', 'v195', ['amethyst_geode']);                       // old code: no identity
+  partialRun('2026-06-12', 'v196', ['amethyst_geode', 'bisbee'],
+    { started_at: '2026-06-12T08:00:00.000Z', pid: 2 ** 30, planned: 41 });    // a pid that isn't running
+  const r = runStatus(ROOT, '2026-06-13');
+  assert.equal(r.code, 0);
+  assert.match(r.out, /⚑ 2 killed run\(s\) since 2026-06-10 — newest 2026-06-12 v196: 2\/41 scenario\(s\) cored/);
+  assert.match(r.out, /last completed/);
+});
+
+test('a partial whose recorded pid is alive ⇒ IN PROGRESS with its pid, not killed', () => {
+  fs.rmSync(ROOT, { recursive: true, force: true });
+  partialRun('2026-06-14', 'v195', ['amethyst_geode'],
+    { started_at: '2026-06-14T08:00:00.000Z', pid: process.pid, planned: 41 });
+  const r = runStatus(ROOT);
+  assert.match(r.out, new RegExp(`sweep IN PROGRESS — 1/41 scenario\\(s\\) cored, started 2026-06-14T08:00:00.000Z \\(pid ${process.pid}\\)`));
+  assert.doesNotMatch(r.out, /killed/);
+});
+
+test('a resumed sweep says how many scenarios came from a killed run', () => {
+  fs.rmSync(ROOT, { recursive: true, force: true });
+  const ver = path.join(ROOT, '2026-06-14', 'v195');
+  fs.mkdirSync(path.join(ver, 'mvt'), { recursive: true });
+  writeMeta(ver, { scenarios: ['mvt', 'bisbee'], resumed: { bisbee: '2026-06-13/v195' } });
+  assert.match(runStatus(ROOT).out, /2 scenarios × 200 seeds, 1 resumed from a killed run/);
 });
 
 fs.rmSync(ROOT, { recursive: true, force: true });

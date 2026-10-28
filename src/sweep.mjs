@@ -30,19 +30,23 @@ import { fingerprintScenario } from './fingerprint.mjs';
 import { shouldShortCircuit, writeNoChangeNote, findLastDataBearingDay, listPublishableDayDirs } from './promote.mjs';
 import { loadVersionFingerprint, diffFingerprints, summarizeAlarms } from './diff.mjs';
 import { makeRunner } from './run.mjs';
+import { runtimeIdentity, prepareOutDir, planReuse, adoptScenario, writeScenarioIdentity } from './resume.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PKG = JSON.parse(fs.readFileSync(path.join(CANARY_ROOT, 'package.json'), 'utf8'));
 const CANARY_VERSION = PKG.version;
+const STEPS_MODE = 'defaultSteps??100 (matches gen-baseline)';
+const SHAPE_MODE = 'scenario-authored';
 
 function parseArgs(argv) {
-  const a = { now: false, help: false, build: false, force: false, seeds: null, scenario: null, date: null, out: null };
+  const a = { now: false, help: false, build: false, force: false, noPublish: false, seeds: null, scenario: null, date: null, out: null };
   for (let i = 2; i < argv.length; i++) {
     const t = argv[i];
     if (t === '--now') a.now = true;
     else if (t === '--help' || t === '-h') a.help = true;
     else if (t === '--build') a.build = true;
     else if (t === '--force') a.force = true;
+    else if (t === '--no-publish') a.noPublish = true;
     else if (t === '--seeds') a.seeds = parseInt(argv[++i], 10);
     else if (t === '--scenario') a.scenario = argv[++i];
     else if (t === '--date') a.date = argv[++i];
@@ -79,15 +83,20 @@ const HELP = `vugg-canary sweep (Phase 1)
 
   --now                 run a sweep immediately (the only mode in Phase 1)
   --build               run \`npm run build\` in the target first, so dist/ matches source
-  --force               sweep even if the SHA is unchanged (skip the no-change short-circuit)
+  --force               sweep even if the SHA is unchanged (skip the no-change short-circuit),
+                        and recompute every scenario (no resume)
   --seeds N             chemistry seeds 1..N to sweep (default: config.seeds=200)
   --scenario a,b        restrict to a comma-separated subset (default: all)
   --date YYYY-MM-DD     override the log date folder (default: today)
   --out DIR             override the logs dir (default: config.logsDir)
+  --no-publish          never commit or push the spine (manual and test runs)
   --help                this text
 
 Output: <out>/<date>/v<SIM>/<scenario>/{frequency.json, seeds.json} + meta.json
-The seed-42 self-test runs every time and is recorded in meta.json.`;
+The seed-42 self-test runs every time and is recorded in meta.json.
+Resume: a scenario a killed run already finished, under this exact runtime
+(commit, clean engine, dist/ bytes, canary version, seeds, Node), is reused
+instead of recomputed; see src/resume.mjs.`;
 
 async function main() {
   const args = parseArgs(process.argv);
@@ -126,7 +135,7 @@ async function main() {
       // publishSpine ever ran, so NO quiet day was ever committed — the public
       // record had silent holes where honest "nothing changed" markers sat
       // locally (hostile review 2026-07-14, Part A finding #1).
-      if (cfg.autoPush !== false) {
+      if (cfg.autoPush !== false && !args.noPublish) {
         publishSpine(CANARY_ROOT, outRoot, date, `canary: ${date} NO-CHANGE — identical to ${note.identical_to} (${note.version}, sha ${meta0.sha})`);
       }
       return;
@@ -175,22 +184,60 @@ async function main() {
   const runOne = makeRunner({ SCENARIOS, VugSimulator, setSeed });
 
   const outDir = path.join(outRoot, date, `v${SIM_VERSION}`);
-  fs.mkdirSync(outDir, { recursive: true });
+
+  // --- resume: reuse what a killed run already finished, under this exact runtime ---
+  const identity = runtimeIdentity({
+    fullSha: meta0.fullSha, engineDirty: meta0.engineDirty, distDir: path.join(vuggPath, 'dist'),
+    simVersion: SIM_VERSION, canaryVersion: CANARY_VERSION, nSeeds: seeds,
+    stepsMode: STEPS_MODE, shape: SHAPE_MODE,
+  });
+  let reuse = new Map();
+  try {
+    const prep = prepareOutDir(outDir, identity, { planned: names.length });
+    if (prep.superseded) console.log(`[canary] another run's files sat in ${path.relative(CANARY_ROOT, outDir)} — moved aside to ${path.basename(prep.superseded)}`);
+    if (!args.force) reuse = planReuse(outRoot, outDir, names, identity);
+  } catch (e) {
+    console.warn(`[canary] resume bookkeeping failed (${e.message}) — sweeping every scenario.`);
+    fs.mkdirSync(outDir, { recursive: true });
+  }
+  if (!identity.key) console.log(`[canary] no resume: ${identity.reason}.`);
+  else if (reuse.size) console.log(`[canary] resuming: ${reuse.size}/${names.length} scenario(s) already finished by a killed run under this exact runtime.`);
 
   // --- sweep ---
+  const reusedFrom = {};
   for (const name of names) {
-    const perSeedMap = {};      // seed -> digest (heavy tier, gitignored)
-    const perSeedArr = [];
-    for (let s = 1; s <= seeds; s++) {
-      const d = runOne(name, s);
-      perSeedMap[s] = d;
-      perSeedArr.push(d);
-    }
-    const fp = fingerprintScenario(perSeedArr);
     const sdir = path.join(outDir, name);
-    fs.mkdirSync(sdir, { recursive: true });
-    fs.writeFileSync(path.join(sdir, 'frequency.json'), JSON.stringify(fp, null, 2) + '\n');
-    fs.writeFileSync(path.join(sdir, 'seeds.json'), JSON.stringify(perSeedMap) + '\n');
+    let fp = null;
+    let note = '';
+    if (reuse.has(name)) {
+      const src = reuse.get(name);
+      try {
+        if (src) adoptScenario(src, outDir, name);
+        fp = JSON.parse(fs.readFileSync(path.join(sdir, 'frequency.json'), 'utf8'));
+        reusedFrom[name] = src ? path.relative(outRoot, src).split(path.sep).join('/') : 'in place';
+        note = `  (reused ${reusedFrom[name]})`;
+      } catch (e) {
+        fp = null;
+        console.warn(`[canary] could not reuse ${name} (${e.message}) — recomputing it.`);
+      }
+    }
+    if (!fp) {
+      const perSeedMap = {};      // seed -> digest (heavy tier, gitignored)
+      const perSeedArr = [];
+      for (let s = 1; s <= seeds; s++) {
+        const d = runOne(name, s);
+        perSeedMap[s] = d;
+        perSeedArr.push(d);
+      }
+      fp = fingerprintScenario(perSeedArr);
+      fs.mkdirSync(sdir, { recursive: true });
+      fs.writeFileSync(path.join(sdir, 'frequency.json'), JSON.stringify(fp, null, 2) + '\n');
+      fs.writeFileSync(path.join(sdir, 'seeds.json'), JSON.stringify(perSeedMap) + '\n');
+      // The sidecar goes last: a kill between the writes leaves no sidecar, so a
+      // half-written scenario is recomputed, never reused.
+      try { writeScenarioIdentity(sdir, identity); }
+      catch (e) { console.warn(`[canary] could not stamp ${name} for resume (${e.message}).`); }
+    }
 
     // one-line console summary: the 3 most-frequent species
     const top = Object.entries(fp.species)
@@ -198,7 +245,7 @@ async function main() {
       .slice(0, 3)
       .map(([m, v]) => `${m} ${v.pct_present}%`)
       .join(', ');
-    console.log(`  ${name.padEnd(28)} ${String(Object.keys(fp.species).length).padStart(2)} species  | ${top}`);
+    console.log(`  ${name.padEnd(28)} ${String(Object.keys(fp.species).length).padStart(2)} species  | ${top}${note}`);
   }
 
   // --- guard 2: seed-42 self-test against the committed baseline ---
@@ -216,11 +263,15 @@ async function main() {
     source_sim_version: srcVer,
     dist_matches_source: distMatchesSource,
     canary_version: CANARY_VERSION,
-    seed_axis: { vary: 'chem', range: [1, seeds], shape: 'scenario-authored' },
+    seed_axis: { vary: 'chem', range: [1, seeds], shape: SHAPE_MODE },
     n_seeds: seeds,
-    steps_mode: 'defaultSteps??100 (matches gen-baseline)',
+    steps_mode: STEPS_MODE,
     scenarios: names,
     selftest: selftest.summary,
+    runtime_identity: identity.key
+      ? { key: identity.key, sha_full: identity.fields.sha, dist_sha256: identity.fields.dist_sha256, node: identity.fields.node }
+      : { key: null, reason: identity.reason },
+    resumed: Object.keys(reusedFrom).length ? reusedFrom : undefined,  // scenario → where it was reused from
     generated_at: new Date().toISOString(),
   };
   fs.writeFileSync(path.join(outDir, 'meta.json'), JSON.stringify(meta, null, 2) + '\n');
@@ -269,9 +320,10 @@ async function main() {
   // only the shareable spine (frequency.json, meta.json, diff-*.json, NO-CHANGE).
   // Off by setting "autoPush": false in canary.config.json. PASSIVE-INSTRUMENT
   // RULE: a publish failure must NEVER fail the sweep — the gathering is the point.
-  if (cfg.autoPush !== false) {
+  if (cfg.autoPush !== false && !args.noPublish) {
     const stOk = selftest.ok === true ? 'PASS' : selftest.ok === false ? 'FAIL' : 'n/a';
-    const note = `${names.length} scenarios${alarmTotal != null ? `, ${alarmTotal} alarm(s)` : ''}, self-test ${stOk}`;
+    const nReused = Object.keys(reusedFrom).length;
+    const note = `${names.length} scenarios${nReused ? ` (${nReused} resumed)` : ''}${alarmTotal != null ? `, ${alarmTotal} alarm(s)` : ''}, self-test ${stOk}`;
     publishSpine(CANARY_ROOT, outRoot, date, `canary: ${date} v${SIM_VERSION} spine — ${note}`);
   }
 }

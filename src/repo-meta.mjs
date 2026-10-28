@@ -35,15 +35,17 @@ export function repoMeta(repoPath) {
     execFileSync('git', ['-C', repoPath, ...args], { encoding: 'utf8' }).trim();
 
   let sha = 'UNKNOWN';
+  let fullSha = null;   // the resume identity needs the whole commit id, not the short stamp
   let branch = 'UNKNOWN';
 
   try {
     sha = git(['rev-parse', '--short', 'HEAD']);
+    fullSha = git(['rev-parse', 'HEAD']);
     branch = git(['rev-parse', '--abbrev-ref', 'HEAD']);
     const dirtyFiles = toLines(git(['status', '--porcelain']));
     const engineDirtyFiles = toLines(git(['status', '--porcelain', '--', ...ENGINE_PATHSPEC]));
     return {
-      sha, branch,
+      sha, fullSha, branch,
       dirty: dirtyFiles.length > 0, dirtyFiles,
       engineDirty: engineDirtyFiles.length > 0, engineDirtyFiles,
     };
@@ -51,7 +53,7 @@ export function repoMeta(repoPath) {
     // Not a git repo, or git unavailable: leave both dirty=true so the caller
     // re-sweeps rather than trusting a SHA we couldn't verify.
     return {
-      sha, branch,
+      sha, fullSha, branch,
       dirty: true, dirtyFiles: [],
       engineDirty: true, engineDirtyFiles: [],
       gitError: String(e.message || e),

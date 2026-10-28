@@ -2,9 +2,9 @@
 /**
  * src/schedule.mjs — Phase 5: register (or just PRINT) the nightly Windows task.
  *
- *   node src/schedule.mjs              # print the schtasks command — ARMS NOTHING (default)
+ *   node src/schedule.mjs              # print what --install would arm — ARMS NOTHING (default)
  *   node src/schedule.mjs --install    # actually create the daily 04:00 task
- *   node src/schedule.mjs --status     # query the task
+ *   node src/schedule.mjs --status     # read the live task back and report drift
  *   node src/schedule.mjs --uninstall  # remove it
  *
  * Registering a scheduled task is persistent system config — a deliberate,
@@ -20,10 +20,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { TASK, TIME, CONHOST, headlessArguments, armPowerShell, readTask, taskDrift } from './task-spec.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const TASK = 'vugg-canary-nightly';
-const TIME = '04:00';
 
 const nodeExe = process.execPath;
 const sweep = path.join(CANARY_ROOT, 'src', 'sweep.mjs');
@@ -42,16 +41,33 @@ const wrapperBody =
 // Storage\..." and schtasks splits an unquoted /tr value on the space, storing
 // Execute=C:\Users\baals\Local (→ 0x80070002 file-not-found at 04:00). The
 // embedded quotes survive into the stored task action as the executable path.
+// The action is then REPLACED by the headless launch below; /create only makes
+// the task and its daily trigger.
 const createArgs = ['/create', '/tn', TASK, '/sc', 'DAILY', '/st', TIME, '/tr', `"${wrapper}"`, '/f'];
-// schtasks can't set these; applied via PowerShell after /create. Defaults are
-// hostile to an unattended nightly on a machine that sleeps: no catch-up for a
-// missed 04:00 (StartWhenAvailable=false), refuse-to-start + kill-mid-sweep on
-// battery. The hostile review (2026-07-14, Part A) found the June gaps were a
-// publish bug, not the scheduler — but July 12/13 died mid-run, and these
-// settings are the standing risk for any offline/asleep 04:00.
-const settingsPs =
-  `$s = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries; ` +
-  `Set-ScheduledTask -TaskName '${TASK}' -Settings $s | Out-Null`;
+// schtasks can't set the rest; applied via PowerShell after /create:
+//  • the ACTION runs the wrapper through `conhost.exe --headless`, so no console
+//    window exists. A visible window got closed or Ctrl+C'd mid-sweep every
+//    morning from 2026-08-16 to 10-25: 67 nightly sweeps died, none finished.
+//  • the SETTINGS: defaults are hostile to an unattended nightly on a machine
+//    that sleeps: no catch-up for a missed 04:00 (StartWhenAvailable=false),
+//    refuse-to-start + kill-mid-sweep on battery. The hostile review
+//    (2026-07-14, Part A) found the June gaps were a publish bug, not the
+//    scheduler — but July 12/13 died mid-run, and these settings are the
+//    standing risk for any offline/asleep 04:00.
+// --install reads the task back afterwards: the July settings were written here
+// but never reached the live task, because nobody re-ran --install.
+const armPs = armPowerShell(wrapper);
+
+function reportTask() {
+  const task = readTask();
+  const drift = taskDrift(task, wrapper);
+  if (!drift.length) {
+    console.log(`[schedule] "${TASK}" ${task.state}: headless (${path.basename(task.execute)} ${task.arguments}), catch-up on, battery-tolerant.`);
+  } else {
+    for (const d of drift) console.log(`[schedule] ⚑ ${d}`);
+  }
+  return drift;
+}
 
 const mode = process.argv[2] || '--print';
 
@@ -59,8 +75,10 @@ if (mode === '--print' || mode === '--help' || mode === '-h') {
   console.log(`vugg-canary scheduler (Phase 5) — nothing armed.\n`);
   console.log(`A daily ${TIME} task "${TASK}" would run the wrapper ${wrapper}, which does:`);
   console.log(wrapperBody.split('\r\n').filter(Boolean).map((l) => `  ${l}`).join('\n') + '\n');
+  console.log(`with no window: ${CONHOST} ${headlessArguments(wrapper)}\n`);
   console.log(`Arm it:     node src/schedule.mjs --install`);
-  console.log(`  (equiv:   schtasks ${createArgs.map((a) => (/\s/.test(a) ? `"${a}"` : a)).join(' ')})`);
+  console.log(`  (equiv:   schtasks ${createArgs.map((a) => (/\s/.test(a) ? `"${a}"` : a)).join(' ')}`);
+  console.log(`   then:    powershell -Command "${armPs}")`);
   console.log(`Check:      node src/schedule.mjs --status`);
   console.log(`Remove:     node src/schedule.mjs --uninstall`);
 } else if (mode === '--install') {
@@ -68,15 +86,15 @@ if (mode === '--print' || mode === '--help' || mode === '-h') {
   fs.writeFileSync(wrapper, wrapperBody);
   execFileSync('schtasks', createArgs, { stdio: 'inherit' });
   try {
-    execFileSync('powershell', ['-NoProfile', '-Command', settingsPs], { stdio: 'inherit' });
-    console.log(`[schedule] settings: StartWhenAvailable + battery-tolerant (missed 04:00 catches up; battery doesn't kill a sweep).`);
+    execFileSync('powershell', ['-NoProfile', '-Command', armPs], { stdio: 'inherit' });
   } catch {
-    console.warn(`[schedule] ⚑ could not apply StartWhenAvailable/battery settings (task still armed with defaults).`);
+    console.warn(`[schedule] ⚑ could not apply the headless action + settings — the task is armed with a VISIBLE console and defaults.`);
   }
-  console.log(`[schedule] armed "${TASK}" daily at ${TIME} → ${wrapper}. (--status to verify, --uninstall to remove)`);
+  console.log(`[schedule] armed "${TASK}" daily at ${TIME} → ${wrapper}. Reading it back:`);
+  const drift = reportTask();
+  if (drift.length) process.exitCode = 1;
 } else if (mode === '--status') {
-  try { execFileSync('schtasks', ['/query', '/tn', TASK, '/v', '/fo', 'LIST'], { stdio: 'inherit' }); }
-  catch { console.log(`[schedule] task "${TASK}" not found — not armed.`); }
+  reportTask();
 } else if (mode === '--uninstall') {
   try { execFileSync('schtasks', ['/delete', '/tn', TASK, '/f'], { stdio: 'inherit' }); console.log(`[schedule] removed "${TASK}".`); }
   catch { console.log(`[schedule] task "${TASK}" not found — nothing to remove.`); }

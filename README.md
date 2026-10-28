@@ -35,10 +35,20 @@ to raise an alarm when a new build silently moves what the rocks produce.
   rebuilds any single run on demand from `(SHA, seed)` — the heavy tier is a
   cache, not lost data. Reproduces & verifies against the stored digest when the
   code matches.
-- **Phase 5 — the scheduler** ✅ built, **not armed**. `src/schedule.mjs` prints
-  the exact daily-04:00 `schtasks` command by default and arms nothing;
-  `--install` (a deliberate human step) registers it, `--status`/`--uninstall`
-  manage it.
+- **Phase 5 — the scheduler** ✅ armed (daily 04:00). `src/schedule.mjs` prints
+  what it would arm by default and arms nothing; `--install` (a deliberate
+  human step) registers it, `--status` reads the live task back against
+  `src/task-spec.mjs`, `--uninstall` removes it. Since 2026-10-28 the task runs
+  **headless** (`conhost.exe --headless`): the visible console it used to open
+  got closed or Ctrl+C'd mid-sweep, and 67 nightly sweeps in a row (2026-08-16
+  → 10-25) died before one finished.
+- **Resume** ✅ `src/resume.mjs`. A killed sweep's finished scenarios are reused
+  by the next run instead of recomputed, but only under the exact same runtime
+  (see [Resume](#resume-a-killed-sweep)).
+- **Status glance** ✅ `src/status.mjs`, run by the vugg session-start ritual:
+  the last finished observation and its age (⚑ STALE past 2 days), killed runs
+  since, a sweep in progress, the last sweep's self-test and alarm, and any
+  drift between the armed task and `src/task-spec.mjs`.
 
 Deferred by choice: **3b** the two-folder `today/`/`tomorrow/` promote. The
 canary sweeps the configured `vuggPath` (the live checkout) directly; the
@@ -50,16 +60,35 @@ appears — its copy mechanics are machine-specific.
 
 ```sh
 node src/sweep.mjs --now                      # full sweep (config.seeds = 200)
-node src/sweep.mjs --now --seeds 5 --scenario mvt,supergene_oxidation   # smoke
+node src/sweep.mjs --now --seeds 5 --scenario mvt,supergene_oxidation --no-publish   # smoke
 node src/sweep.mjs --help
 
 node src/diff.mjs <olderVersionDir> <newerVersionDir>   # standalone regression diff
 node src/regenerate.mjs <date> <scenario> <seed>        # rebuild one run on demand
-node src/status.mjs                                     # glance: last sweep + latest alarm (session-start)
+node src/status.mjs                                     # glance: freshness, killed runs, alarm, task drift (session-start)
 node src/schedule.mjs                                   # print the 04:00 task cmd (arms nothing)
-node src/schedule.mjs --install                         # arm it (deliberate, human-only step)
-npm test                                                # alarm + short-circuit logic (17 asserts)
+node src/schedule.mjs --install                         # arm it headless (deliberate, human-only step)
+node src/schedule.mjs --status                          # read the live task back, report drift
+npm test                                                # alarm, short-circuit, status, creep, resume (51 tests)
 ```
+
+### Resume a killed sweep
+
+A sweep writes each scenario's `frequency.json` + `seeds.json` the moment it
+finishes and `meta.json` only at the end, so a killed sweep leaves its finished
+scenarios behind. The next run reuses them instead of starting from scenario
+one, first from an earlier attempt into the same day folder, then from the
+newest killed run of another day (copied, never moved).
+
+Reuse requires the **same runtime**: target commit, a clean engine tree, the
+built `dist/` bytes, canary version, seed count, step rule, shape mode and Node
+version hash into one key, stamped beside every finished scenario as a local
+`identity.json`. A scenario is reused only when its stamp matches the key the
+new run computes; an engine-dirty tree never resumes. The stamp is written last,
+so a scenario killed mid-write is recomputed. Leftovers of a different runtime
+in today's folder are moved aside to `v<N>.superseded-<UTC stamp>/`, not deleted.
+`meta.json` records `runtime_identity` and which scenarios were `resumed`, and
+from where. `--force` recomputes everything.
 
 ### The alarm (Phase 2)
 
@@ -123,10 +152,12 @@ sample*, not gatekeeping.
 
 ```
 logs/<date>/v<SIM>/
-  meta.json                       # sha, dirty, sim_version, seed axis, self-test result
+  meta.json                       # sha, dirty, sim_version, seed axis, self-test, runtime identity, resumed
+  sweep-identity.json             # local: the runtime key + every attempt (pid, start, planned scenarios)
   <scenario>/
     frequency.json                # SPINE: per-species pct_present, mean_count, size dist (committable)
     seeds.json                    # heavy tier: every seed's digest (gitignored, regenerable)
+    identity.json                 # local: the runtime key that produced this scenario (resume)
 ```
 
 Phase 1 stores all per-seed digests in one compact `seeds.json` per scenario
