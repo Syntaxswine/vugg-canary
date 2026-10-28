@@ -59,7 +59,7 @@ appears — its copy mechanics are machine-specific.
 ## Run it
 
 ```sh
-node src/sweep.mjs --now                      # full sweep (config.seeds = 200)
+node src/sweep.mjs --now                      # full sweep (config.seeds = 30)
 node src/sweep.mjs --now --seeds 5 --scenario mvt,supergene_oxidation --no-publish   # smoke
 node src/sweep.mjs --help
 
@@ -69,7 +69,7 @@ node src/status.mjs                                     # glance: freshness, kil
 node src/schedule.mjs                                   # print the 04:00 task cmd (arms nothing)
 node src/schedule.mjs --install                         # arm it headless (deliberate, human-only step)
 node src/schedule.mjs --status                          # read the live task back, report drift
-npm test                                                # alarm, short-circuit, status, creep, resume (51 tests)
+npm test                                                # alarm, short-circuit, status, creep, resume (59 tests)
 ```
 
 ### Resume a killed sweep
@@ -95,12 +95,45 @@ from where. `--force` recomputes everything.
 `diff.mjs` compares two swept versions' frequency tables and flags, per
 `(scenario, species)`:
 
-- **abs_move** — both versions present it, `|Δ spawn-%| ≥ 15 pts` (the blunt,
-  reliable signal; supergene mottramite 96→47 is this).
-- **rel_move** — a rare-but-present species (≥2%) whose spawn-% swung ≥2×, which
-  the absolute gate would miss on low-frequency phases.
+- **abs_move** — both versions present it, `|Δ spawn-%| ≥ absPts` (39 at 30
+  seeds; 15 at 200). The blunt, reliable signal; supergene mottramite 96→47 is
+  this, and it still alarms at 30 seeds.
+- **rel_move** — a rare-but-present species whose spawn-% swung ≥2×, with its
+  high side at or above the floor, which the absolute gate would miss on
+  low-frequency phases.
 - **appeared / disappeared** — a phase crossed the present/absent line and the
-  nonzero side clears the 2% floor (below it is sampling noise).
+  nonzero side clears the floor (below it is sampling noise).
+
+The floor is 3 seeds' worth of the smaller of the two sweeps, never below 2%:
+10% at 30 seeds, 2% at 200 (`minSeedsForRel`, `minPctForRel`).
+
+### Seed budget
+
+Since 2026-10-28 the nightly sweeps **30 seeds**, down from 200. At v285 a seed
+costs 9.3 min across the 41 scenarios (supergene_oxidation, tn457_barite_pulses,
+reactive_wall and bisbee are 74% of it), so 200 seeds took 31 h and could not
+finish in a night; 30 seeds is about 4.8 h. `absPts` moves with the seed count:
+it is three standard errors of a spawn-% difference at the noisiest frequency,
+`300·√(0.5/N)` points, so 15 at 200 seeds and 39 at 30. `status.mjs` flags a
+config where the two don't fit.
+
+| seeds | sweep at v285 costs | absPts |
+|---|---|---|
+| 200 | ~31 h | 15 |
+| 50 | ~7.9 h | 30 |
+| 40 | ~6.4 h | 34 |
+| 30 | ~4.8 h | 39 |
+
+Checked on the 10-26 sweep's own per-seed digests (one engine, so every alarm
+is false): disjoint 30-seed blocks raise 0.8 false alarms per pair at 39 pts /
+3 seeds (mostly rel_move; 0.33 with relMult 3), against 4.4 at 15 pts / 2%.
+
+**Go back up** once the wall-dissolution proxy fix is in the checkout at
+`vuggPath` (vugg branch `perf/surface-raw-reads`; the slow four spend most of
+their time in a read-only Proxy around the cavity mesh). Re-measure the per-seed
+cost, take the most seeds that fit 04:00–09:00, and move `absPts` with them.
+The no-change short-circuit compares seed counts, so the first night after a
+change always sweeps.
 
 It writes `diff-vs-<olderVer>.json` and prints a summary. Like the sweep, it's
 passive: it *records* alarms and never exits nonzero — surfacing the move is the
@@ -145,8 +178,9 @@ sample*, not gatekeeping.
 |---|----------|--------|
 | 1 | Canonical shape seed | **(A)** `(chem=42, shape=scenario-authored)` — one source of truth with the baselines |
 | 2 | Sweep axis | vary chemistry 1..N, hold shape (assemblage robustness is chem-driven) |
-| 3 | Diff alarm threshold | ±15 spawn-% points, **plus** a >2× relative gate for rare-but-present species |
+| 3 | Diff alarm threshold | ±15 spawn-% points, **plus** a >2× relative gate for rare-but-present species; at 30 seeds (2026-10-28) ±39 points and a 3-seed rare-species floor |
 | 4 | Commit the spine | yes — `frequency.json`/`meta.json`/diffs are committable; heavy tiers gitignored, regenerable |
+| 5 | Seeds per night | 30 (2026-10-28), so a sweep finishes in a night; back up once the wall-dissolution proxy fix is in `vuggPath` |
 
 ## Output layout
 

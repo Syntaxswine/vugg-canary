@@ -16,6 +16,12 @@
 //     disappeared     side clears the floor (≥ minPctForRel). Below the floor
 //                     it's sampling noise on a rare phase, so we don't alarm.
 //
+// The floor can also be given in SEEDS (minSeedsForRel): it becomes a percent
+// of the smaller of the two sweeps' seed counts, never below minPctForRel. At
+// 30 seeds a single seed is 3.3%, so a 2% floor would alarm on one seed's luck;
+// 3 seeds (10%) is the floor the boss chose when the nightly dropped to 30
+// seeds (2026-10-28). At 200 seeds 3 seeds is 1.5% and the 2% floor rules.
+//
 // PASSIVE INSTRUMENT: this computes and records alarms. It does NOT exit
 // nonzero or refuse — surfacing the move is the job; a human adjudicates
 // expected-churn vs regression. (An RNG-derivation rebake, for instance, will
@@ -39,13 +45,23 @@ export function loadVersionFingerprint(versionDir) {
 }
 
 /**
- * @param {Object} fpA - older version fingerprint: { scenario: {species: {pct_present, mean_count, ...}} }
+ * The abs_move threshold that is three standard errors of a spawn-% difference
+ * between two N-seed sweeps, at the noisiest frequency (50%): 300·√(0.5/N) pts.
+ * 15 pts at 200 seeds (the original choice), 39 at 30. A config whose absPts
+ * strays far from this for its seed count alarms on noise or sleeps on moves.
+ */
+export function threeSigmaPts(nSeeds) {
+  return 300 * Math.sqrt(0.5 / nSeeds);
+}
+
+/**
+ * @param {Object} fpA - older version fingerprint: { scenario: {n_seeds, species: {pct_present, mean_count, ...}} }
  * @param {Object} fpB - newer version fingerprint, same shape
- * @param {{absPts?:number, relMult?:number, minPctForRel?:number}} thresholds
+ * @param {{absPts?:number, relMult?:number, minPctForRel?:number, minSeedsForRel?:number}} thresholds
  * @returns {Array} alarms
  */
 export function diffFingerprints(fpA, fpB, thresholds = {}) {
-  const { absPts = 15, relMult = 2.0, minPctForRel = 2.0 } = thresholds;
+  const { absPts = 15, relMult = 2.0, minPctForRel = 2.0, minSeedsForRel = 0 } = thresholds;
   const alarms = [];
   const scenarios = [...new Set([...Object.keys(fpA), ...Object.keys(fpB)])].sort();
 
@@ -56,6 +72,9 @@ export function diffFingerprints(fpA, fpB, thresholds = {}) {
     const A = fpA[scen].species || {};
     const B = fpB[scen].species || {};
     const species = [...new Set([...Object.keys(A), ...Object.keys(B)])].sort();
+    // the rare-species floor, in percent: the noisier (smaller) sweep sets it
+    const nMin = Math.min(fpA[scen].n_seeds || Infinity, fpB[scen].n_seeds || Infinity);
+    const floor = Math.max(minPctForRel, Number.isFinite(nMin) ? (100 * minSeedsForRel) / nMin : 0);
 
     for (const sp of species) {
       const a = A[sp]?.pct_present ?? 0;
@@ -64,14 +83,17 @@ export function diffFingerprints(fpA, fpB, thresholds = {}) {
       const hi = Math.max(a, b);
       const lo = Math.min(a, b);
 
+      // floor - 1e-9: a percent derived from seeds (3/30 → 10) must not miss
+      // its own boundary by a rounding hair (pct_present is rounded to 0.1)
+      const clears = (pct) => pct >= floor - 1e-9;
       let kind = null;
       if (a === 0 && b > 0) {
-        if (b >= minPctForRel) kind = 'appeared';
+        if (clears(b)) kind = 'appeared';
       } else if (a > 0 && b === 0) {
-        if (a >= minPctForRel) kind = 'disappeared';
+        if (clears(a)) kind = 'disappeared';
       } else if (Math.abs(delta) >= absPts) {
         kind = 'abs_move';
-      } else if (hi >= minPctForRel && lo > 0 && hi / lo >= relMult) {
+      } else if (clears(hi) && lo > 0 && hi / lo >= relMult) {
         kind = 'rel_move';
       }
 

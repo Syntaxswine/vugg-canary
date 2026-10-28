@@ -126,7 +126,7 @@ async function main() {
     // Gate on ENGINE dirt, not whole-tree dirt: a stray untracked tool or a doc
     // edit can't change the fingerprint, so it must not force a 2.5h re-sweep.
     // (Whole-tree dirt is still recorded in meta for the honest sample label.)
-    const sc = shouldShortCircuit(outRoot, { date, sha: meta0.sha, dirty: meta0.engineDirty, canaryVersion: CANARY_VERSION });
+    const sc = shouldShortCircuit(outRoot, { date, sha: meta0.sha, dirty: meta0.engineDirty, canaryVersion: CANARY_VERSION, nSeeds: seeds });
     if (sc.skip) {
       const note = writeNoChangeNote(outRoot, date, sc.last, meta0.sha);
       console.log(`[canary] no change — ${sc.reason} — deterministic, sweep skipped.`);
@@ -184,6 +184,22 @@ async function main() {
   const runOne = makeRunner({ SCENARIOS, VugSimulator, setSeed });
 
   const outDir = path.join(outRoot, date, `v${SIM_VERSION}`);
+
+  // A real sweep for a date retires that date's NO-CHANGE marker, whose claim
+  // ("nothing re-stored") is now false. It happened on 2026-10-28: a test
+  // trigger wrote one at 01:42, then the 200 → 30 seed change made the 04:00 run
+  // a real sweep into the same folder. Kept locally (gitignored); git history
+  // keeps the published one.
+  const ncPath = path.join(outRoot, date, 'NO-CHANGE.json');
+  if (fs.existsSync(ncPath)) {
+    try {
+      const to = path.join(outRoot, date, `NO-CHANGE.superseded-${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z.json`);
+      fs.renameSync(ncPath, to);
+      console.log(`[canary] ${date} gets a real sweep — moved its NO-CHANGE marker aside to ${path.basename(to)}`);
+    } catch (e) {
+      console.warn(`[canary] could not move ${date}/NO-CHANGE.json aside (${e.message}).`);
+    }
+  }
 
   // --- resume: reuse what a killed run already finished, under this exact runtime ---
   const identity = runtimeIdentity({

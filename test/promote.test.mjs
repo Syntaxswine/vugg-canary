@@ -102,6 +102,20 @@ test('listPublishableDayDirs: missing root ⇒ empty list', () => {
   assert.deepEqual(listPublishableDayDirs(path.join(os.tmpdir(), 'vugg-canary-test-nonexistent')), []);
 });
 
+test('a changed seed count never short-circuits (200 → 30 on an unchanged target)', () => {
+  const root = path.join(os.tmpdir(), 'vugg-canary-test-promote-seeds');
+  fs.rmSync(root, { recursive: true, force: true });
+  const d = path.join(root, '2026-10-26', 'v285');
+  fs.mkdirSync(d, { recursive: true });
+  fs.writeFileSync(path.join(d, 'meta.json'), JSON.stringify({ sha: '409820bb', canary_version: '0.1.0', n_seeds: 200 }));
+  const base = { date: '2026-10-28', sha: '409820bb', dirty: false, canaryVersion: '0.1.0' };
+  const changed = shouldShortCircuit(root, { ...base, nSeeds: 30 });
+  assert.equal(changed.skip, false);
+  assert.match(changed.reason, /seed count changed \(200 → 30\)/);
+  assert.equal(shouldShortCircuit(root, { ...base, nSeeds: 200 }).skip, true);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
 // cleanup
 fs.rmSync(ROOT, { recursive: true, force: true });
 fs.rmSync(path.join(os.tmpdir(), 'vugg-canary-test-empty'), { recursive: true, force: true });

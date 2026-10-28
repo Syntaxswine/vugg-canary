@@ -4,7 +4,7 @@
 //   node test/diff.test.mjs   (also wired as `npm test`)
 
 import assert from 'node:assert/strict';
-import { diffFingerprints, summarizeAlarms } from '../src/diff.mjs';
+import { diffFingerprints, summarizeAlarms, threeSigmaPts } from '../src/diff.mjs';
 
 let passed = 0;
 function test(name, fn) {
@@ -98,6 +98,48 @@ test('summarizeAlarms groups by kind and scenario', () => {
   assert.equal(s.by_kind.abs_move, 1);
   assert.equal(s.by_kind.rel_move, 1);
   assert.equal(s.by_scenario.s1, 2);
+});
+
+// --- 30 seeds a night (boss, 2026-10-28): absPts 39, rare-species floors at 3 seeds ---
+
+const fpN = (n, scenarios) => {
+  const out = fp(scenarios);
+  for (const s of Object.values(out)) s.n_seeds = n;
+  return out;
+};
+const TH30 = { absPts: 39, relMult: 2.0, minPctForRel: 2.0, minSeedsForRel: 3 };
+
+test('threeSigmaPts: 15 at 200 seeds (the original choice), 39 at 30', () => {
+  assert.equal(Math.round(threeSigmaPts(200)), 15);
+  assert.equal(Math.round(threeSigmaPts(30)), 39);
+});
+
+test('30 seeds: appearing in 3 seeds (10%) alarms, in 2 seeds (6.7%) does not', () => {
+  assert.equal(diffFingerprints(fpN(30, { s: {} }), fpN(30, { s: { x: 10.0 } }), TH30)[0]?.kind, 'appeared');
+  assert.equal(diffFingerprints(fpN(30, { s: {} }), fpN(30, { s: { x: 6.7 } }), TH30).length, 0);
+  assert.equal(diffFingerprints(fpN(30, { s: { x: 10.0 } }), fpN(30, { s: {} }), TH30)[0]?.kind, 'disappeared');
+  assert.equal(diffFingerprints(fpN(30, { s: { x: 6.7 } }), fpN(30, { s: {} }), TH30).length, 0);
+});
+
+test('30 seeds: a rel_move needs its high side at 3 seeds or more', () => {
+  assert.equal(diffFingerprints(fpN(30, { s: { x: 10.0 } }), fpN(30, { s: { x: 20.0 } }), TH30)[0]?.kind, 'rel_move');
+  assert.equal(diffFingerprints(fpN(30, { s: { x: 3.3 } }), fpN(30, { s: { x: 6.7 } }), TH30).length, 0);
+});
+
+test('30 seeds: a 38.9-pt move is quiet, 40 pts alarms; mottramite 96.7 → 46.7 still alarms', () => {
+  assert.equal(diffFingerprints(fpN(30, { s: { x: 50 } }), fpN(30, { s: { x: 88.9 } }), TH30).length, 0);
+  assert.equal(diffFingerprints(fpN(30, { s: { x: 50 } }), fpN(30, { s: { x: 90 } }), TH30)[0]?.kind, 'abs_move');
+  assert.equal(diffFingerprints(fpN(30, { s: { x: 96.7 } }), fpN(30, { s: { x: 46.7 } }), TH30)[0]?.kind, 'abs_move');
+});
+
+test('mixed seed counts: the smaller sweep sets the floor (200 → 30 uses 10%)', () => {
+  assert.equal(diffFingerprints(fpN(200, { s: {} }), fpN(30, { s: { x: 6.7 } }), TH30).length, 0);
+  assert.equal(diffFingerprints(fpN(200, { s: {} }), fpN(30, { s: { x: 10.0 } }), TH30)[0]?.kind, 'appeared');
+});
+
+test('back at 200 seeds the 2% floor rules again (3 seeds = 1.5% < 2%)', () => {
+  assert.equal(diffFingerprints(fpN(200, { s: {} }), fpN(200, { s: { x: 2.0 } }), TH30)[0]?.kind, 'appeared');
+  assert.equal(diffFingerprints(fpN(200, { s: {} }), fpN(200, { s: { x: 1.5 } }), TH30).length, 0);
 });
 
 console.log(`\n${passed} passed${process.exitCode ? ', SOME FAILED' : ''}`);

@@ -138,6 +138,18 @@ test('a partial whose recorded pid is alive ⇒ IN PROGRESS with its pid, not ki
   assert.doesNotMatch(r.out, /killed/);
 });
 
+test('a day with a NO-CHANGE marker AND a finished sweep reports the sweep', () => {
+  fs.rmSync(ROOT, { recursive: true, force: true });
+  const ver = path.join(ROOT, '2026-06-14', 'v195');
+  fs.mkdirSync(path.join(ver, 'mvt'), { recursive: true });
+  writeMeta(ver, { n_seeds: 30 });
+  fs.writeFileSync(path.join(ROOT, '2026-06-14', 'NO-CHANGE.json'),
+    JSON.stringify({ date: '2026-06-14', version: 'v195', sha: 'aaa111', identical_to: '2026-06-10' }));
+  const r = runStatus(ROOT);
+  assert.match(r.out, /last observation: 2026-06-14 sweep v195/);
+  assert.doesNotMatch(r.out, /NO CHANGE/);
+});
+
 test('a resumed sweep says how many scenarios came from a killed run', () => {
   fs.rmSync(ROOT, { recursive: true, force: true });
   const ver = path.join(ROOT, '2026-06-14', 'v195');

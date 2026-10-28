@@ -23,6 +23,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findLastDataBearingDay } from './promote.mjs';
+import { threeSigmaPts } from './diff.mjs';
 import { SWEEP_IDENTITY } from './resume.mjs';
 import { readTask, taskDrift } from './task-spec.mjs';
 
@@ -50,17 +51,18 @@ function pidAlive(pid) {
 /** What one dated day dir holds: a finished sweep, a NO-CHANGE marker, a partial run, or nothing. */
 function dayState(logsRoot, date) {
   const dayDir = path.join(logsRoot, date);
-  const nc = readJsonSafe(path.join(dayDir, 'NO-CHANGE.json'));
-  if (nc) return { date, kind: 'nochange', nc };
   let vers = [];
   try {
     vers = fs.readdirSync(dayDir, { withFileTypes: true })
       .filter((d) => d.isDirectory() && VER_RE.test(d.name)).map((d) => d.name).sort().reverse();
   } catch { /* unreadable day dir → treated as empty */ }
+  // a finished sweep outranks a NO-CHANGE marker on the same day
   for (const ver of vers) {
     const meta = readJsonSafe(path.join(dayDir, ver, 'meta.json'));
     if (meta) return { date, kind: 'sweep', ver, meta };
   }
+  const nc = readJsonSafe(path.join(dayDir, 'NO-CHANGE.json'));
+  if (nc) return { date, kind: 'nochange', nc };
   if (!vers.length) return { date, kind: 'empty' };
   // A v<N>/ dir with no readable meta.json = a sweep IN PROGRESS (meta is
   // written last) or one that was killed. sweep-identity.json (written at the
@@ -94,7 +96,23 @@ function main() {
   console.log('vugg-canary status');
   try { reportLogs(logsRoot, today); }
   catch (e) { console.log(`  (could not read the logs: ${e.message})`); }
+  reportConfig(cfg);
   if (!skipTask && process.platform === 'win32') reportTask();
+}
+
+/**
+ * The seed count and absPts must move together (2026-10-28: 200 → 30 seeds,
+ * 15 → 39 pts). Quiet while absPts is within 20% of three standard errors for
+ * the configured seeds; loud when someone changes one and not the other.
+ */
+function reportConfig(cfg) {
+  const n = cfg.seeds;
+  const abs = cfg.diffThreshold && cfg.diffThreshold.absPts;
+  if (!(n > 0) || !(abs > 0)) return;
+  const want = threeSigmaPts(n);
+  if (Math.abs(abs - want) / want > 0.2) {
+    console.log(`  ⚑ config:   absPts ${abs} doesn't fit ${n} seeds (3 standard errors is ${Math.round(want)} pts) — move them together in canary.config.json`);
+  }
 }
 
 function reportLogs(logsRoot, today) {

@@ -47,7 +47,7 @@ export function findLastDataBearingDay(logsRoot, { excludeDate } = {}) {
       if (!fs.existsSync(metaPath)) continue;
       try {
         const m = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-        return { date, version: v, sha: m.sha, canary_version: m.canary_version };
+        return { date, version: v, sha: m.sha, canary_version: m.canary_version, n_seeds: m.n_seeds };
       } catch { /* unreadable meta → not data-bearing, keep looking */ }
     }
   }
@@ -56,14 +56,18 @@ export function findLastDataBearingDay(logsRoot, { excludeDate } = {}) {
 
 /**
  * Decide whether today's run can short-circuit. Returns { skip, reason, last }.
- * skip=true only when a prior data-bearing day exists with the SAME sha + canary
- * version AND the tree is clean.
+ * skip=true only when a prior data-bearing day exists with the SAME sha, canary
+ * version and seed count AND the tree is clean. The seed count matters because a
+ * sweep is the frequency table over seeds 1..N: when config.seeds changed
+ * 200 → 30 (2026-10-28), an unchanged target would otherwise have been
+ * "NO-CHANGE vs the 200-seed day" forever and the new budget never measured.
  */
-export function shouldShortCircuit(logsRoot, { date, sha, dirty, canaryVersion }) {
+export function shouldShortCircuit(logsRoot, { date, sha, dirty, canaryVersion, nSeeds }) {
   const last = findLastDataBearingDay(logsRoot, { excludeDate: date });
   if (!last) return { skip: false, reason: 'no prior data-bearing day', last: null };
   if (last.sha !== sha) return { skip: false, reason: `sha changed (${last.sha} → ${sha})`, last };
   if (last.canary_version !== canaryVersion) return { skip: false, reason: `canary tool version changed (${last.canary_version} → ${canaryVersion})`, last };
+  if (nSeeds != null && last.n_seeds !== nSeeds) return { skip: false, reason: `seed count changed (${last.n_seeds} → ${nSeeds})`, last };
   if (dirty) return { skip: false, reason: 'engine paths dirty (uncommitted js/data/harness) — re-core a disturbed layer', last };
   return { skip: true, reason: `unchanged since ${last.date} (sha ${sha})`, last };
 }
