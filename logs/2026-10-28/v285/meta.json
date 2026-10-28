@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-28",
+  "sha": "409820bb",
+  "branch": "render/r6-specimen",
+  "dirty": true,
+  "dirty_files": [
+    "?? research/arcs/research-hardie-aw-ceiling-2026-08-05.md",
+    "?? tools/hardie-ceiling-census.mjs",
+    "?? tools/salinity-unit-census.mjs"
+  ],
+  "engine_dirty": false,
+  "engine_dirty_files": [],
+  "sim_version": 285,
+  "source_sim_version": 285,
+  "dist_matches_source": true,
+  "canary_version": "0.1.0",
+  "seed_axis": {
+    "vary": "chem",
+    "range": [
+      1,
+      30
+    ],
+    "shape": "scenario-authored"
+  },
+  "n_seeds": 30,
+  "steps_mode": "defaultSteps??100 (matches gen-baseline)",
+  "scenarios": [
+    "amethyst_geode",
+    "asbestos_hills_crack_seal",
+    "asbestos_hills_surficial_alteration",
+    "bisbee",
+    "chiastolite_hornfels",
+    "colorado_plateau",
+    "cooling",
+    "deccan_zeolite",
+    "elmwood",
+    "epithermal_telluride",
+    "gem_pegmatite",
+    "great_salt_plains",
+    "grimsel_alpine_cleft",
+    "jeffrey_mine",
+    "marble_contact_metamorphism",
+    "mvt",
+    "naica_geothermal",
+    "ouro_preto",
+    "porphyry",
+    "pulse",
+    "radioactive_pegmatite",
+    "reactivated_fluorite_vein",
+    "reactive_wall",
+    "roughten_gill",
+    "sabkha_dolomitization",
+    "schneeberg",
+    "searles_lake",
+    "shigar_pegmatite",
+    "sicily_solfifera",
+    "stalactite_demo",
+    "sulphur_bank",
+    "sunnyside_american_tunnel",
+    "supergene_oxidation",
+    "tn457_barite_pulses",
+    "tormiq_alpine_cleft",
+    "tutorial_first_crystal",
+    "tutorial_mn_calcite",
+    "tutorial_travertine",
+    "ultramafic_supergene",
+    "wittichen",
+    "zoned_dripstone_cave"
+  ],
+  "selftest": {
+    "ok": true,
+    "checked": 41,
+    "baseline": "seed42_v285.json",
+    "mismatches": []
+  },
+  "runtime_identity": {
+    "key": "62a5e7d8056b1cd00072252fa359ad71ffcd5c4a1c6dca71797132c00417b8fe",
+    "sha_full": "409820bb6b5a796e031fba413616b6a8bf8efbef",
+    "dist_sha256": "2dae0a6f98ee259d9573531a3b9b6719cb13dcbe77c1a9fff7d567a3e288d894",
+    "node": "v24.15.0"
+  },
+  "generated_at": "2026-10-28T12:48:28.638Z"
+}

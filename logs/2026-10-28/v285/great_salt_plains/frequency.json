@@ -1,0 +1,27 @@
+{
+  "n_seeds": 30,
+  "species": {
+    "halite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 19.17,
+      "mean_count_when_present": 19.17,
+      "size_um": {
+        "min": 1060.5,
+        "median": 3275.4,
+        "max": 4895.2
+      }
+    },
+    "selenite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 39957.1,
+        "median": 40476.8,
+        "max": 41441.1
+      }
+    }
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "date": "2026-10-28",
-  "version": "v285",
-  "sha": "409820bb",
-  "identical_to": "2026-10-26",
-  "note": "target unchanged since last sweep (sha 409820bb); deterministic → output identical, not re-stored"
-}
