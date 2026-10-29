@@ -1,0 +1,115 @@
+{
+  "n_seeds": 30,
+  "species": {
+    "albite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 5159.1,
+        "median": 6584.3,
+        "max": 6678.2
+      }
+    },
+    "apatite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 6.07,
+      "mean_count_when_present": 6.07,
+      "size_um": {
+        "min": 1443.5,
+        "median": 1657.8,
+        "max": 1703.9
+      }
+    },
+    "apophyllite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 1.77,
+      "mean_count_when_present": 1.77,
+      "size_um": {
+        "min": 290.6,
+        "median": 2249.6,
+        "max": 2375.3
+      }
+    },
+    "calcite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 12213.6,
+        "median": 13018.5,
+        "max": 13784.5
+      }
+    },
+    "epidote": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 5.67,
+      "mean_count_when_present": 5.67,
+      "size_um": {
+        "min": 761.1,
+        "median": 1031.8,
+        "max": 1062.1
+      }
+    },
+    "feldspar": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 4832,
+        "median": 5218.8,
+        "max": 5532.1
+      }
+    },
+    "fluorite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 121.1,
+        "median": 508.8,
+        "max": 530.9
+      }
+    },
+    "hematite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 1.3,
+      "mean_count_when_present": 1.3,
+      "size_um": {
+        "min": 1149.2,
+        "median": 1264.1,
+        "max": 1286
+      }
+    },
+    "quartz": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 3.77,
+      "mean_count_when_present": 3.77,
+      "size_um": {
+        "min": 6575.4,
+        "median": 6805.9,
+        "max": 7084
+      }
+    },
+    "titanite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 3.87,
+      "mean_count_when_present": 3.87,
+      "size_um": {
+        "min": 846,
+        "median": 1118.9,
+        "max": 1132.4
+      }
+    }
+  }
+}

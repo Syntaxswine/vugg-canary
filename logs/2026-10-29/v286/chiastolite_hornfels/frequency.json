@@ -1,0 +1,38 @@
+{
+  "n_seeds": 30,
+  "species": {
+    "albite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1,
+        "median": 1.2,
+        "max": 1.5
+      }
+    },
+    "andalusite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 1141.3,
+        "median": 1166.3,
+        "max": 1213.8
+      }
+    },
+    "feldspar": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 664.3,
+        "median": 691.3,
+        "max": 712.3
+      }
+    }
+  }
+}

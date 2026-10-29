@@ -1,0 +1,60 @@
+{
+  "n_seeds": 30,
+  "species": {
+    "albite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 187365.9,
+        "median": 272357.3,
+        "max": 297793.3
+      }
+    },
+    "feldspar": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 59496.2,
+        "median": 114200.5,
+        "max": 122943
+      }
+    },
+    "quartz": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 9251,
+        "median": 11203.8,
+        "max": 12923.5
+      }
+    },
+    "topaz": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 4.73,
+      "mean_count_when_present": 4.73,
+      "size_um": {
+        "min": 308.4,
+        "median": 613.9,
+        "max": 733.9
+      }
+    },
+    "tourmaline": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 7.73,
+      "mean_count_when_present": 7.73,
+      "size_um": {
+        "min": 873.5,
+        "median": 1778,
+        "max": 1879
+      }
+    }
+  }
+}

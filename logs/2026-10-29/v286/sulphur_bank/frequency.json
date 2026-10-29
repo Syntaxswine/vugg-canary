@@ -1,0 +1,82 @@
+{
+  "n_seeds": 30,
+  "species": {
+    "cinnabar": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 6.23,
+      "mean_count_when_present": 6.23,
+      "size_um": {
+        "min": 7166.3,
+        "median": 8505.4,
+        "max": 9100
+      }
+    },
+    "marcasite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 38188.9,
+        "median": 39412.1,
+        "max": 40175.9
+      }
+    },
+    "metacinnabar": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 7987.2,
+        "median": 16311.8,
+        "max": 17331.9
+      }
+    },
+    "native_sulfur": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 4264.2,
+        "median": 5133.8,
+        "max": 5280.1
+      }
+    },
+    "orpiment": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 7.37,
+      "mean_count_when_present": 7.37,
+      "size_um": {
+        "min": 2709.7,
+        "median": 3256.2,
+        "max": 3856.6
+      }
+    },
+    "pararealgar": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 1164.1,
+        "median": 1461,
+        "max": 1971.3
+      }
+    },
+    "pyrite": {
+      "seeds_present": 30,
+      "pct_present": 100,
+      "mean_count": 2.3,
+      "mean_count_when_present": 2.3,
+      "size_um": {
+        "min": 504.6,
+        "median": 534,
+        "max": 565.1
+      }
+    }
+  }
+}
