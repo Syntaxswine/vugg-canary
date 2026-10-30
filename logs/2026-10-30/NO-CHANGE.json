@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-30",
+  "version": "v286",
+  "sha": "e86ba58a",
+  "identical_to": "2026-10-29",
+  "note": "target unchanged since last sweep (sha e86ba58a); deterministic → output identical, not re-stored",
+  "follow": {
+    "remote": "origin",
+    "branch": "main",
+    "from": "e86ba58a945f05ac37f0c41d6816e18f1611cbf1",
+    "to": "e86ba58a945f05ac37f0c41d6816e18f1611cbf1",
+    "moved": false,
+    "at": "2026-10-30T08:00:01.451Z"
+  }
+}
