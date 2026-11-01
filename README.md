@@ -136,9 +136,9 @@ from where. `--force` recomputes everything.
 `diff.mjs` compares two swept versions' frequency tables and flags, per
 `(scenario, species)`:
 
-- **abs_move** — both versions present it, `|Δ spawn-%| ≥ absPts` (39 at 30
+- **abs_move** — both versions present it, `|Δ spawn-%| ≥ absPts` (34 at 40
   seeds; 15 at 200). The blunt, reliable signal; supergene mottramite 96→47 is
-  this, and it still alarms at 30 seeds.
+  this, and it still alarms at 40 seeds.
 - **rel_move** — a rare-but-present species whose spawn-% swung ≥2×, with its
   high side at or above the floor, which the absolute gate would miss on
   low-frequency phases.
@@ -146,38 +146,39 @@ from where. `--force` recomputes everything.
   nonzero side clears the floor (below it is sampling noise).
 
 The floor is 3 seeds' worth of the smaller of the two sweeps, never below 2%:
-10% at 30 seeds, 2% at 200 (`minSeedsForRel`, `minPctForRel`).
+7.5% at 40 seeds, 10% at 30, 2% at 200 (`minSeedsForRel`, `minPctForRel`).
 
 ### Seed budget
 
-Since 2026-10-28 the nightly sweeps **30 seeds**, down from 200. At v285 a seed
-costs 9.3 min across the 41 scenarios (supergene_oxidation, tn457_barite_pulses,
-reactive_wall and bisbee are 74% of it), so 200 seeds took 31 h and could not
-finish in a night; 30 seeds is about 4.8 h. `absPts` moves with the seed count:
-it is three standard errors of a spawn-% difference at the noisiest frequency,
-`300·√(0.5/N)` points, so 15 at 200 seeds and 39 at 30. `status.mjs` flags a
-config where the two don't fit.
+Since 2026-10-31 the nightly sweeps **40 seeds**. It dropped from 200 to 30 on
+2026-10-28: at v285 a seed cost 9.3 min across the 41 scenarios
+(supergene_oxidation, tn457_barite_pulses, reactive_wall and bisbee were 74% of
+it), so 200 seeds took 31 h and could not finish in a night. The
+wall-dissolution proxy fix (vugg PR #41) brought that down to 7.2 min at v286,
+measured by the first sweep of it, so 40 seeds is about 4.9 h of the 5 h
+window. `absPts` moves with the seed count: it is three standard errors of a
+spawn-% difference at the noisiest frequency, `300·√(0.5/N)` points, so 15 at
+200 seeds, 39 at 30 and 34 at 40. `status.mjs` flags a config where the two
+don't fit.
 
-| seeds | sweep at v285 costs | absPts |
-|---|---|---|
-| 200 | ~31 h | 15 |
-| 50 | ~7.9 h | 30 |
-| 40 | ~6.4 h | 34 |
-| 30 | ~4.8 h | 39 |
+| seeds | sweep at v285 cost | sweep at v286 costs | absPts |
+|---|---|---|---|
+| 200 | ~31 h | ~24 h | 15 |
+| 50 | ~7.9 h | ~6.1 h | 30 |
+| 40 | ~6.4 h | ~4.9 h | 34 |
+| 30 | ~4.8 h | 3.7 h, measured | 39 |
 
 Checked on the 10-26 sweep's own per-seed digests (one engine, so every alarm
 is false): disjoint 30-seed blocks raise 0.8 false alarms per pair at 39 pts /
 3 seeds (mostly rel_move; 0.33 with relMult 3), against 4.4 at 15 pts / 2%.
 
-**Go back up** once the wall-dissolution proxy fix is in main (vugg PR #41,
-branch `perf/surface-raw-reads`; the slow four spend most of their time in a
-read-only Proxy around the cavity mesh). The canary follows main, so its first
-sweep with the fix times the faster engine. `status.mjs` divides each full,
-unresumed sweep's wall time by its seeds plus the seed-42 self-test pass, and
-when at least a quarter more seeds fit 04:00–09:00 than are configured it
-prints `⚑ seeds: ~N fit 04:00–09:00 … go back up: seeds N, absPts M`. Take
-them, and move `absPts` with them. It also flags a sweep that overruns the
-night. Contention during the sweep only makes the estimate low. The no-change
+**Changing the count:** `status.mjs` divides each full, unresumed sweep's wall
+time by its seeds plus the seed-42 self-test pass, and when at least a quarter
+more seeds fit 04:00–09:00 than are configured it prints
+`⚑ seeds: ~N fit 04:00–09:00 … go back up: seeds N, absPts M`. Take them, and
+move `absPts` with them. That is how 30 became 40. It also flags a sweep that
+overruns the night; 40 seeds leaves about 4 minutes of the window spare.
+Contention during the sweep only makes the estimate low. The no-change
 short-circuit compares seed counts, so the first night after a change always
 sweeps.
 
@@ -224,9 +225,9 @@ sample*, not gatekeeping.
 |---|----------|--------|
 | 1 | Canonical shape seed | **(A)** `(chem=42, shape=scenario-authored)` — one source of truth with the baselines |
 | 2 | Sweep axis | vary chemistry 1..N, hold shape (assemblage robustness is chem-driven) |
-| 3 | Diff alarm threshold | ±15 spawn-% points, **plus** a >2× relative gate for rare-but-present species; at 30 seeds (2026-10-28) ±39 points and a 3-seed rare-species floor |
+| 3 | Diff alarm threshold | ±15 spawn-% points, **plus** a >2× relative gate for rare-but-present species; at 30 seeds (2026-10-28) ±39 points and a 3-seed rare-species floor, at 40 seeds (2026-10-31) ±34 points |
 | 4 | Commit the spine | yes — `frequency.json`/`meta.json`/diffs are committable; heavy tiers gitignored, regenerable |
-| 5 | Seeds per night | 30 (2026-10-28), so a sweep finishes in a night; back up once the wall-dissolution proxy fix is in main (status says when) |
+| 5 | Seeds per night | 30 (2026-10-28), so a sweep finishes in a night; 40 (2026-10-31), once the wall-dissolution proxy fix was in main (status says when more fit) |
 | 6 | What it sweeps | its own vugg worktree, moved to `origin/main` before every full run and compiled before sweeping (2026-10-28) |
 
 ## Output layout
