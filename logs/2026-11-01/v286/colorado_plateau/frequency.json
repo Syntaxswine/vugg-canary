@@ -1,0 +1,49 @@
+{
+  "n_seeds": 40,
+  "species": {
+    "carnotite": {
+      "seeds_present": 40,
+      "pct_present": 100,
+      "mean_count": 3.93,
+      "mean_count_when_present": 3.93,
+      "size_um": {
+        "min": 285.5,
+        "median": 817,
+        "max": 873
+      }
+    },
+    "opal": {
+      "seeds_present": 40,
+      "pct_present": 100,
+      "mean_count": 5.1,
+      "mean_count_when_present": 5.1,
+      "size_um": {
+        "min": 2129.6,
+        "median": 2150.1,
+        "max": 2172.5
+      }
+    },
+    "tyuyamunite": {
+      "seeds_present": 40,
+      "pct_present": 100,
+      "mean_count": 5,
+      "mean_count_when_present": 5,
+      "size_um": {
+        "min": 3868.8,
+        "median": 4363,
+        "max": 4466.5
+      }
+    },
+    "uranophane": {
+      "seeds_present": 40,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 12239,
+        "median": 12636.9,
+        "max": 12723.3
+      }
+    }
+  }
+}

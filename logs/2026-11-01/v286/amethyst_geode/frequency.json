@@ -1,0 +1,27 @@
+{
+  "n_seeds": 40,
+  "species": {
+    "chalcedony": {
+      "seeds_present": 40,
+      "pct_present": 100,
+      "mean_count": 2.55,
+      "mean_count_when_present": 2.55,
+      "size_um": {
+        "min": 144,
+        "median": 152.7,
+        "max": 159.8
+      }
+    },
+    "quartz": {
+      "seeds_present": 40,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 18,
+        "median": 846.1,
+        "max": 869.3
+      }
+    }
+  }
+}

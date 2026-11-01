@@ -1,0 +1,17 @@
+{
+  "from": "v286@2026-10-29",
+  "to": "v286@2026-11-01",
+  "thresholds": {
+    "_comment": "Alarm if a species' spawn-% moves beyond absPts (boss decision 3), OR a rare-but-present species moves by relMult-fold (fresh-eyes addendum — catches relative swings the absolute gate misses on low-frequency phases). absPts is 3 standard errors for the seed count: 15 at 200 seeds, 39 at 30 (the boss's 2026-10-28 value), 34 at 40 (2026-10-31). The 3-seed rare-species floor is also the boss's 2026-10-28 value. The floor (rel_move and appeared/disappeared) is max(minPctForRel, 100*minSeedsForRel/N) of the smaller sweep: 7.5% at 40 seeds, 10% at 30, back to 2% at 200. On the 10-26 sweep's own seeds, disjoint 30-seed blocks of one engine raise 0.8 false alarms per pair at 39 pts / 3 seeds (mostly rel_move) vs 4.4 at 15 pts / 2%.",
+    "absPts": 34,
+    "relMult": 2,
+    "minPctForRel": 2,
+    "minSeedsForRel": 3
+  },
+  "summary": {
+    "total": 0,
+    "by_kind": {},
+    "by_scenario": {}
+  },
+  "alarms": []
+}
