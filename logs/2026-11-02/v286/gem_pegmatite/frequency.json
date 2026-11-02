@@ -1,0 +1,82 @@
+{
+  "n_seeds": 64,
+  "species": {
+    "albite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 1.86,
+      "mean_count_when_present": 1.86,
+      "size_um": {
+        "min": 18580.3,
+        "median": 25483,
+        "max": 35616.9
+      }
+    },
+    "cassiterite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 4.44,
+      "mean_count_when_present": 4.44,
+      "size_um": {
+        "min": 0,
+        "median": 25.6,
+        "max": 68.9
+      }
+    },
+    "feldspar": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 1.95,
+      "mean_count_when_present": 1.95,
+      "size_um": {
+        "min": 30823.2,
+        "median": 33931.4,
+        "max": 38611
+      }
+    },
+    "lepidolite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 3.63,
+      "mean_count_when_present": 3.63,
+      "size_um": {
+        "min": 4.7,
+        "median": 12,
+        "max": 28.1
+      }
+    },
+    "quartz": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 3,
+      "mean_count_when_present": 3,
+      "size_um": {
+        "min": 1116.3,
+        "median": 1642.5,
+        "max": 2635.4
+      }
+    },
+    "spodumene": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 1.66,
+      "mean_count_when_present": 1.66,
+      "size_um": {
+        "min": 124.7,
+        "median": 195.6,
+        "max": 374.5
+      }
+    },
+    "tourmaline": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 2.83,
+      "mean_count_when_present": 2.83,
+      "size_um": {
+        "min": 193.9,
+        "median": 353.5,
+        "max": 667.4
+      }
+    }
+  }
+}

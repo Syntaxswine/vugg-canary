@@ -1,0 +1,27 @@
+{
+  "n_seeds": 64,
+  "species": {
+    "aragonite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 2297.4,
+        "median": 2545.1,
+        "max": 2756.2
+      }
+    },
+    "calcite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1393.6,
+        "median": 1449,
+        "max": 1560.5
+      }
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "n_seeds": 64,
+  "species": {
+    "anhydrite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 5.41,
+      "mean_count_when_present": 5.41,
+      "size_um": {
+        "min": 10.9,
+        "median": 308.9,
+        "max": 395.2
+      }
+    },
+    "annabergite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 3180.2,
+        "median": 4594.5,
+        "max": 4824.3
+      }
+    },
+    "barite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 5.98,
+      "mean_count_when_present": 5.98,
+      "size_um": {
+        "min": 794.9,
+        "median": 969,
+        "max": 1017.4
+      }
+    },
+    "chalcedony": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 1608.3,
+        "median": 1697.6,
+        "max": 1755.2
+      }
+    },
+    "erythrite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 5688.2,
+        "median": 8154.8,
+        "max": 8573.8
+      }
+    },
+    "haidingerite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 4.38,
+      "mean_count_when_present": 4.38,
+      "size_um": {
+        "min": 4957.5,
+        "median": 5116.3,
+        "max": 5314.4
+      }
+    },
+    "native_arsenic": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 1162.9,
+        "median": 1491.6,
+        "max": 1627.6
+      }
+    },
+    "native_bismuth": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 2.81,
+      "mean_count_when_present": 2.81,
+      "size_um": {
+        "min": 0,
+        "median": 61.7,
+        "max": 566.1
+      }
+    },
+    "native_silver": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 3.92,
+      "mean_count_when_present": 3.92,
+      "size_um": {
+        "min": 0,
+        "median": 551.3,
+        "max": 904
+      }
+    },
+    "nickeline": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 4,
+      "mean_count_when_present": 4,
+      "size_um": {
+        "min": 1205.6,
+        "median": 1744.2,
+        "max": 1956.3
+      }
+    },
+    "pharmacolite": {
+      "seeds_present": 24,
+      "pct_present": 37.5,
+      "mean_count": 0.63,
+      "mean_count_when_present": 1.67,
+      "size_um": {
+        "min": 2270.5,
+        "median": 4359,
+        "max": 5013.5
+      }
+    },
+    "safflorite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 2,
+      "mean_count_when_present": 2,
+      "size_um": {
+        "min": 5.8,
+        "median": 11.7,
+        "max": 610.1
+      }
+    },
+    "skutterudite": {
+      "seeds_present": 64,
+      "pct_present": 100,
+      "mean_count": 2.14,
+      "mean_count_when_present": 2.14,
+      "size_um": {
+        "min": 17.9,
+        "median": 59.9,
+        "max": 68.6
+      }
+    }
+  }
+}
