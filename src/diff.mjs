@@ -30,6 +30,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fingerprintScenario } from './fingerprint.mjs';
 
 const round1 = (x) => Math.round(x * 10) / 10;
 
@@ -42,6 +43,49 @@ export function loadVersionFingerprint(versionDir) {
     if (fs.existsSync(fp)) out[name.name] = JSON.parse(fs.readFileSync(fp, 'utf8'));
   }
   return out;
+}
+
+/** The frequency table over seeds 1..n, rebuilt from a scenario's seeds.json (null if it can't be). */
+function fingerprintOverSeeds(seedsPath, n) {
+  if (!fs.existsSync(seedsPath)) return null;
+  const perSeed = JSON.parse(fs.readFileSync(seedsPath, 'utf8'));
+  const digests = [];
+  for (let s = 1; s <= n; s++) {
+    if (!perSeed[s]) return null;
+    digests.push(perSeed[s]);
+  }
+  return fingerprintScenario(digests);
+}
+
+/**
+ * Two sweeps' fingerprints, made comparable. A sweep is the table over seeds
+ * 1..N and every seed is deterministic, so when the counts differ the larger
+ * sweep is cut back to the smaller one's seeds, rebuilt from its per-seed
+ * digests (seeds.json). Otherwise the extra seeds' luck alarms on identical
+ * code: 2026-11-02 swept the same commit as 2026-11-01 with 64 seeds instead
+ * of 40, seeds 1–40 were byte-identical in all 41 scenarios, and
+ * searles_lake/borax still alarmed as rel_move, 2/40 → 7/64.
+ * seeds.json stays local (gitignored), so a scenario without one keeps its
+ * full table and is listed in `uncut`.
+ *
+ * @returns {{fpA:Object, fpB:Object, cutTo:number|null, uncut:string[]}}
+ */
+export function loadComparableFingerprints(dirA, dirB) {
+  const fpA = loadVersionFingerprint(dirA);
+  const fpB = loadVersionFingerprint(dirB);
+  let cutTo = null;
+  const uncut = [];
+  for (const scen of Object.keys(fpA)) {
+    if (!fpB[scen]) continue;
+    const nA = fpA[scen].n_seeds;
+    const nB = fpB[scen].n_seeds;
+    if (nA === nB) continue;
+    const n = Math.min(nA, nB);
+    const [dir, fp] = nA > nB ? [dirA, fpA] : [dirB, fpB];
+    const cut = fingerprintOverSeeds(path.join(dir, scen, 'seeds.json'), n);
+    if (cut) { fp[scen] = cut; cutTo = n; } else uncut.push(scen);
+  }
+  return { fpA, fpB, cutTo, uncut };
 }
 
 /**
@@ -109,6 +153,14 @@ export function diffFingerprints(fpA, fpB, thresholds = {}) {
   return alarms;
 }
 
+/** The diff record's note on which seeds were compared. */
+export function comparedOn(cutTo, uncut) {
+  return {
+    compared_on: cutTo == null ? 'every seed of both sweeps (the counts match)' : `seeds 1–${cutTo} of both sweeps (the counts differ)`,
+    ...(uncut.length ? { uncut_no_seeds_json: uncut } : {}),
+  };
+}
+
 /** Group alarms into a compact summary for the log header / console. */
 export function summarizeAlarms(alarms) {
   const byKind = {};
@@ -137,14 +189,13 @@ async function cli() {
   let thresholds = {};
   try { thresholds = JSON.parse(fs.readFileSync(cfgPath, 'utf8')).diffThreshold || {}; } catch { /* defaults */ }
 
-  const fpA = loadVersionFingerprint(dirA);
-  const fpB = loadVersionFingerprint(dirB);
+  const { fpA, fpB, cutTo, uncut } = loadComparableFingerprints(dirA, dirB);
   const alarms = diffFingerprints(fpA, fpB, thresholds);
   const summary = summarizeAlarms(alarms);
 
   const verA = path.basename(dirA);
   const verB = path.basename(dirB);
-  const record = { from: verA, to: verB, thresholds, summary, alarms };
+  const record = { from: verA, to: verB, thresholds, ...comparedOn(cutTo, uncut), summary, alarms };
   const outPath = outIdx >= 0 ? argv[outIdx + 1] : path.join(dirB, `diff-vs-${verA}.json`);
   fs.writeFileSync(outPath, JSON.stringify(record, null, 2) + '\n');
 

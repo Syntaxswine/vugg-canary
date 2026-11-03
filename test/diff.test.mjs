@@ -4,7 +4,11 @@
 //   node test/diff.test.mjs   (also wired as `npm test`)
 
 import assert from 'node:assert/strict';
-import { diffFingerprints, summarizeAlarms, threeSigmaPts } from '../src/diff.mjs';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { comparedOn, diffFingerprints, loadComparableFingerprints, loadVersionFingerprint, summarizeAlarms, threeSigmaPts } from '../src/diff.mjs';
+import { fingerprintScenario } from '../src/fingerprint.mjs';
 
 let passed = 0;
 function test(name, fn) {
@@ -140,6 +144,64 @@ test('mixed seed counts: the smaller sweep sets the floor (200 → 30 uses 10%)'
 test('back at 200 seeds the 2% floor rules again (3 seeds = 1.5% < 2%)', () => {
   assert.equal(diffFingerprints(fpN(200, { s: {} }), fpN(200, { s: { x: 2.0 } }), TH30)[0]?.kind, 'appeared');
   assert.equal(diffFingerprints(fpN(200, { s: {} }), fpN(200, { s: { x: 1.5 } }), TH30).length, 0);
+});
+
+// --- Sweeps of different seed counts are compared on their common seeds ---
+// 2026-11-02 swept the 11-01 commit with 64 seeds instead of 40; seeds 1–40 were
+// byte-identical, and searles_lake/borax still alarmed (2/40 → 7/64) on the
+// extra seeds' luck. Built here on disk: a 4-seed and a 6-seed sweep of
+// "identical code", where seeds 5–6 alone grow a phase.
+
+function writeSweep(dir, digests) {
+  fs.mkdirSync(path.join(dir, 'cave'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'cave', 'frequency.json'), JSON.stringify(fingerprintScenario(digests)));
+  const seeds = {};
+  digests.forEach((d, i) => { seeds[i + 1] = d; });
+  fs.writeFileSync(path.join(dir, 'cave', 'seeds.json'), JSON.stringify(seeds));
+}
+const base = { calcite: { active: 3, dissolved: 0, total: 3, max_um: 900 } };
+const lucky = { ...base, borax: { active: 1, dissolved: 0, total: 1, max_um: 40 } };
+const TH4 = { absPts: 15, relMult: 2.0, minPctForRel: 2.0, minSeedsForRel: 1 };
+
+test('different seed counts, same code: the plain diff alarms, the common-seed diff does not', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'canary-cut-'));
+  try {
+    writeSweep(path.join(root, 'a'), [base, base, base, base]);
+    writeSweep(path.join(root, 'b'), [base, base, base, base, lucky, lucky]);
+    const plain = diffFingerprints(loadVersionFingerprint(path.join(root, 'a')), loadVersionFingerprint(path.join(root, 'b')), TH4);
+    assert.equal(plain[0]?.kind, 'appeared', 'the uncut tables see borax in 2 of 6 seeds');
+    const { fpA, fpB, cutTo, uncut } = loadComparableFingerprints(path.join(root, 'a'), path.join(root, 'b'));
+    assert.equal(cutTo, 4);
+    assert.deepEqual(uncut, []);
+    assert.equal(fpB.cave.n_seeds, 4);
+    assert.equal(diffFingerprints(fpA, fpB, TH4).length, 0, 'seeds 1–4 are identical, so nothing moved');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('the cut works in both directions, and a real move on the common seeds still alarms', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'canary-cut-'));
+  try {
+    writeSweep(path.join(root, 'big'), [base, base, base, base, base, base]);
+    writeSweep(path.join(root, 'small'), [lucky, lucky, base, base]);
+    const { fpA, fpB, cutTo } = loadComparableFingerprints(path.join(root, 'big'), path.join(root, 'small'));
+    assert.equal(cutTo, 4);
+    assert.equal(fpA.cave.n_seeds, 4, 'the OLDER sweep is the larger one here (64 → 55 on 2026-11-03)');
+    assert.equal(diffFingerprints(fpA, fpB, TH4)[0]?.kind, 'appeared', 'borax in 2 of the 4 shared seeds is a real move');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('without seeds.json the larger sweep is kept whole and named', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'canary-cut-'));
+  try {
+    writeSweep(path.join(root, 'a'), [base, base, base, base]);
+    writeSweep(path.join(root, 'b'), [base, base, base, base, lucky, lucky]);
+    fs.rmSync(path.join(root, 'b', 'cave', 'seeds.json'));
+    const { fpB, cutTo, uncut } = loadComparableFingerprints(path.join(root, 'a'), path.join(root, 'b'));
+    assert.equal(cutTo, null);
+    assert.deepEqual(uncut, ['cave']);
+    assert.equal(fpB.cave.n_seeds, 6);
+    assert.equal(comparedOn(cutTo, uncut).uncut_no_seeds_json[0], 'cave');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
 console.log(`\n${passed} passed${process.exitCode ? ', SOME FAILED' : ''}`);

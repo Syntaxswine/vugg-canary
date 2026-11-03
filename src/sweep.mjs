@@ -34,7 +34,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { repoMeta } from './repo-meta.mjs';
 import { fingerprintScenario } from './fingerprint.mjs';
 import { shouldShortCircuit, writeNoChangeNote, findLastDataBearingDay, listPublishableDayDirs } from './promote.mjs';
-import { loadVersionFingerprint, diffFingerprints, summarizeAlarms } from './diff.mjs';
+import { loadComparableFingerprints, comparedOn, diffFingerprints, summarizeAlarms } from './diff.mjs';
 import { makeRunner } from './run.mjs';
 import { runtimeIdentity, prepareOutDir, planReuse, adoptScenario, writeScenarioIdentity } from './resume.mjs';
 import { followTarget, describeFollow, prepareTarget, writeTargetFailed, TARGET_FAILED } from './target.mjs';
@@ -340,12 +340,12 @@ async function main() {
   const prev = findLastDataBearingDay(outRoot, { excludeDate: date });
   if (prev) {
     const thresholds = cfg.diffThreshold || {};
-    const fpPrev = loadVersionFingerprint(path.join(outRoot, prev.date, prev.version));
-    const fpNow = loadVersionFingerprint(outDir);
+    const { fpA: fpPrev, fpB: fpNow, cutTo, uncut } = loadComparableFingerprints(path.join(outRoot, prev.date, prev.version), outDir);
     const alarms = diffFingerprints(fpPrev, fpNow, thresholds);
     const summary = summarizeAlarms(alarms);
     alarmTotal = summary.total;
-    const record = { from: `${prev.version}@${prev.date}`, to: `v${SIM_VERSION}@${date}`, thresholds, summary, alarms };
+    const record = { from: `${prev.version}@${prev.date}`, to: `v${SIM_VERSION}@${date}`, thresholds, ...comparedOn(cutTo, uncut), summary, alarms };
+    if (cutTo != null) console.log(`[canary] the two sweeps differ in seed count; compared on seeds 1–${cutTo} of both${uncut.length ? ` (${uncut.length} scenario(s) without seeds.json kept whole)` : ''}`);
     const diffPath = path.join(outDir, `diff-vs-${prev.version}_${prev.date}.json`);
     fs.writeFileSync(diffPath, JSON.stringify(record, null, 2) + '\n');
     if (summary.total === 0) {
