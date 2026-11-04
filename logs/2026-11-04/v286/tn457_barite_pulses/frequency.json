@@ -1,0 +1,27 @@
+{
+  "n_seeds": 55,
+  "species": {
+    "barite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 6,
+      "mean_count_when_present": 6,
+      "size_um": {
+        "min": 4158.5,
+        "median": 4236.5,
+        "max": 4310.5
+      }
+    },
+    "sphalerite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 5837.9,
+        "median": 6050.3,
+        "max": 6278.2
+      }
+    }
+  }
+}

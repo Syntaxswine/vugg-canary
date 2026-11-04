@@ -1,0 +1,82 @@
+{
+  "n_seeds": 55,
+  "species": {
+    "borax": {
+      "seeds_present": 5,
+      "pct_present": 9.1,
+      "mean_count": 0.11,
+      "mean_count_when_present": 1.2,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 10898.1
+      }
+    },
+    "calcite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 10.73,
+      "mean_count_when_present": 10.73,
+      "size_um": {
+        "min": 4.4,
+        "median": 7.1,
+        "max": 16.5
+      }
+    },
+    "celestine": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 8.91,
+      "mean_count_when_present": 8.91,
+      "size_um": {
+        "min": 105.4,
+        "median": 235.4,
+        "max": 437.2
+      }
+    },
+    "halite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 27.47,
+      "mean_count_when_present": 27.47,
+      "size_um": {
+        "min": 0,
+        "median": 4.2,
+        "max": 3063
+      }
+    },
+    "mirabilite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 7.82,
+      "mean_count_when_present": 7.82,
+      "size_um": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "thenardite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 8.42,
+      "mean_count_when_present": 8.42,
+      "size_um": {
+        "min": 29807.5,
+        "median": 50786.7,
+        "max": 57523.3
+      }
+    },
+    "tincalconite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 8,
+      "mean_count_when_present": 8,
+      "size_um": {
+        "min": 364.5,
+        "median": 5526.8,
+        "max": 52731.1
+      }
+    }
+  }
+}

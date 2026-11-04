@@ -1,0 +1,104 @@
+{
+  "n_seeds": 55,
+  "species": {
+    "anhydrite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 7.8,
+      "mean_count_when_present": 7.8,
+      "size_um": {
+        "min": 516.7,
+        "median": 3400.2,
+        "max": 4998.1
+      }
+    },
+    "barite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 53.98,
+      "mean_count_when_present": 53.98,
+      "size_um": {
+        "min": 2.3,
+        "median": 25.3,
+        "max": 33.2
+      }
+    },
+    "calcite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 21743.2,
+        "median": 40408.7,
+        "max": 49828.3
+      }
+    },
+    "fluorite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 10544.3,
+        "median": 13151.6,
+        "max": 13648.4
+      }
+    },
+    "galena": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 10949.2,
+        "median": 11586.4,
+        "max": 11877
+      }
+    },
+    "greenockite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 5.36,
+      "mean_count_when_present": 5.36,
+      "size_um": {
+        "min": 691.4,
+        "median": 2294.8,
+        "max": 2524.3
+      }
+    },
+    "pyrite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1.31,
+      "mean_count_when_present": 1.31,
+      "size_um": {
+        "min": 162.8,
+        "median": 1890.2,
+        "max": 2011.6
+      }
+    },
+    "quartz": {
+      "seeds_present": 54,
+      "pct_present": 98.2,
+      "mean_count": 1.18,
+      "mean_count_when_present": 1.2,
+      "size_um": {
+        "min": 4.1,
+        "median": 8.3,
+        "max": 158.7
+      }
+    },
+    "sphalerite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1.45,
+      "mean_count_when_present": 1.45,
+      "size_um": {
+        "min": 201.3,
+        "median": 1145.4,
+        "max": 2430.8
+      }
+    }
+  }
+}
