@@ -1,0 +1,60 @@
+{
+  "n_seeds": 55,
+  "species": {
+    "anhydrite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 6.4,
+      "mean_count_when_present": 6.4,
+      "size_um": {
+        "min": 15,
+        "median": 124.2,
+        "max": 147.9
+      }
+    },
+    "galena": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 1076,
+        "median": 3975.8,
+        "max": 4077.9
+      }
+    },
+    "marcasite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1.65,
+      "mean_count_when_present": 1.65,
+      "size_um": {
+        "min": 0,
+        "median": 8,
+        "max": 15.5
+      }
+    },
+    "pyrite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1.2,
+      "mean_count_when_present": 1.2,
+      "size_um": {
+        "min": 458.3,
+        "median": 2769.2,
+        "max": 2944.6
+      }
+    },
+    "sphalerite": {
+      "seeds_present": 55,
+      "pct_present": 100,
+      "mean_count": 1,
+      "mean_count_when_present": 1,
+      "size_um": {
+        "min": 6200,
+        "median": 6494.5,
+        "max": 6769.6
+      }
+    }
+  }
+}
