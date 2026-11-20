@@ -209,6 +209,64 @@ test('seed budget: a resumed, manual or untimed sweep is not timed', () => {
   assert.doesNotMatch(timedSweep(160, { started_at: undefined }), /seeds:/);
 });
 
+// --- the night's load beside the seed budget (2026-11-20). The 2026-11-16 sweep overran because the
+// box was busy all night, and nothing in the canary's record said so. A sweep now records its box
+// load in meta.json and the seed line prints it. Older sweeps have no block: their line must not move.
+
+const seedsLine = (out) => out.split(/\r?\n/).find((l) => l.includes('seeds:'));
+const boxLoad = (pct) => ({ box_load: { logical_cpus: 16, sweep: { wall_s: 1, load_pct: pct, own_cpu_s: 1 }, scenarios: {} } });
+const FITS = '  seeds:      30 a night (last sweep 4 h 48 min for 30 seeds, 9.3 min/seed) → ~31 fit 04:00–09:00';
+const GO_UP = '  ⚑ seeds:    ~57 fit 04:00–09:00 (last sweep 2 h 40 min for 30 seeds, 5.2 min/seed); 30 configured — go back up: seeds 57, absPts 28';
+const OVERRUN = '  ⚑ seeds:    only ~22 fit 04:00–09:00 (last sweep 6 h 40 min for 30 seeds, 12.9 min/seed); 30 configured — the sweep overruns its night';
+const BUSY = '; the night was busy, so the estimate reads low';
+
+test('seed budget: a sweep with no box_load block prints its line exactly as before, in all three forms', () => {
+  assert.equal(seedsLine(timedSweep(288.43)), FITS);
+  assert.equal(seedsLine(timedSweep(160)), GO_UP);
+  assert.equal(seedsLine(timedSweep(400)), OVERRUN);
+});
+
+test('seed budget: the sweep\'s box load is printed after the rate, in all three forms', () => {
+  assert.equal(seedsLine(timedSweep(288.43, boxLoad(12.3))),
+    '  seeds:      30 a night (last sweep 4 h 48 min for 30 seeds, 9.3 min/seed, box 12% busy) → ~31 fit 04:00–09:00');
+  assert.equal(seedsLine(timedSweep(160, boxLoad(12.3))),
+    '  ⚑ seeds:    ~57 fit 04:00–09:00 (last sweep 2 h 40 min for 30 seeds, 5.2 min/seed, box 12% busy); 30 configured — go back up: seeds 57, absPts 28');
+  assert.equal(seedsLine(timedSweep(400, boxLoad(12.3))),
+    '  ⚑ seeds:    only ~22 fit 04:00–09:00 (last sweep 6 h 40 min for 30 seeds, 12.9 min/seed, box 12% busy); 30 configured — the sweep overruns its night');
+});
+
+test('busy night: an overrun at 40% box load or more says the estimate reads low; below 40% it does not', () => {
+  const overrun = (pct) => seedsLine(timedSweep(400, boxLoad(pct)));
+  const at = (pct) => `  ⚑ seeds:    only ~22 fit 04:00–09:00 (last sweep 6 h 40 min for 30 seeds, 12.9 min/seed, box ${pct}% busy); 30 configured — the sweep overruns its night`;
+  assert.equal(overrun(40), at(40) + BUSY);
+  assert.equal(overrun(39), at(39));
+  assert.equal(overrun(46.2), at(46) + BUSY);
+  assert.equal(overrun(100), at(100) + BUSY);
+  assert.equal(overrun(0), at(0));
+  // the clause goes by the percent as printed: "box 40% busy" always carries it, "box 39% busy" never
+  assert.equal(overrun(39.5), at(40) + BUSY);
+  assert.equal(overrun(39.4), at(39));
+});
+
+test('busy night: the clause belongs to the overrun flag; a busy night that fits, or says go back up, gets none', () => {
+  assert.equal(seedsLine(timedSweep(288.43, boxLoad(80))),
+    '  seeds:      30 a night (last sweep 4 h 48 min for 30 seeds, 9.3 min/seed, box 80% busy) → ~31 fit 04:00–09:00');
+  assert.equal(seedsLine(timedSweep(160, boxLoad(80))),
+    '  ⚑ seeds:    ~57 fit 04:00–09:00 (last sweep 2 h 40 min for 30 seeds, 5.2 min/seed, box 80% busy); 30 configured — go back up: seeds 57, absPts 28');
+});
+
+test('a box_load block that holds no percentage prints no load, and never crashes the glance', () => {
+  const blocks = [null, 'busy', 46, [], {}, { sweep: null }, { sweep: 46 }, { sweep: {} },
+    { sweep: { wall_s: 0.4, own_cpu_s: 0.1 } },          // a sweep too short to read a load from: what a toy sweep writes
+    { sweep: { load_pct: '46' } }, { sweep: { load_pct: null } }, { sweep: { load_pct: [46] } },
+    { sweep: { load_pct: -1 } }, { sweep: { load_pct: 100.1 } }];
+  for (const block of blocks) {
+    const out = timedSweep(400, { box_load: block });
+    assert.equal(seedsLine(out), OVERRUN, `box_load: ${JSON.stringify(block)}`);
+    assert.doesNotMatch(out, /Error|undefined|NaN/, `box_load: ${JSON.stringify(block)}`);
+  }
+});
+
 test('a configured target with no harness ⇒ ⚑ before tonight finds out', () => {
   fs.rmSync(ROOT, { recursive: true, force: true });
   fs.mkdirSync(ROOT, { recursive: true });

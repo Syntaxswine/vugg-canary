@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 let passed = 0;
 function test(name, fn) {
@@ -99,11 +99,12 @@ fs.writeFileSync(path.join(CANARY, 'canary.config.json'), JSON.stringify({
   diffThreshold: { absPts: 39, relMult: 2.0, minPctForRel: 2.0, minSeedsForRel: 3 },
 }, null, 2));
 
-function night(date, ...extra) {
-  const r = spawnSync(process.execPath, [path.join(CANARY, 'src', 'sweep.mjs'), '--now', '--date', date, ...extra],
+function nightNode(nodeArgs, date, ...extra) {
+  const r = spawnSync(process.execPath, [...nodeArgs, path.join(CANARY, 'src', 'sweep.mjs'), '--now', '--date', date, ...extra],
     { cwd: CANARY, encoding: 'utf8' });
   return { code: r.status, out: `${r.stdout}${r.stderr}` };
 }
+function night(date, ...extra) { return nightNode([], date, ...extra); }
 function status(today) {
   return execFileSync(process.execPath, [path.join(CANARY, 'src', 'status.mjs'), '--no-task'],
     { cwd: CANARY, encoding: 'utf8', env: { ...process.env, CANARY_STATUS_TODAY: today } });
@@ -126,6 +127,11 @@ test('night 1: follows main c1 → c2, compiles, sweeps, and stamps the fetch + 
   assert.ok(Date.parse(meta.started_at) <= Date.parse(meta.generated_at));
   assert.ok(c2.startsWith(meta.sha));
   assert.ok(fs.existsSync(path.join(LOGS, '2026-01-01', 'v7', 'beta', 'frequency.json')));
+  // the sweep's load block is there (the tests further down read it). The toy has no seed-42
+  // baseline yet, so the self-test ran nothing, and a pass that never ran is not timed.
+  assert.equal(meta.selftest.ok, null);
+  assert.deepEqual(Object.keys(meta.box_load.scenarios), ['alpha', 'beta'], r.out);
+  assert.ok(!('selftest' in meta.box_load), JSON.stringify(meta.box_load.selftest));
 });
 
 test('night 2: main unchanged ⇒ NO-CHANGE, and the marker carries the fetch', () => {
@@ -192,8 +198,10 @@ test('--no-follow: a full run that sweeps the checkout where it is', () => {
 });
 
 test('status times the last full sweep: toy sweeps take seconds, so the 200-seed cap fits — go back up', () => {
+  // This toy sweep is usually over in under a second, too short for the CPU counters to tell a
+  // load, so its line carries none. On a slow box it can run long enough to carry one.
   assert.match(status('2026-01-05'),
-    /⚑ seeds: {4}~200 fit 04:00–09:00 \(last sweep 0 h 00 min for 3 seeds, 0\.0 min\/seed\); 3 configured — go back up: seeds 200, absPts 15/);
+    /⚑ seeds: {4}~200 fit 04:00–09:00 \(last sweep 0 h 00 min for 3 seeds, 0\.0 min\/seed(, box \d+% busy)?\); 3 configured — go back up: seeds 200, absPts 15/);
 });
 
 test('a failed fetch: the night still runs on the checkout as it is, and status flags the fetch', () => {
@@ -204,6 +212,99 @@ test('a failed fetch: the night still runs on the checkout as it is, and status 
   assert.match(r.out, /no change — unchanged since 2026-01-05/);
   assert.ok(readJson(LOGS, '2026-01-06', 'NO-CHANGE.json').follow.fetch_error);
   assert.match(status('2026-01-06'), /\n  ⚑ target: {3}2026-01-06: fetch from origin failed/);
+});
+
+// --- the night's load (2026-11-20): every sweep says how busy the box was ----------------------
+//
+// A toy sweep is over in milliseconds and the CPU counters tick every 15.6 ms: too short to read a
+// load from. So main gets an engine whose alpha spins 140 ms a step (3 steps × 3 seeds: its seed
+// loop takes 1.26 s at least, while beta still takes microseconds) and a seed-42 baseline, so that
+// the self-test has something to run.
+const SPIN_MS = 140;
+const SLOW_HARNESS = HARNESS.replace('this.t += 1;',
+  `this.t += 1;\n      if (this.minerals.length > 1) { const until = performance.now() + ${SPIN_MS}; while (performance.now() < until); }`);
+const toyHarness = path.join(ROOT, 'toy-harness.mjs');
+fs.writeFileSync(toyHarness, HARNESS);
+const { makeRunner } = await import(pathToFileURL(path.join(CANARY_SRC, 'src', 'run.mjs')).href);
+const runToy = makeRunner(await (await import(pathToFileURL(toyHarness).href)).loadSimBundle());
+const BASELINE = JSON.stringify({ alpha: runToy('alpha', 42), beta: runToy('beta', 42) }, null, 2) + '\n';
+const isPct = (v) => typeof v === 'number' && v >= 0 && v <= 100;
+
+let c6;
+test('a sweep records how busy the box was: over the run, around the self-test, and around each seed loop', () => {
+  assert.ok(SLOW_HARNESS.includes(`performance.now() + ${SPIN_MS}`), 'the slow engine was not written');
+  git(TARGET, 'remote', 'set-url', 'origin', ORIGIN);          // the failed-fetch night above pointed it at nothing
+  c6 = pushMain('c6: alpha takes over a second, and there is a seed-42 baseline', {
+    'tools/_harness.mjs': SLOW_HARNESS, 'tests-js/baselines/seed42_v7.json': BASELINE,
+  });
+  const r = night('2026-01-07');
+  assert.equal(r.code, 0, r.out);
+  const meta = readJson(LOGS, '2026-01-07', 'v7', 'meta.json');
+  assert.ok(c6.startsWith(meta.sha), r.out);
+  assert.deepEqual([meta.selftest.ok, meta.selftest.checked], [true, 2], r.out);
+  const box = meta.box_load;
+  assert.ok(box, `no box_load block:\n${r.out}`);
+  assert.match(box._comment, /this sweep's own thread included/);
+  assert.equal(box.logical_cpus, os.cpus().length);
+
+  // each scenario's entry is its own seed loop: alpha spun for 9 steps, beta did not
+  assert.deepEqual(Object.keys(box.scenarios), ['alpha', 'beta']);
+  const { alpha, beta } = box.scenarios;
+  assert.ok(alpha.wall_s >= 9 * SPIN_MS / 1000, `alpha's seed loop: ${alpha.wall_s} s`);
+  assert.ok(beta.wall_s < alpha.wall_s, `beta's seed loop: ${beta.wall_s} s`);
+  // a second or more is long enough for the CPU counters, and a spinning thread is load and CPU time
+  assert.ok(isPct(alpha.load_pct) && alpha.load_pct > 0, `alpha's load: ${alpha.load_pct}`);
+  assert.ok(alpha.own_cpu_s > 0, `alpha's own CPU: ${alpha.own_cpu_s} s`);
+  // under a second they cannot say: the entry is its wall time and nothing else
+  if (beta.wall_s < 0.9) assert.deepEqual(Object.keys(beta), ['wall_s'], `beta ran ${beta.wall_s} s and claims ${JSON.stringify(beta)}`);
+
+  // the self-test ran alpha once more, at seed 42: 3 steps
+  assert.ok(box.selftest.wall_s >= 3 * SPIN_MS / 1000, `the self-test: ${box.selftest.wall_s} s`);
+
+  // the run is the stretch status times: started_at to generated_at
+  const timed = (Date.parse(meta.generated_at) - Date.parse(meta.started_at)) / 1000;
+  assert.ok(Math.abs(box.sweep.wall_s - timed) < 0.25, `the run: ${box.sweep.wall_s} s, and status times ${timed} s`);
+  assert.ok(box.sweep.wall_s >= alpha.wall_s + beta.wall_s + box.selftest.wall_s);
+  assert.ok(isPct(box.sweep.load_pct) && box.sweep.load_pct > 0, `the run's load: ${box.sweep.load_pct}`);
+  assert.ok(box.sweep.own_cpu_s > 0 && box.sweep.own_cpu_over_wall > 0);
+  assert.match(r.out, /\[canary\] box load: [\d.]+% of \d+ logical CPUs busy, this sweep included; own CPU /);
+});
+
+test('status prints that sweep\'s load on the seed line', () => {
+  const pct = Math.round(readJson(LOGS, '2026-01-07', 'v7', 'meta.json').box_load.sweep.load_pct);
+  assert.match(status('2026-01-07'), new RegExp(
+    `⚑ seeds: {4}~200 fit 04:00–09:00 \\(last sweep 0 h 00 min for 3 seeds, 0\\.0 min/seed, box ${pct}% busy\\); 3 configured — go back up: seeds 200, absPts 15`));
+});
+
+test('a scenario reused from a killed run has no timing: it gets no entry, never zeros', () => {
+  // the night above as a kill would have left it: no meta.json, and beta not yet stamped as finished
+  const vdir = path.join(LOGS, '2026-01-07', 'v7');
+  fs.rmSync(path.join(vdir, 'meta.json'));
+  fs.rmSync(path.join(vdir, 'beta', 'identity.json'));
+  const r = night('2026-01-07');
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /resuming: 1\/2 scenario\(s\) already finished by a killed run/);
+  const meta = readJson(vdir, 'meta.json');
+  assert.deepEqual(meta.resumed, { alpha: 'in place' });
+  assert.deepEqual(Object.keys(meta.box_load.scenarios), ['beta']);
+  assert.ok(meta.box_load.sweep.wall_s > 0 && meta.box_load.selftest.wall_s >= 3 * SPIN_MS / 1000);
+});
+
+test('a load reading that fails leaves the block out of meta.json, and the sweep goes on', () => {
+  const preload = path.join(ROOT, 'break-os-cpus.cjs');
+  fs.writeFileSync(preload, "require('node:os').cpus = () => { throw new Error('os.cpus is broken (test)'); };\n");
+  const r = nightNode(['--require', preload], '2026-01-08', '--scenario', 'beta', '--seeds', '2');
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /box load not recorded \(the first reading failed: os\.cpus is broken \(test\)\) — the sweep is kept regardless/);
+  const meta = readJson(LOGS, '2026-01-08', 'v7', 'meta.json');
+  assert.ok(!('box_load' in meta), JSON.stringify(meta.box_load));
+  assert.deepEqual(meta.scenarios, ['beta']);
+  assert.equal(meta.selftest.ok, true);
+  assert.ok(fs.existsSync(path.join(LOGS, '2026-01-08', 'v7', 'beta', 'frequency.json')));
+  // the control: the same run with nothing broken does carry the block
+  const ok = night('2026-01-09', '--scenario', 'beta', '--seeds', '2');
+  assert.equal(ok.code, 0, ok.out);
+  assert.deepEqual(Object.keys(readJson(LOGS, '2026-01-09', 'v7', 'meta.json').box_load.scenarios), ['beta'], ok.out);
 });
 
 fs.rmSync(ROOT, { recursive: true, force: true });

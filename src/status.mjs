@@ -16,7 +16,10 @@
  * Since the canary follows main (2026-10-28, src/target.mjs) it also reports
  * where its checkout came from, nights whose target could not be built, and
  * how many seeds the last full sweep says fit one night: the trigger for the
- * boss's "go back up on seeds once the proxy fix is in main".
+ * boss's "go back up on seeds once the proxy fix is in main". Since 2026-11-20
+ * that line also says how busy the box was during the sweep, when the sweep
+ * recorded it: the 2026-11-16 overrun came from another agent working the box
+ * all night, and reading that out of other tools' logs took an hour.
  *
  *   node src/status.mjs [logsDirOverride] [--no-task]
  *   (env CANARY_STATUS_CONFIG=<file> reads another config, for tests)
@@ -45,6 +48,13 @@ const STALE_DAYS = 2;
 // again by 09:00 (2026-10-28). 200 seeds is the canary's design count.
 const WINDOW_MIN = 300;
 const MAX_SEEDS = 200;
+// From this mean box load up, an overrun says more about the night than about
+// the code. Timed on this box on 2026-11-18, from a shell: with 35% of the box
+// busy the sweep's first scenarios took 1.06 times as long as in the 2026-11-04
+// sweep, 1.28 times at 48%, 1.7 at 56% and 2.0 at 70%. The figure counts the
+// sweep's own thread, 6.25 points on this 16-thread box, so 40 is this box's
+// number: a machine with another thread count needs its own.
+const BUSY_PCT = 40;
 
 // Never let a half-written or missing file crash the glance — a partial read
 // just means "not ready", not "explode". Returns null on any read/parse failure.
@@ -127,12 +137,29 @@ function reportTargetPresence(cfg, cfgDir) {
 }
 
 /**
+ * The sweep's mean box load as the whole percent the glance prints: the share
+ * of all logical CPUs that was not idle while it ran, the sweep's own thread
+ * included. null when the sweep recorded none, or anything but a percentage.
+ * The busy-night clause reads this rounded number, so "box 40% busy" always
+ * carries the clause and "box 39% busy" never does.
+ */
+function sweepLoadPct(meta) {
+  const pct = meta.box_load?.sweep?.load_pct;
+  return typeof pct === 'number' && pct >= 0 && pct <= 100 ? Math.round(pct) : null;
+}
+
+/**
  * How many seeds the last full sweep says fit one night. A sweep costs its N
  * seeds plus the seed-42 self-test pass, so per seed = wall time / (N + 1).
  * Loud when at least a quarter more seeds fit than are configured (go back up),
  * or when the configured count no longer fits (the sweep overruns its night,
  * which is how the canary died in 2026-08..10). Only full, unresumed sweeps are
  * timed; contention during the sweep makes the estimate low, never high.
+ *
+ * So the line also carries how busy the box was during that sweep, when the
+ * sweep recorded it (meta.box_load, src/box-load.mjs; sweeps before 2026-11-20
+ * did not, and their line is unchanged). An overrun on a night at BUSY_PCT or
+ * more says so. That is all it does: the rule and the numbers are the same.
  */
 function reportSeedBudget(meta, configured) {
   const minutes = (Date.parse(meta.generated_at) - Date.parse(meta.started_at)) / 60000;
@@ -141,11 +168,13 @@ function reportSeedBudget(meta, configured) {
   const fit = Math.max(0, Math.min(MAX_SEEDS, Math.floor(WINDOW_MIN / perSeed) - 1));
   const n = configured > 0 ? configured : meta.n_seeds;
   const m = Math.round(minutes);
-  const took = `last sweep ${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min for ${meta.n_seeds} seeds, ${perSeed.toFixed(1)} min/seed`;
+  const load = sweepLoadPct(meta);
+  const took = `last sweep ${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min for ${meta.n_seeds} seeds, ${perSeed.toFixed(1)} min/seed${load === null ? '' : `, box ${load}% busy`}`;
   if (fit >= Math.ceil(1.25 * n)) {
     console.log(`  ⚑ seeds:    ~${fit} fit 04:00–09:00 (${took}); ${n} configured — go back up: seeds ${fit}, absPts ${Math.round(threeSigmaPts(fit))}`);
   } else if (fit < n) {
-    console.log(`  ⚑ seeds:    only ~${fit} fit 04:00–09:00 (${took}); ${n} configured — the sweep overruns its night`);
+    const busy = load !== null && load >= BUSY_PCT ? '; the night was busy, so the estimate reads low' : '';
+    console.log(`  ⚑ seeds:    only ~${fit} fit 04:00–09:00 (${took}); ${n} configured — the sweep overruns its night${busy}`);
   } else {
     console.log(`  seeds:      ${n} a night (${took}) → ~${fit} fit 04:00–09:00`);
   }

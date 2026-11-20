@@ -22,6 +22,12 @@
  * see src/target.mjs. Manual partial runs (--scenario / --seeds) sweep the
  * checkout as it is.
  *
+ * THE NIGHT'S LOAD (since 2026-11-20): a sweep's wall time is the code's cost
+ * times how busy the machine was, so every sweep records the machine's load for
+ * the whole run and for each scenario's seed loop, as meta.json's box_load
+ * block (src/box-load.mjs). It is one more label on the sample: if it cannot
+ * be read, the block is left out and the sweep goes on.
+ *
  * Usage:
  *   node src/sweep.mjs --now [--seeds N] [--scenario a,b] [--date YYYY-MM-DD] [--out DIR] [--no-follow]
  *   node src/sweep.mjs --help
@@ -38,6 +44,7 @@ import { loadComparableFingerprints, comparedOn, diffFingerprints, summarizeAlar
 import { makeRunner } from './run.mjs';
 import { runtimeIdentity, prepareOutDir, planReuse, adoptScenario, writeScenarioIdentity } from './resume.mjs';
 import { followTarget, describeFollow, prepareTarget, writeTargetFailed, TARGET_FAILED } from './target.mjs';
+import { readBox, boxLoadBlock, describeBoxLoad } from './box-load.mjs';
 
 const CANARY_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PKG = JSON.parse(fs.readFileSync(path.join(CANARY_ROOT, 'package.json'), 'utf8'));
@@ -97,7 +104,8 @@ const HELP = `vugg-canary sweep (Phase 1)
   --help                this text
 
 Output: <out>/<date>/v<SIM>/<scenario>/{frequency.json, seeds.json} + meta.json
-The seed-42 self-test runs every time and is recorded in meta.json.
+The seed-42 self-test runs every time and is recorded in meta.json, and so is
+how busy the machine was during the sweep (box_load; see src/box-load.mjs).
 Resume: a scenario a killed run already finished, under this exact runtime
 (commit, clean engine, dist/ bytes, canary version, seeds, Node), is reused
 instead of recomputed; see src/resume.mjs.`;
@@ -108,6 +116,7 @@ async function main() {
   if (!args.now) { console.error('Phase 1 requires --now (see --help)'); process.exit(2); }
 
   const startedAt = new Date().toISOString();
+  const boxStart = readBox();   // the machine's load from here to meta.json; a reading never throws (src/box-load.mjs)
   const cfg = JSON.parse(fs.readFileSync(path.join(CANARY_ROOT, 'canary.config.json'), 'utf8'));
   const vuggPath = path.resolve(CANARY_ROOT, cfg.vuggPath);
   const seeds = args.seeds ?? cfg.seeds ?? 200;
@@ -248,6 +257,7 @@ async function main() {
 
   // --- sweep ---
   const reusedFrom = {};
+  const seedLoops = {};   // scenario → the box readings before and after its seed loop; a reused scenario has none
   for (const name of names) {
     const sdir = path.join(outDir, name);
     let fp = null;
@@ -267,11 +277,13 @@ async function main() {
     if (!fp) {
       const perSeedMap = {};      // seed -> digest (heavy tier, gitignored)
       const perSeedArr = [];
+      const boxBefore = readBox();
       for (let s = 1; s <= seeds; s++) {
         const d = runOne(name, s);
         perSeedMap[s] = d;
         perSeedArr.push(d);
       }
+      seedLoops[name] = [boxBefore, readBox()];
       fp = fingerprintScenario(perSeedArr);
       fs.mkdirSync(sdir, { recursive: true });
       fs.writeFileSync(path.join(sdir, 'frequency.json'), JSON.stringify(fp, null, 2) + '\n');
@@ -292,7 +304,22 @@ async function main() {
   }
 
   // --- guard 2: seed-42 self-test against the committed baseline ---
+  const boxBeforeSelftest = readBox();
   const selftest = runSelfTest(vuggPath, SIM_VERSION, names, runOne);
+  const boxAfterSelftest = readBox();
+
+  // --- how busy the machine was: a label on the sample, like the dirt and
+  // dist labels. Passive: whatever fails in it leaves the block out of
+  // meta.json, and the sweep is kept. ---
+  let boxLoad;
+  try {
+    boxLoad = boxLoadBlock(boxStart, readBox(), {
+      scenarios: seedLoops,
+      selftest: selftest.checked ? [boxBeforeSelftest, boxAfterSelftest] : null,   // a skipped self-test ran nothing
+    });
+  } catch (e) {
+    console.warn(`[canary] box load not recorded (${(e && e.message) || e}) — the sweep is kept regardless.`);
+  }
 
   const meta = {
     date,
@@ -320,10 +347,15 @@ async function main() {
     target_prep: prep ? { installed: prep.installed, install_s: prep.install_s, built: prep.built, build_s: prep.build_s } : undefined,
     started_at: startedAt,
     generated_at: new Date().toISOString(),
+    box_load: boxLoad,                   // how busy the machine was from started_at to here, and per scenario; absent when it could not be read
   };
   fs.writeFileSync(path.join(outDir, 'meta.json'), JSON.stringify(meta, null, 2) + '\n');
 
   console.log(`\n[canary] wrote ${path.relative(CANARY_ROOT, outDir)} (${names.length} scenarios, ${seeds} seeds)`);
+  if (boxLoad) {
+    try { console.log(`[canary] box load: ${describeBoxLoad(boxLoad)}`); }
+    catch { /* a label's console line must not cost the diff and the publish below */ }
+  }
   if (selftest.ok === true) {
     console.log(`[canary] ✅ self-test PASS — seed-42 row matches seed42_v${SIM_VERSION}.json for all ${selftest.checked} swept scenarios`);
   } else if (selftest.ok === null) {

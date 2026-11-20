@@ -49,7 +49,8 @@ to raise an alarm when a new build silently moves what the rocks produce.
   the last finished observation and its age (⚑ STALE past 2 days), killed runs
   since, a sweep in progress, where the target came from and nights it could
   not be built, the last sweep's self-test and alarm, how many seeds fit one
-  night, and any drift between the armed task and `src/task-spec.mjs`.
+  night and how busy the box was during that sweep, and any drift between the
+  armed task and `src/task-spec.mjs`.
 - **Follows main** ✅ `src/target.mjs` (2026-10-28). The canary sweeps its own
   vugg checkout and moves it to the newest `origin/main` before every full run,
   then installs and compiles it before sweeping (see
@@ -75,7 +76,7 @@ node src/status.mjs                                     # glance: freshness, kil
 node src/schedule.mjs                                   # print the 04:00 task cmd (arms nothing)
 node src/schedule.mjs --install                         # arm it headless (deliberate, human-only step)
 node src/schedule.mjs --status                          # read the live task back, report drift
-npm test                                                # alarm, short-circuit, status, creep, resume, target, nightly (92 tests)
+npm test                                                # alarm, short-circuit, status, creep, resume, target, box load, nightly (116 tests)
 ```
 
 ### The target: its own checkout that follows main
@@ -198,6 +199,60 @@ sweep just ends late. Contention during the sweep only makes the estimate low. T
 short-circuit compares seed counts, so the first night after a change always
 sweeps.
 
+**How busy the box was:** a sweep's wall time is the code's cost times the
+night's load, and one commit has measured 4.6 to 7.2 min per seed. The
+2026-11-16 sweep took 5 h 26 min for 55 seeds (5.8 min per seed, against 4.8
+on 2026-11-04) and status flagged `only ~50 fit`. The cause was another
+agent's builds, test gates and browser benchmarks, which ran on this machine
+all night: all 41 scenarios were 1.12–1.57 times slower, in every hour of the
+night, on code whose cost had not changed (the two commits compiled and timed
+side by side: 0.99). The scheduled task runs at Task Scheduler priority 7,
+below normal, so the sweep yields to everything else. Nothing in the canary's
+own record said so, and finding out took an hour in other tools' logs.
+
+So from 2026-11-20 a sweep records the load itself, as `box_load` in
+`meta.json` (`src/box-load.mjs`):
+
+- `sweep.load_pct`: the share of all logical CPUs' time that was not idle
+  between `started_at` and `generated_at`, from `os.cpus()` deltas. It includes
+  the sweep's own thread: one busy thread is 6.25 points on this 8-core,
+  16-thread box, so a sweep alone on the machine does not read 0. Windows calls
+  this figure "% Processor Time", and the two agree: over one minute on
+  2026-11-20, in thirty 2 s intervals, this reading averaged 20.45% and
+  `Get-Counter` 20.39%. Task Manager shows a different counter,
+  "% Processor Utility", which read 68 where "% Processor Time" read 60 in one
+  12 s sample.
+- `sweep.own_cpu_s` and `sweep.own_cpu_over_wall`: the sweep process's own CPU
+  seconds, and those over its wall seconds. In a sweep of hours: near 1, the
+  sweep ran whenever it wanted to, and what slowed it was each CPU-second
+  doing less beside busy neighbours; well under 1, it was kept waiting for a
+  CPU. (A smoke run of seconds reads low for another reason: most of it is the
+  fetch and the compile, which run as child processes and are not counted.) In
+  the nine 2026-11-18 timings, run from a shell and not from the below-normal
+  task, with 34% to 76% of the box busy, it stayed between 1.01 and 1.18
+  (Node's helper threads add to the main thread's time). Own CPU time is not
+  a load-free cost: in those timings the same 55 seeds of amethyst_geode took
+  159 CPU-seconds with 34% of the box busy and 323 with 76%.
+- `scenarios.<name>`: `{ wall_s, load_pct, own_cpu_s }` around that scenario's
+  seed loop. `selftest` is the same around the seed-42 pass, and is absent
+  when the self-test was skipped. A scenario reused from a killed run was not
+  timed and has no entry. A window under one second is too short for the CPU
+  counters' 15.6 ms tick: it has its `wall_s` and neither of the other two.
+
+`status.mjs` prints the sweep's figure after the rate in all three forms of
+the seed line: `… 5.8 min/seed, box N% busy`. Read it against the sweep's first
+scenarios as timed on this box on 2026-11-18, from a shell: with 35% of the
+box busy they took 1.06 times as long as in the 2026-11-04 sweep, 1.28 times
+at 48%, 1.7 at 56% and 2.0 at 70%. (How busy the box was on 2026-11-04 or on
+2026-11-16 was not recorded.) When the overrun flag fires on a sweep whose
+load, as printed, is 40% or more, the line ends
+`; the night was busy, so the estimate reads low`. The clause reads the mean
+of the whole sweep: an hour's burst on an otherwise quiet night shows in the
+`scenarios` entries and not on this line. The rule, its thresholds and the
+number it prints are what they were. A sweep from before 2026-11-20 has no
+block and its line is unchanged. If the load cannot be read, the block is left
+out and the sweep goes on.
+
 It writes `diff-vs-<olderVer>.json` and prints a summary. Like the sweep, it's
 passive: it *records* alarms and never exits nonzero — surfacing the move is the
 job; a human adjudicates expected-churn (e.g. an RNG-derivation rebake lights up
@@ -254,7 +309,8 @@ logs/<date>/
   TARGET-FAILED.json              # instead of v<SIM>/: the target could not be installed or compiled
 logs/<date>/v<SIM>/
   meta.json                       # sha, dirty, sim_version, seed axis, self-test, runtime identity, resumed,
-                                  #   follow (where the checkout came from), target_prep, started_at, full_run
+                                  #   follow (where the checkout came from), target_prep, started_at, full_run,
+                                  #   box_load (how busy the machine was: the run, the self-test, each seed loop)
   sweep-identity.json             # local: the runtime key + every attempt (pid, start, planned scenarios)
   <scenario>/
     frequency.json                # SPINE: per-species pct_present, mean_count, size dist (committable)
