@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-24",
+  "version": "v286",
+  "sha": "da1d0b9e",
+  "identical_to": "2026-11-16",
+  "note": "target unchanged since last sweep (sha da1d0b9e); deterministic → output identical, not re-stored",
+  "follow": {
+    "remote": "origin",
+    "branch": "main",
+    "from": "da1d0b9e0f2845a2d16e503883e3e7144be84174",
+    "to": "da1d0b9e0f2845a2d16e503883e3e7144be84174",
+    "moved": false,
+    "at": "2026-11-24T09:00:01.377Z"
+  }
+}
